@@ -1,0 +1,155 @@
+* { 
+	margin: 0;
+	padding: 0;	
+	box-sizing: border-box;
+} 
+
+/*Main Page*/
+a {
+	text-decoration: none;
+}
+
+main { 
+	max-width: 100%;
+	margin: 0 auto;
+	user-select: none;
+}  
+
+main header { 
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 70px;
+	background-color: #007bc9;
+}  
+
+main header .user { 
+	display: flex;
+	align-items: center;
+}
+
+main header div {  
+	padding: 0 10px;
+}  
+
+main header .user a { 
+	color: #fff;
+	font-family: "Arial", sans-serif;
+	font-weight: 500;
+	text-transform: uppercase;
+	font-size: 2.5em;
+} 
+
+main header .logo img { 
+	width: 170px;
+	height: 110px;
+	cursor: pointer;
+}  
+
+main header .user .logo-user { 
+	width: 70px;
+	height: 65px;
+}  
+
+main header .user a { 
+	padding: 0px 10px;
+}  
+
+img { 
+	height: 100px;
+	width: 200px; 
+} 
+
+main .content-page { 
+	padding-top: 50px;
+}  
+
+main .content-page div {
+	display: flex;
+	font-family: "Arial", sans-serif;
+	flex-direction: column;
+	max-width: 300px;
+	justify-content: center;
+	margin: 0 auto;
+} 
+
+main .content-page div img { 
+	margin: 0 auto;
+}  
+
+main .content-page .support-ti-image h2 {
+	font-size: 1.4em;
+	text-align: center;
+} 
+
+main .content-page .support-ti-image img {  
+	width: 200px;
+	height: 200px;
+}
+
+main .content-page .support-ti-description {
+	text-align: center;
+	font-size: 1.2em;
+}
+
+main .content-page .support-ti-description p { 
+	font-size: 1.2em;
+	letter-spacing: 2px;
+}  
+
+main .content-page .call-support-ti {
+	display: flex;
+	background-color: #007bc9;
+	color: #fff;
+	text-transform: uppercase;
+	width: 195px;
+	height: 50px;
+	border: none;
+	border-radius: 1.6em; 
+	align-items: center;
+	margin: 25px auto;
+	cursor: pointer;
+} 
+
+main .content-page .call-support-ti img { 
+	width: 80px;
+	height: 40px;
+}  
+
+main .content-page .call-support-ti p { 
+	font-size: 2em;
+	font-weight: 700;
+	padding-right: 15px;
+}  
+
+/*Login Page*/
+main .login-section {
+	display: flex;
+	margin: 30px auto;
+	flex-direction: column;
+	max-width: 400px;
+	height: 300px;
+} 
+
+main .login-section .icon-login { 
+	margin: 10px auto;
+}
+
+main .login-section .form-input-login form input { 
+	width: 100%;
+	margin: 5px 0;
+	height: 3em;
+	border: 1px #000 solid;
+	border-radius: 1em;
+	padding: 10px;
+} 
+
+main .login-section .form-input-login form input h3 { 
+	font-weight: 200;
+	font-family: "Cantarell", sans-serif;
+}  
+
+main .login-section .icon-login img { 
+	height: 80px;
+	width: 100px;
+}  
