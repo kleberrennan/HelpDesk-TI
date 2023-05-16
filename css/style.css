@@ -12,7 +12,6 @@ a {
 main { 
 	max-width: 100%;
 	margin: 0 auto;
-	user-select: none;
 }  
 
 main header { 
@@ -55,10 +54,10 @@ main header .user a {
 	padding: 0px 10px;
 }  
 
-img { 
+/*img { 
 	height: 100px;
 	width: 200px; 
-} 
+} */
 
 main .content-page { 
 	padding-top: 50px;
@@ -125,19 +124,19 @@ main .content-page .call-support-ti p {
 /*Login Page*/
 main .login-section {
 	display: flex;
-	margin: 30px auto;
+	margin: 0 auto;
 	flex-direction: column;
 	max-width: 400px;
 	height: 300px;
 } 
 
 main .login-section .icon-login { 
-	margin: 10px auto;
+	margin: 30px auto;
 }
 
 main .login-section .form-input-login form input { 
 	width: 100%;
-	margin: 5px 0;
+	margin: 10px 0;
 	height: 3em;
 	border: 1px #000 solid;
 	border-radius: 1em;
@@ -152,4 +151,20 @@ main .login-section .form-input-login form input h3 {
 main .login-section .icon-login img { 
 	height: 80px;
 	width: 100px;
+} 
+
+main .login-section .form-input-login .button-wrapper { 
+	text-align: center;
 }  
+
+main .login-section .form-input-login .login-submit { 
+	background-color: #007bc9;
+	font-family: 'Arial', sans-serif;
+	font-weight: 600;
+	font-size: 1.2em;
+	color: #fff;
+	width: 100px;
+	border: none;
+	text-shadow: none;
+	cursor: pointer;
+}

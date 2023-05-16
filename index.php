@@ -10,11 +10,11 @@
 	<main>
 		<header>
 			<div class="logo">
-				<a href="./index.html"><img src="./.plan/images/logoBgTransparent.png" alt="Logo do Iterma"/></a>
+				<a href="./index.php"><img src="./.plan/images/logoBgTransparent.png" alt="Logo do Iterma"/></a>
 			</div>
 			<div class="user">
 				<img src="./.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
-				<a href="./login.html">Logue</a>
+				<a href="./login.php">Logue</a>
 			</div>
 		</header>
 		<section class="content-page">
