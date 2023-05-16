@@ -1,37 +1,46 @@
 <?php
 include("connection.php");
 
-/*if(isset($_POST['user_name']) || isset($_POST['user_passw'])) { 
+if(isset($_POST['user_name']) || isset($_POST['user_passw'])) { 
 	if(strlen($_POST['user_name']) == 0) {
 		echo 'Preencha o seu nome!'; 
 	} else if(strlen($_POST['user_passw']) == 0) { 
 		echo 'Preencha sua senha!';   
 	} else { 
-		$user_name = $mysqli->real_escape_string($_POST['user_name']);
-		$user_passw = $mysqli->real_escape_string($_POST['user_passw']);
+		$user_name = pg_escape_string($_POST['user_name']);  
+		$user_passw = pg_escape_string($_POST['user_passw']);  
 
-		$sql_code_auth = "SELECT * FROM sch_iterma.tbl_sector WHERE name_user=$user_name AND passw_user=$user_passw";	
-		$sql_query_auth = $mysqli->query($sql_code_auth) or die("Failed to execute the query: " . $mysqli->error);
+		if($_POST['user_name'] == 'Suporte') { 
+			$sql_query = "SELECT * FROM sch_iterma.tbl_user_admin WHERE name_user_admin='$user_name' AND passw_user_admin='$user_passw'";
+			$isAdmin = true;
+		} else {
+			$sql_query = "SELECT * FROM sch_iterma.tbl_sector WHERE name_user='$user_name' AND passw_user='$user_passw'";
+		}
+		$sql_result = pg_query($sql_query) or die("Failed to execute the query: " . pg_last_error());
 
-		$quantity = $sql_query_auth->num_rows;
+		$quantity = pg_num_rows($sql_result);
 
 		if($quantity == 1) { 
-			$tbl_sector = $sql_query_auth->fetch_assoc();
+			$tbl_sector = pg_fetch_array($sql_result, null, PGSQL_ASSOC);
 	
 			if(!isset($_SESSION)) { 
 				session_start();     
 			}
 
 			$_SESSION['user_id'] = $tbl_sector['id_sector']; 
-			$_SESSION['user_name'] = $tbl_sector['user_name'];
-
-			header("Location: index.php");  
+			$_SESSION['user_name'] = $tbl_sector['name_user'];
+			echo $_SESSION['user_name'];
+			if($isAdmin) { 
+				header("Location: admin_panel.php");     
+			} else {
+				header("Location: index.php");
+			}	
 				
 		} else { 
 			echo "Falha em logar! O nome de usuário ou senha estão errados!";  	 
-		}      	
+		}    	
 	}   
-}  */ 
+} 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +51,6 @@ include("connection.php");
 	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
 </head>
 <body>
-	<script type="text/javascript" src="./js/login_form.js"></script>
 	<main>
 		<header>
 			<div class="logo">
@@ -50,7 +58,13 @@ include("connection.php");
 			</div>
 			<div class="user">
 				<img src="./.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
-				<a href="./login.php">Logue</a>
+				<?php
+				if(isset($_SESSION['user_name'])) { 
+					echo '<a href="index.php">' . $_SESSION["user_name"] . '</a>'; 
+				} else {
+					echo '<a href="./login.php">Logue</a>';		
+				}
+				?>
 			</div>
 		</header>
 		<section class="login-section">
@@ -64,7 +78,7 @@ include("connection.php");
 					<h3>Senha:</h3>
 					<input type="password" id="login_passw" name="user_passw">
 					<div class="button-wrapper">
-						<input type="submit" class='login-submit' value='Logar' onclick='login(); return true'>
+						<input type="submit" class='login-submit' value='Logar'>
 					</div>
 				</form>
 			</div>

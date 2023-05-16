@@ -106,9 +106,26 @@ main .content-page .call-support-ti {
 	border: none;
 	border-radius: 1.6em; 
 	align-items: center;
-	margin: 25px auto;
+	filter: blur(3px);
+	margin: 17px auto;
 	cursor: pointer;
+}
+
+main .content-page .call-support-ti.disabled { 
+	filter: blur(0px);
+}
+
+#error_no_reason {
+	display: none;
+	flex-direction: row;
+	margin-top: 10px;
+	color: red;
 } 
+
+#error_no_reason img { 
+	width: 20px;
+	height: 23px;
+}  
 
 main .content-page .call-support-ti img { 
 	width: 80px;
@@ -121,6 +138,39 @@ main .content-page .call-support-ti p {
 	padding-right: 15px;
 }  
 
+main .content-page .separator { 
+	background-color: #000;
+	margin-top: 15px;
+	width: 150px;
+	height: 2px;
+}  
+
+main .content-page .reason-button {
+	margin-top: 10px;
+	text-align: center;
+}  
+
+main .content-page .reason-button h2 { 
+	font-weight: 500;
+	margin-top: 10px;
+	margin-bottom: 12px;
+} 
+
+main .content-page .reason-button select {
+	padding: 0 auto;
+	background-color: #fff;
+	text-align: center;
+	font-size: 1em;
+	padding: 3px; 
+	border-radius: 1em;
+	margin: 5px auto;
+	height: 50px;
+	width: 13em;
+}  
+
+#selectReasonFirst { 
+	color: #7c7c7c;
+}  
 /*Login Page*/
 main .login-section {
 	display: flex;

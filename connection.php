@@ -5,9 +5,5 @@ $passw = '';
 $db = 'db_iterma';
 $host = 'localhost';
 
-$mysqli = new mysqli($host, $user, $passw, $db);
-
-if($mysqli->error) {
-	echo 'Failed';
-	die("Failed to connect to the database: " . $mysqli->error);
-}
+$dbconn = pg_connect("host=$host dbname=$db user=$user password=$passw port=5432")
+	or die("Could not connect: " . pg_last_error());
