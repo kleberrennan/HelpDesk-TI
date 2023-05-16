@@ -2,20 +2,24 @@ const reasonCallSelect = document.getElementById('reasons_call');
 const submit_button = document.getElementById('submit_button');
 const error_div = document.getElementById('error_no_reason');
 
-submit_button.addEventListener('click', function() { 
-	const select_value_error = reasonCallSelect.value;
-	alert('Click');
-	if(select_value_error == 'Escolha um motivo') {
-		error_div.style.display = 'block';
-	}  
+
+submit_button.addEventListener('click', function() {
+	var reason_message_initial = reasonCallSelect.value;
+	
+	if(reason_message_initial == 'ChooseOption') {
+		error_div.style.display = 'flex';
+	} else { 
+		error_div.style.display = 'none'; 
+	}
 });  
 
 reasonCallSelect.addEventListener('change', function() { 
-	const selected_value = reasonCallSelect.value;
-	submit_button.disabled = selected_value == 'Escolha um motivo';
-	if(submit_button) {
-		submit_button.classList.add('disabled');
-	} else {
+	var reason_message_initial = reasonCallSelect.value;
+	if(reason_message_initial == 'ChooseOption') {
 		submit_button.classList.remove('disabled');
+		error_div.style.display = 'none';
+		alert('Alert');
+	} else {
+		submit_button.classList.add('disabled');
 	}  
 })

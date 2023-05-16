@@ -57,7 +57,7 @@
 					<img src="./.plan/images/cautionIcon.png" alt="">
 					<p>Precisa escolher um motivo!</p>
 				</div>
-				<button class="call-support-ti" type="button" id="submit_button" disabled>
+				<button class="call-support-ti" type="button" id="submit_button">
 					<img src="./.plan/images/dialogueBox.png" alt="">
 					<p>Chamar</p>
 				</button>
