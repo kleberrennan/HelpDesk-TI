@@ -4,6 +4,15 @@
 	box-sizing: border-box;
 } 
 
+/*Global S?tyles*/
+#isAdminPanel { 
+	display: none;
+}  
+
+body { 
+ background-color: #eeeeee;
+}   
+
 /*Main Page*/
 a {
 	text-decoration: none;
@@ -28,10 +37,10 @@ main header .user {
 }
 
 main header div {  
-	padding: 0 10px;
+	padding: 0 3px;
 }  
 
-main header .user a { 
+main header .user .user_link { 
 	color: #fff;
 	font-family: "Arial", sans-serif;
 	font-weight: 500;
@@ -39,16 +48,55 @@ main header .user a {
 	font-size: 2.5em;
 } 
 
+main header .user .dropdown_menu { 
+	display: none;
+	flex-direction: column;
+	font-size: 1.2em;
+	position: absolute;
+	overflow: auto;
+	width: 200px;
+	transform: translate(5px, 66px);
+	background-color: #f9f9f9;
+	border-radius: 0.2em;
+	padding: 5px;
+}  
+
+main header .user .dropdown_menu:hover { 
+	display: flex;
+}  
+
+main header .user .dropdown_menu a { 
+	color: #000;
+	font-weight: 300;
+	padding: 6px;
+	font-size: 1.5em;
+	text-decoration: none;
+}  
+
 main header .logo img { 
 	width: 170px;
 	height: 110px;
 	cursor: pointer;
 }  
+.container-user {
+	display: flex;
+	height: 70px;
+	align-items: center;
+}  
+.container-user a { 
+	align-items: center; 
+}  
 
-main header .user .logo-user { 
+main header .user .iconsUser {
+	display: flex;
+	align-items: center;
+}  
+
+main header .user .iconsUser img, main header .user img { 
 	width: 70px;
 	height: 65px;
-}  
+	align-items: center;
+} 
 
 main header .user a { 
 	padding: 0px 10px;
@@ -115,14 +163,14 @@ main .content-page .call-support-ti.disabled {
 	filter: blur(0px);
 }
 
-#error_no_reason {
+#error_no_reason, #error_no_login, #error_already_exists, #error_isAdmin {
 	display: none;
 	flex-direction: row;
 	margin-top: 10px;
 	color: red;
 } 
 
-#error_no_reason img { 
+#error_no_reason img, #error_no_login img, #error_already_exists img, #error_isAdmin img { 
 	width: 20px;
 	height: 23px;
 }  
@@ -218,3 +266,99 @@ main .login-section .form-input-login .login-submit {
 	text-shadow: none;
 	cursor: pointer;
 }
+
+/*Admin Panel*/
+.panel-admin { 
+	display: flex;
+	font-family: 'Cantarell', sans-serif;	
+	background-color: #eeeeee;
+	width: 100%;
+	height: 89vh;
+} 
+.panel-admin .panel-box-left {
+	background-color: #004f80;
+	height: inherit;
+	width: 14rem;
+}
+
+.panel-admin .panel-box-left h2 {
+	margin-top: 10px;
+	margin-bottom: 20px;
+	font-size: 2.6em;
+	text-transform: uppercase;
+	font-weight: 600;
+	color: #fff;
+	text-align: center;
+}
+
+.panel-admin .panel-box-left .call-section {
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	user-select: none;
+	margin: 0 auto;
+	background-color: #031b2a;
+	border-radius: 1em;
+	width: 160px;
+	height: 50px;
+}  
+
+.panel-admin .panel-box-left .call-section h3 { 
+	color: #fff;
+	margin-left: 10px;
+}  
+
+.panel-admin .panel-box-left .call-section img { 
+	width: 30px;
+	height: 30px;
+}
+
+.panel-admin .panel-box-right { 
+	padding: 15px;
+}  
+
+.panel-admin .panel-box-right .receiver-call-content { 
+	display: flex;
+	width: 70vw;
+	align-items: center;
+}  
+
+.panel-admin .panel-box-right .receiver-call-content h2 { 
+	text-transform: uppercase;
+	font-size: 2em;
+}  
+
+.panel-admin .panel-box-right .receiver-call-content img { 
+	width: 60px;
+	height: 60px;
+}  
+
+.panel-admin .panel-box-right .box-input-call { 
+	margin-top: 10px;
+	padding: 10px;
+	overflow-y: auto;
+	background-color: #fff;
+	border-radius: 1em;
+	border: 1px solid #c4c4c4;
+	height: 70vh;
+} 
+
+.call-sector { 
+	display: flex;
+	background-color: #6596b7;
+	width: 100%;
+	border-radius: 0.5em;
+	height: 9vh;
+	padding: 6px;
+} 
+
+.call-sector p {
+	font-size: 1.4em;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	line-height: 1.3em;
+	color: #fff;
+	position: relative;
+	font-weight: 500;
+}  

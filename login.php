@@ -10,8 +10,8 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 		$user_name = pg_escape_string($_POST['user_name']);  
 		$user_passw = pg_escape_string($_POST['user_passw']);  
 
-		if($_POST['user_name'] == 'Suporte') { 
-			$sql_query = "SELECT * FROM sch_iterma.tbl_user_admin WHERE name_user_admin='$user_name' AND passw_user_admin='$user_passw'";
+		if($_POST['user_name'] == "Suporte") { 
+			$sql_query = "SELECT * FROM sch_iterma.tbl_user_admin WHERE id_user_admin=1";
 			$isAdmin = true;
 		} else {
 			$sql_query = "SELECT * FROM sch_iterma.tbl_sector WHERE name_user='$user_name' AND passw_user='$user_passw'";
@@ -27,12 +27,15 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 				session_start();     
 			}
 
-			$_SESSION['user_id'] = $tbl_sector['id_sector']; 
-			$_SESSION['user_name'] = $tbl_sector['name_user'];
-			echo $_SESSION['user_name'];
-			if($isAdmin) { 
-				header("Location: admin_panel.php");     
+			if($isAdmin) {
+				$_SESSION['user_id'] = $tbl_sector['id_user_admin'];
+				$_SESSION['user_name'] = $tbl_sector['name_user_admin'];	
+
+				header("Location: admin_panel.php");
 			} else {
+				$_SESSION['user_id'] = $tbl_sector['id_sector']; 
+				$_SESSION['user_name'] = $tbl_sector['name_user'];
+
 				header("Location: index.php");
 			}	
 				
@@ -60,9 +63,9 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 				<img src="./.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
 				<?php
 				if(isset($_SESSION['user_name'])) { 
-					echo '<a href="index.php">' . $_SESSION["user_name"] . '</a>'; 
+					echo '<a href="index.php" class="user_link">' . $_SESSION["user_name"] . '</a>'; 
 				} else {
-					echo '<a href="./login.php">Logue</a>';		
+					echo '<a href="./login.php" class="user_link" id="loginAcc">Logue</a>';		
 				}
 				?>
 			</div>
