@@ -60,44 +60,50 @@ function create_request_call() {
 	localStorage.setItem('createdRequest', JSON.stringify(dataArr));
 }  
 
+if(window.location.href == 'https://localhost/admin_panel.php') {
+	console.log('TestADMIN');
+	loadRequestCall();
+};
+console.log(window.location.href);
 submit_button.addEventListener('click', function() {
 	var reason_message_initial = reasonCallSelect.value;
+	const success_request = document.getElementById('success_request');
+	const already_exists = document.getElementById('error_already_exists');
+
 	
 	if(reason_message_initial == 'ChooseOption' && sessionUser != 'Suporte') {	
 		error_div.style.display = 'flex';
 	} else if(sessionUser == 'Suporte') {
 		const error_isAdmin = document.getElementById('error_isAdmin');
 		error_isAdmin.style.display = 'flex';
-	} else { 
+	} else {	
 		error_div.style.display = 'none';
 		error_isAdmin.style.display = 'none';
 		if(sessionUser.length === 0) { 
-			error_no_login.style.display = 'flex'; 
+			error_no_login.style.display = 'flex';
+			success_request.style.display = 'none'; 
 		} else {
-			const already_exists = document.getElementById('error_already_exists');
-
 			const xhr = new XMLHttpRequest();
 
 			xhr.open('POST', '../store_call_button.php', true);
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-
 			xhr.onload = function () {
-				if(xhr.status == 200) { 
+				if(xhr.status == 200) {
 					var response_data = xhr.responseText;
-					console.log("Call Data Stored Sucessfully!");  
-					if (response_data.includes('Exists') === true) {	
+					if (response_data.includes('ExistsRow') === true) {
+						success_request.style.display = 'none';
 						already_exists.style.display = 'flex';
-					} else { 
+					} else if(response_data.includes('NoExists') === true){
+						success_request.style.display = 'flex';
 						already_exists.style.display = 'none';
+							
 					}
 				} else { 
 					console.log("Error Storing call data!");
-				}  
+				}
 			};
+			xhr.send(`user_name=${encodeURIComponent(sessionUser)}&reason=${encodeURIComponent(reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent)}`);
 
-			xhr.send(
-				`user_name=${encodeURIComponent(sessionUser)}&reason=${encodeURIComponent(reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent)}`
-			);
 
 		}  
 	}

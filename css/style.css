@@ -12,6 +12,43 @@
 body { 
  background-color: #eeeeee;
 }   
+/*Notification Box*/
+.notify-alert-box { 
+	position: fixed;
+	top: -100%;
+	padding: 20px;
+	margin-left: -140px;
+	background: #fff;
+	z-index: 100000;
+	width: 250px;
+	left: 50%;
+	height: 110px;
+	color: #333;
+	transition: all 0.3s ease-in-out;
+} 
+
+.notify-alert-box img {
+	float: left;
+	margin-right: 10px;
+	width: 45px;
+	height: 45px;
+} 
+
+.notify-alert-box .buttons-notifications {
+	height: 40px;
+	margin-top: 10px;
+	align-self: bottom;
+	text-align: right;
+}
+
+.notify-alert-box .buttons-notifications button {
+	background: #024e73;
+	color: #fff;
+	cursor: pointer;
+	border: 0;
+	padding: 4px 6px;
+	font-size: 0.8em;
+}  
 
 /*Main Page*/
 a {
@@ -163,6 +200,7 @@ main .content-page .call-support-ti.disabled {
 	filter: blur(0px);
 }
 
+
 #error_no_reason, #error_no_login, #error_already_exists, #error_isAdmin {
 	display: none;
 	flex-direction: row;
@@ -170,9 +208,19 @@ main .content-page .call-support-ti.disabled {
 	color: red;
 } 
 
-#error_no_reason img, #error_no_login img, #error_already_exists img, #error_isAdmin img { 
+#success_request { 
+	display: none;
+	flex-direction: row;
+	margin-top: 10px;
+	color: green;
+}   
+
+#error_no_reason img, #error_no_login img, 
+#error_already_exists img, #error_isAdmin img, 
+#success_request img { 
 	width: 20px;
 	height: 23px;
+	background-color: transparent;
 }  
 
 main .content-page .call-support-ti img { 
@@ -347,13 +395,14 @@ main .login-section .form-input-login .login-submit {
 .call-sector { 
 	display: flex;
 	background-color: #6596b7;
+	justify-content: space-between;
 	width: 100%;
 	border-radius: 0.5em;
-	height: 9vh;
+	height: 16vh;
 	padding: 6px;
 } 
 
-.call-sector p {
+.call-sector .sector-content {
 	font-size: 1.4em;
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -361,4 +410,26 @@ main .login-section .form-input-login .login-submit {
 	color: #fff;
 	position: relative;
 	font-weight: 500;
+}
+.call-sector button { 
+	display: flex;
+	text-align: center;
+	align-items: center;
+	background-color: #067c18;
+	border: none;
+	cursor: pointer;
+	border-radius: 2em;
+	align-self: flex-end;
+	height: 30px;
+	width: 12vw;
+} 
+
+.call-sector button p { 
+	color: #fff;
+}  
+
+.call-sector button img { 
+	height: inherit;
+	width: 30px;
+	align-items: center;
 }  

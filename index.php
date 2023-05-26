@@ -2,7 +2,6 @@
 	if(!isset($_SESSION)) {
 		session_start();
 		$user_session = $_SESSION["user_name"];	
-		$error_already_exists = $_SESSION["error_already_exists"];
 	};
 ?>
 
@@ -14,6 +13,7 @@
 	<title>Suporte de TI</title>
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 	<main>
@@ -67,7 +67,11 @@
 				</select>
 			</div>
 			</div>
-			<div>
+			<div id="status_request">
+				<div id="success_request">
+					<img src="./.plan/images/sucessIcon.png"  alt="">
+					<p>Pedido efetuado com sucesso!</p>
+				</div>
 				<div id="error_no_reason">
 					<img src="./.plan/images/cautionIcon.png" alt="">
 					<p>Precisa escolher um motivo!</p>
@@ -95,5 +99,6 @@
 		var sessionUser = '<?php echo $user_session; ?>';
 	</script>
 	<script src='./js/index_button.js' type="text/javascript"></script>
+	<script src='./js/notification_system.js' type='text/javascript'></script>
 </body>
 </html>

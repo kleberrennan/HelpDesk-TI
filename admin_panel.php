@@ -1,37 +1,15 @@
 <?php
 	include('./connection.php');
-
+	include('./process_request.php');
+	
 	if(!isset($_SESSION)) { 
 		session_start();
-	}
-	$tbl_name = "sch_iterma.tbl_reason_form";
-
-	$fetch_query = "SELECT * FROM $tbl_name";
-	
-	$result_fetch = pg_query($fetch_query);
-	if(pg_num_rows($result_fetch) > 0) { 
-		while($row = pg_fetch_assoc($result_fetch)) {
-			foreach($row_fetched as $key => $value) { 
-				echo "$key: $value<br>";   
-			}  	  
-			$name_sector = $row['name_sector'];
-			$time_date = $row['time_date'];
-			$reason_request = $row['reason_request'];
-
-			$dynamicRequest = "<p style='font-size: 1.4em; text-transform: uppercase; letter-spacing: 1px; line-height: 1.3em; color: #fff; position: relative; font-weight: 500;'>Setor: $name_sector<br>Razão: $reason_request<br>Hora: $time_date</p>";
-
-			$divElement = '<div style ="display: flex; background-color: #6596b7; width: 100%; border-radius: 0.5em; height: 15vh; padding: 6px; margin-bottom: 15px;">';
-			$divElement .= $dynamicRequest;
-			$divElement .= '</div>';
-			
-			$divElements .= $divElement;
+		$user_session = $_SESSION["user_name"];
+		if($user_session != 'Suporte' || is_null($user_session)) {
+			header('index.php');		
 		}	
-	} else { 
-		echo '';   
-	}  
-   pg_close($dbconn);	
+	} 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,8 +18,18 @@
 	<title>Painel de Suporte</title>
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+	<div class="notify-alert-box">
+		<img src="./.plan/images/tiSupport.png" alt="">
+		<p>Deseja receber notificações?</p>
+		<div class="buttons-notifications">
+			<button id="notify-cancel-button">Cancelar</button>
+			<button id="notify-allow-button">Permitir</button>
+		</div>	
+	</div>
+
 	<main>
 		<header>
 			<div class="logo">
@@ -84,29 +72,14 @@
 					<h2>Chamados Recebidos</h2>
 				</div>
 				<div class="box-input-call" id="input-call-info">
-					<?php echo $divElements?>
+					<?php echo $divElements; ?>
 				</div>
 			</div>
 		</section>
 	</main>
-	<script>
-		var sessionUser = '<?php echo $user_session; ?>';
-
-		const userAcc = document.getElementById('userAccDropdown');
-		const dropdown_menu_user = document.getElementById('dropdown_menu_user');
-		const dropdown_menu_admin = document.getElementById('isAdminPanel');
-
-		userAcc.addEventListener('mouseover', function() {
-			dropdown_menu_user.style.display = 'flex';
-			dropdown_menu_admin.style.display = 'flex';
-			console.log('Test');
-			dropdown_menu_user.style.transform = "translate(10px, 0px)";
-		});
-
-		userAcc.addEventListener('mouseout', function() { 
-			dropdown_menu_user.style.display = 'none';
-		}); 
-	</script>
-	<!-- <script src='./js/index_button.js'></script> -->
+	<script>var sessionUser = '<?php echo $user_session; ?>';</script>
+	<script src='./js/admin_panel.js'></script>
+	<script src='./js/notification_system.js'></script>
+	<script src='./js/update_container.js'></script> 
 </body>
 </html>
