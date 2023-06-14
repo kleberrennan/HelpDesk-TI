@@ -1,19 +1,24 @@
 <?php
 	if(!isset($_SESSION)) {
+		error_reporting(0);
 		session_start();
 		$user_session = $_SESSION["user_name"];	
+		$cookieLifetime = 7200;
+		$sessionLifetime = 7200;
+		session_set_cookie_params($cookieLifetime);
+		ini_set('session.gc_maxlifetime', $sessionLifetime);
 	};
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">	
 	<title>Suporte de TI</title>
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="./js/external/jquery.js"></script>
 </head>
 <body>
 	<main>
@@ -42,9 +47,16 @@
 					</div>
 				</div>
 			</div>
-
 		</header>
-		<section class="content-page">
+		<section class="selectable_box" id="selectable_box_id">
+			<div class="box_wrapper_upper">
+				<img src="./.plan/images/arrowIcon.png" alt="" id="arrow_select_box_left">
+				<p id="option01_menu">Feedback</p>
+				<p id="option02_feedback">Fale Conosco</p>
+				<img src="./.plan/images/arrowIcon.png" alt="" id="arrow_select_box_right">
+			</div>
+		</section>
+		<section class="content-page" id="support_ti_view">
 			<div class="support-ti-image">
 				<img src="./.plan/images/tiSupport.png" alt="">
 			</div>
@@ -63,8 +75,14 @@
 					<option value="stuckPC">Computador Travado</option>
 					<option value="OFFMonitor">Monitor Desligado</option>
 					<option value="NOTonerPrint">Impressora sem toner</option>
+					<option value="SnackOpt">Convida a gente para o lanche :)</option>
 					<option value="OTHERReasons">Outros Motivos</option>
 				</select>
+			</div>
+			<div id="separator_box_other_reasons"></div>
+			<div id="reason_descp_other_reasons" class="reason_other_wrapper">
+				<img src="./.plan/images/writeIcon.png" alt="">
+				<input type="text" minlength="10" maxlength="500" placeholder="Digite algo mais..." required id="input_more_descp_reason"/>
 			</div>
 			</div>
 			<div id="status_request">
@@ -88,17 +106,35 @@
 					<img src="./.plan/images/cautionIcon.png" alt="">
 					<p>Suporte não pode abrir CHAMADO!</p>
 				</div>
+				<div id="error_noContentOnInput">
+					<img src="./.plan/images/cautionIcon.png" alt="">
+					<p>Você precisa informar o motivo na caixa!</p>
+				</div>
 				<button class="call-support-ti" type="button" id="submit_button">
 					<img src="./.plan/images/dialogueBox.png" alt="">
 					<p>Chamar</p>
 				</button>
 			</div>
 		</section>
+		<div class="separator-wrapper_box" id="separator-wrapper_box_unique_id">
+			<div class="separator_box"></div>
+		</div>	
+		<section class="message_box_section" id='messageBoxID'>
+			<div class="header_box">
+				<img src="./.plan/images/silenceEmoji.png" alt="" id="silenceEmojiAnimation">
+				<h2>Quer dizer algo para a gente?<br>Ficará no sigilo</h2>   
+				<div class="input_box">
+					<input type="text" id="input_text_silence" minlength="5" maxlength="500" placeholder="Digite aqui" disabled/>
+					<img src="./.plan/images/send_message_button.png" alt="" id='sendInputBox'>
+				</div>
+			</div>
+		</div>
 	</main>
 	<script>
 		var sessionUser = '<?php echo $user_session; ?>';
 	</script>
 	<script src='./js/index_button.js' type="text/javascript"></script>
 	<script src='./js/notification_system.js' type='text/javascript'></script>
+	<script src='./js/index_select_box.js'></script>
 </body>
 </html>

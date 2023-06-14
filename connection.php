@@ -1,7 +1,7 @@
 <?php
 
-$user = 'klebux'; 
-$passw = '';
+$user = 'postgres'; 
+$passw = 'postgres';
 $db = 'db_iterma';
 $host = 'localhost';
 

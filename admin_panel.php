@@ -1,12 +1,11 @@
 <?php
 	include('./connection.php');
-	include('./process_request.php');
 	
 	if(!isset($_SESSION)) { 
 		session_start();
 		$user_session = $_SESSION["user_name"];
-		if($user_session != 'Suporte' || is_null($user_session)) {
-			header('index.php');		
+		if(!isset($user_session)) {
+			header('Location: index.php');	
 		}	
 	} 
 ?>
@@ -18,7 +17,7 @@
 	<title>Painel de Suporte</title>
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="./js/external/jquery.js"></script>
 </head>
 <body>
 	<div class="notify-alert-box">
@@ -29,7 +28,8 @@
 			<button id="notify-allow-button">Permitir</button>
 		</div>	
 	</div>
-
+	<div id="popUpOwnerButton">
+	</div>
 	<main>
 		<header>
 			<div class="logo">
@@ -72,7 +72,6 @@
 					<h2>Chamados Recebidos</h2>
 				</div>
 				<div class="box-input-call" id="input-call-info">
-					<?php echo $divElements; ?>
 				</div>
 			</div>
 		</section>
@@ -80,6 +79,6 @@
 	<script>var sessionUser = '<?php echo $user_session; ?>';</script>
 	<script src='./js/admin_panel.js'></script>
 	<script src='./js/notification_system.js'></script>
-	<script src='./js/update_container.js'></script> 
+	<script src='./js/update_container.js'></script>
 </body>
 </html>

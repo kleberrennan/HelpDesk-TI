@@ -5,7 +5,14 @@ include('connection.php');
 $name_sector = $_POST['user_name'];
 
 $reason_request = $_POST['reason'];
-$timestamp = date('Y-m-d H:i:s');
+
+$timezone = new DateTimeZone('America/Belem');
+$timedate = new DateTime('now', $timezone);
+$timedate->modify('-3 hours');
+
+$getTimeDate = $timedate->getTimestamp();
+
+$timestamp = date('Y-m-d H:i:s', $getTimeDate);
 
 $sql_query = "INSERT INTO sch_iterma.tbl_reason_form(id_reason, name_sector, time_date, reason_request) VALUES(DEFAULT, '$name_sector', '$timestamp', '$reason_request')";
 $sql_query_reason_exists = "SELECT * FROM sch_iterma.tbl_reason_form WHERE name_sector='$name_sector'";

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<div id="popUpOwnerButton">
+		<header class="bar_owner_button">
+			<img src="./.plan/images/xIcon.png" alt="" id="closePopUpOwner"/>
+		</header>
+		<p>Profissionais</p>
+		<ul id="list_workers_unordered" class="worker_list_owner">
+			<li><img src="./.plan/images/iconPeopleBlueFinal.png" alt=""/>Diorlan</li>
+			<li><img src="./.plan/images/iconPeopleBlueFinal.png" alt=""/>Italo</li>
+			<li><img src="./.plan/images/iconPeopleBlueFinal.png" alt=""/>Chrystian</li>
+			<li><img src="./.plan/images/iconPeopleBlueFinal.png" alt=""/>Kleber</li>
+		</ul>
+	</div>
+	<css>
+		<rule selector="#idOwnerButton">
+			<property name="display">flex</property>
+			<property name="text-align">center</property>
+			<property name="align-items">center</property>
+			<property name="color">#fff</property>
+			<property name="background-color">#001d31</property>
+			<property name="border">none</property>
+			<property name="cursor">pointer</property>
+			<property name="border-radius">2em</property>
+			<property name="align-self">flex-end</property>
+			<property name="margin-right">0.5em</property>
+			<property name="width">12vw</property>
+		</rule>
+		<rule selector=".bar_owner_button">
+			<property name="display">flex</property>
+			<property name="align-items">center</property>
+			<property name="justify-content">flex-end</property>
+			<property name="align-self">flex-end</property>
+			<property name="background-color">#f0f0f0</property>
+		</rule>
+		<rule selector=".bar_owner_button img">
+			<property name="width">24px</property>
+			<property name="height">24px</property>
+			<property name="margin-right">3px</property>
+			<property name="cursor">pointer</property>
+		</rule>
+		<rule selector=".worker_list_owner">
+			<property name="text-align">center</property>
+			<property name="color">#3598d6</property>
+			<property name="font-weight">bold</property>
+			<property name="font-size">1.7em</property>
+		</rule>
+		<rule selector=".worker_list_owner li">
+			<property name="display">flex</property>
+			<property name="justify-content">flex-start</property>
+			<property name="align-items">center</property>
+			<property name="cursor">pointer</property>
+			<property name="padding">4px</property>
+			<property name="font-family">'Roboto', sans-serif</property>
+			<property name="border-top">2px solid #cccccc</property>
+		</rule>
+		<rule selector=".worker_list_owner li:hover">
+			<property name="color">#fff</property>
+			<property name="background-color">#2f89e1</property>
+		</rule>
+		<rule selector=".worker_list_owner img">
+			<property name="width">42px</property>
+			<property name="height">42px</property>
+		</rule>
+		<rule selector="#popUpOwnerButton">
+			<property name="display">block</property>
+			<property name="z-index">1000</property>
+			<property name="position">absolute</property>
+			<property name="top">50%</property>
+			<property name="right">50%</property>
+			<property name="transform">translate(50%, -50%)</property>
+			<property name="width">20vw</property>
+			<property name="height">43vh</property>
+			<property name="background-color">#fffcfc</property>
+			<property name="border">1px solid #5c5c5c</property>
+			<property name="border-radius">0.4em</property>
+		</rule>
+		<rule selector="#popUpOwnerButton p">
+			<property name="color">#c1d9ec</property>
+			<property name="font-size">1.5em</property>
+			<property name="user-select">none</property>
+			<property name="text-align">center</property>
+		</rule>
+		<rule selector="#idButton">
+			<property name="display">flex</property>
+			<property name="filter">blur(2px)</property>
+			<property name="text-align">center</property>
+			<property name="align-items">center</property>
+			<property name="background-color">#067c18</property>
+			<property name="border">none</property>
+			<property name="cursor">pointer</property>
+			<property name="border-radius">2em</property>
+			<property name="align-self">flex-end</property>
+			<property name="width">12vw</property>
+		</rule>
+		<rule selector="#idButton img, #idOwnerButton img">
+			<property name="height">inherit</property>
+			<property name="width">30px</property>
+			<property name="align-items">center</property>
+		</rule>
+		<rule selector=".buttonSuccess">
+			<property name="height">inherit</property>
+			<property name="color">#fff</property>
+			<property name="width">30px</property>
+			<property name="align-items">center</property>
+		</rule>
+	</css>
+</document>

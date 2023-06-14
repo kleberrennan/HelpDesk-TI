@@ -6,6 +6,16 @@ const error_no_login = document.getElementById('error_no_login');
 const loginAcc = document.getElementById('loginAcc');
 const dropdown_menu_user = document.getElementById('dropdown_menu_user');
 const dropdown_menu_admin = document.getElementById('isAdminPanel');
+const silenceEmojiAnimation = document.getElementById('silenceEmojiAnimation');
+const noContentOnInput = document.getElementById('error_noContentOnInput');
+const already_exists = document.getElementById('error_already_exists');
+
+const separator_box_other_reason = document.getElementById('separator_box_other_reasons');
+const reason_descp_other_reason = document.getElementById('reason_descp_other_reasons');
+
+silenceEmojiAnimation.addEventListener('click', function() {
+	silenceEmojiAnimation.classList.add('silenceEmoji-animation');
+})
 
 userAcc.addEventListener('mouseover', function() {
 	if(sessionUser.includes('Suporte')) { 
@@ -19,8 +29,6 @@ userAcc.addEventListener('mouseover', function() {
 		dropdown_menu_admin.style.display = 'none';
 		console.log('b');
 	}
-
-	//dropdown_menu_user.style.transform = 'translate(-50px, 90px)';
 
 	if(userAcc.textContent.includes('Logue')) { 
 		dropdown_menu_user.style.display = 'none';
@@ -43,7 +51,6 @@ function create_request_call() {
 
 	box_input_call.appendChild(paragraph_content);
 
-	console.log(`Sector: ${sessionUser} Reason: ${reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent}`);
 	var existingData = localStorage.getItem('createdRequest');
 	var dataArr = existingData ? JSON.parse(existingData) : [];
 	var indexData = dataArr.length;
@@ -55,66 +62,101 @@ function create_request_call() {
 	};
 
 	dataArr.push(serializedElement);	
-	console.log(dataArr);
-	console.log(serializedElement);
 	localStorage.setItem('createdRequest', JSON.stringify(dataArr));
 }  
 
-if(window.location.href == 'https://localhost/admin_panel.php') {
-	console.log('TestADMIN');
-	loadRequestCall();
-};
-console.log(window.location.href);
-submit_button.addEventListener('click', function() {
-	var reason_message_initial = reasonCallSelect.value;
-	const success_request = document.getElementById('success_request');
-	const already_exists = document.getElementById('error_already_exists');
+function store_call_button() {	
+		const xhr = new XMLHttpRequest();
 
-	
+		xhr.open('POST', '../store_call_button.php', true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+		xhr.onload = function () {
+			if(xhr.status == 200) {
+				var response_data = xhr.responseText;
+				if (response_data.includes('ExistsRow') === true) {
+					success_request.style.display = 'none';
+					already_exists.style.display = 'flex';
+				} else if(response_data.includes('NoExists') === true){
+					success_request.style.display = 'flex';
+					already_exists.style.display = 'none';
+					$.ajax({
+						url: 'send_notification.php',
+						method: 'POST',
+						data: {
+							title: "PEDIDO NOVO",
+							notification: "Um novo pedido foi recebido!",
+							recipient: 'Suporte'
+						},
+						success: function(response) {
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+							console.log(error);
+						}
+					})
+				}
+			} else { 
+					console.log("Error Storing call data!");
+				}
+			};
+			xhr.send(`user_name=${encodeURIComponent(sessionUser)}&reason=${encodeURIComponent(reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent)}`);
+}
+
+submit_button.addEventListener('click', function() {
+	const error_isAdmin = document.getElementById('error_isAdmin');
+	const inputDescpReason = document.getElementById('input_more_descp_reason');
+	const success_request = document.getElementById('success_request');
+
+	var reason_message_initial = reasonCallSelect.value;
+
 	if(reason_message_initial == 'ChooseOption' && sessionUser != 'Suporte') {	
 		error_div.style.display = 'flex';
 	} else if(sessionUser == 'Suporte') {
-		const error_isAdmin = document.getElementById('error_isAdmin');
 		error_isAdmin.style.display = 'flex';
 	} else {	
 		error_div.style.display = 'none';
 		error_isAdmin.style.display = 'none';
 		if(sessionUser.length === 0) { 
 			error_no_login.style.display = 'flex';
-			success_request.style.display = 'none'; 
+			success_request.style.display = 'none';
 		} else {
-			const xhr = new XMLHttpRequest();
+			const otherReason = 'Outros Motivos';
+			var selectedCall = reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent;
 
-			xhr.open('POST', '../store_call_button.php', true);
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-			xhr.onload = function () {
-				if(xhr.status == 200) {
-					var response_data = xhr.responseText;
-					if (response_data.includes('ExistsRow') === true) {
-						success_request.style.display = 'none';
-						already_exists.style.display = 'flex';
-					} else if(response_data.includes('NoExists') === true){
-						success_request.style.display = 'flex';
-						already_exists.style.display = 'none';
-							
-					}
-				} else { 
-					console.log("Error Storing call data!");
-				}
-			};
-			xhr.send(`user_name=${encodeURIComponent(sessionUser)}&reason=${encodeURIComponent(reasonCallSelect.options[reasonCallSelect.selectedIndex].textContent)}`);
-
-
+			if(selectedCall == otherReason) {
+				if(inputDescpReason.value === '') {
+					noContentOnInput.style.display = 'flex';
+				} 
+			}
+			if(selectedCall !== otherReason){
+				noContentOnInput.style.display = 'none'; 
+				store_call_button();
+			}
 		}  
 	}
 });  
 
-reasonCallSelect.addEventListener('change', function() { 
+reasonCallSelect.addEventListener('change', function() {
+	const other_reason = 'OTHERReasons';
+	
 	var reason_message_initial = reasonCallSelect.value;
 	if(reason_message_initial == 'ChooseOption') {
 		submit_button.classList.remove('disabled');
 		error_div.style.display = 'none';
+		separator_box_other_reason.style.display = 'none';
+		reason_descp_other_reason.style.display = 'none';
 	} else {
+		noContentOnInput.style.display = 'none';
 		submit_button.classList.add('disabled');
-	}  
+	} 
+	
+	if(sessionUser.length > 0) {
+		if(reason_message_initial == other_reason) {
+			separator_box_other_reason.style.display = 'block';
+			reason_descp_other_reason.style.display = 'flex';
+		} else {
+			separator_box_other_reason.style.display = 'none';
+			reason_descp_other_reason.style.display = 'none';
+		}
+	}
 })
