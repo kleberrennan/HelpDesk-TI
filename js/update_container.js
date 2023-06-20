@@ -7,6 +7,7 @@ var isDeleted = false;
 var lastButton = 0;
 
 const popUp = document.getElementById('popUpOwnerButton');
+const feedback_box_section = document.getElementById('feedback-section-box');
 
 function changeStatusCall(containerId) {
 		var element_class = document.querySelector('.withOwnerButton_' + containerId);
@@ -40,6 +41,67 @@ function changeOwnerBox(button_id, name_worker) {
 
 }
 
+const popUpReadMore = document.getElementById('popUpReadMoreButton');
+
+function openReadMore(name_sector, reason_descp) {
+	$.ajax({
+		url: "../data/popUpReadMore.xml",
+		dataType: "xml",
+		success: function(data) {
+			var cssRulesReadMore = $(data).find("css").text();
+
+			$("<style>").text(cssRulesReadMore).appendTo("head");
+
+			var HTMLContentReadMore = $(data).find("div").html();
+			$("#popUpReadMoreButton").html(HTMLContentReadMore);
+			console.log(HTMLContentReadMore);
+			$('#name_sector_read_more').html(name_sector);
+			$('#paragraph_sector_content').html(reason_descp);
+			const closeReadMoreButton = document.querySelector('#closePopUpReadMore');
+
+			closeReadMoreButton.addEventListener('click', function() {
+				popUpReadMore.style.display = 'none';
+			});
+
+			popUpReadMore.style.display = "flex";
+		},
+		error: function(xhr, error, status) {
+			console.log(xhr, status, error);
+		}
+	});
+}
+
+const feedback_container = document.getElementById('feedback-call-input');
+
+function openFeedback(id_request, name_sector, feedback_content) {
+	console.log('openFeedClick');
+	$.ajax({
+		url: "../data/popUpFeedback.xml",
+		dataType: "xml",
+		success: function(data) {
+			var htmlContent = $(data).find("div").html();
+
+			$('#popUpFeedbackContainer').html(htmlContent);
+
+			const popUpFeedbackContainer = document.getElementById('popUpFeedbackContainer');
+			const closeFeedbackIcon = document.getElementById('close_feedback_icon');
+
+			closeFeedbackIcon.addEventListener('click', function() {
+				popUpFeedbackContainer.style.display = 'none';
+			});
+			const title_feedback = document.getElementById('title_feedback_popUp');
+
+			title_feedback.innerHTML = name_sector + "#" + id_request;
+
+			const descp_feedback = document.getElementById('content_feedback_popUp');
+
+			descp_feedback.innerHTML = feedback_content;
+
+			popUpFeedbackContainer.style.display = 'block';
+		}
+	})
+}
+
 function openPopup(button_id) {
 	$.ajax({
 		url: "../data/popUpOwner.xml",
@@ -52,6 +114,12 @@ function openPopup(button_id) {
 			var htmlContent = $(data).find("div").html();
 			$('#popUpOwnerButton').html(htmlContent);
 
+			const closeButton = document.querySelector('#closePopUpOwner');
+
+			closeButton.addEventListener('click', function() {
+				popUpOwnerButton.style.display = 'none';
+			});
+
 			const list_workers = document.getElementById('list_workers_unordered');
 
 			const list_workers_li = list_workers.querySelectorAll('#list_workers_unordered li');
@@ -62,12 +130,15 @@ function openPopup(button_id) {
 				});
 			}
 			popUp.style.display = 'block';
-		}
+		},
+		error: function(xhr, status, error) {
+			console.log(xhr, status, error);
+		},
 	});
 }
 
+/*Close With X Button The Owner Menu*/
 function buttonDeleteCall(id_request) {
-	console.log('delete!');
 	xhr.open('POST', '../delete_request.php', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() { 
@@ -99,50 +170,103 @@ function getNumber(str) {
 	return null;
 }
 
+var idDataFeedback = [];
 function updateDivCall() {
-	$.ajax({
-		url: '../process_request.php',
-		method: 'GET',
-		dataType: 'xml',
-		success: function(response) {
-			let isEmptyResponse = response.documentElement.textContent.trim();
-			
-			if(response === null || isEmptyResponse === '') {
-				isStored = [];
-			} else if (response !== null) {
-				var xmlString = new XMLSerializer().serializeToString(response);
-				xmlString = xmlString.replace('/<br>/g', '&#10;');
-				var parser = new DOMParser();
-				var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-			
-				var id_request = xmlDoc.querySelectorAll('data');
-				for(let countId = 0; countId < id_request.length; countId++) {
-					let idToCheck = id_request[countId].querySelectorAll('id_request').textContent;
+	if(feedback_box_section.style.backgroundColor !== 'transparent') {
+		$.ajax({
+			url: '../feedback_received.php',
+			method: 'GET',
+			dataType: 'xml',
+			success: function(response) {
+				var isEmptyResponseFB = response.documentElement.textContent.trim();
+
+				if(response === null || isEmptyResponseFB === '') {
+					idDataFeedback = [];
+					console.log('emptyDiv');
+				} else {
+					var xmlStringFeedback = new XMLSerializer().serializeToString(response);
+					var parserFB = new DOMParser();
+					var xmlDoc = parserFB.parseFromString(xmlStringFeedback, 'text/xml');
+
 				
-					if(!isStored.includes(idToCheck)) {
-						bodyElement = xmlDoc.querySelectorAll('html');
-						bodyData = xmlDoc.querySelectorAll('data');
-						for(var counter = 0; counter < bodyElement.length; counter++) {
-							$('#input-call-info').append(bodyElement[counter].textContent);
-							if(!bodyData[counter].textContent.includes('Sem posse')) {
-								var buttonElementId = getNumber(bodyData[counter].textContent);
-								changeStatusCall(buttonElementId);	
-							}
-						};
-						 
-						pushNotificationSupport();
+					var id_requestData = xmlDoc.querySelectorAll('data');
+
+					for(let countToCheckFB = 0; countToCheckFB < id_requestData.length; countToCheckFB++) {
+						let idToCheckFB = id_requestData[countToCheckFB].querySelector('id_request').textContent;
+						if(!idDataFeedback.includes(idToCheckFB)) {
+							var bodyElement = xmlDoc.querySelectorAll('html');
+							$('#feedback-call-input').append(bodyElement[countToCheckFB].textContent);
 						
-						isStored.push(idToCheck);
+							idDataFeedback.push(idToCheckFB);
+						}
+					}
+					
+				}
+			},
+			error: function (status, error, xhr) { 
+				console.log(status);
+				console.log(error);
+				console.log(xhr);
+			 }
+		});
+	} else if(feedback_box_section.style.backgroundColor === 'transparent') {
+		$.ajax({
+			url: '../process_request.php',
+			method: 'GET',
+			dataType: 'xml',
+			success: function(response) {
+				var isEmptyResponse = response.documentElement.textContent.trim();
+				
+				if(response === null || isEmptyResponse === '') {
+					isStored = [];
+				} else if (response !== null) {
+					var xmlString = new XMLSerializer().serializeToString(response);
+					xmlString = xmlString.replace('/<br>/g', '&#10;');
+					var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+				
+					var id_request = xmlDoc.querySelectorAll('data');
+					for(let countId = 0; countId < id_request.length; countId++) {
+						let idToCheck = id_request[countId].querySelectorAll('id_request').textContent;
+					
+						if(!isStored.includes(idToCheck)) {
+							var bodyElement = xmlDoc.querySelectorAll('html');
+							
+							var bodyData = xmlDoc.querySelectorAll('data');
+							for(var counter = 0; counter < bodyElement.length; counter++) {
+								$('#input-call-info').append(bodyElement[counter].textContent);
+								if(bodyElement[counter].innerHTML.includes('Outros Motivos')) {
+									console.log('Text');
+									let idContainerRead = id_request[counter].querySelector('id_request').textContent;
+
+									var containerReadMore = document.querySelector('#read-more-container_' + idContainerRead);
+					
+									var description_sector = id_request[counter].querySelector('description-sector').textContent;
+									$("#paragraph_sector_content").html(description_sector);
+									console.log(response);
+									console.log(description_sector);
+									containerReadMore.style.display = 'flex';
+								}
+
+								if(!bodyData[counter].textContent.includes('Sem posse')) {
+									var buttonElementId = getNumber(bodyData[counter].textContent);
+									changeStatusCall(buttonElementId);	
+								}
+							};
+							 
+							pushNotificationSupport();
+							
+							isStored.push(idToCheck);
+						}
 					}
 				}
+			},
+			error: function(xhr, status, error) {
+				console.log('XHR: ', xhr);
+				console.log('Status: ', status);
+				console.log('Error: ', error);
 			}
-		},
-		error: function(xhr, status, error) {
-			console.log('XHR: ', xhr);
-			console.log('Status: ', status);
-			console.log('Error: ', error);
-		}
-	})
+	})};
 }
 
 function pushNotificationSupport() {

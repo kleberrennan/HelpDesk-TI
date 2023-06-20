@@ -28,6 +28,17 @@
 			<button id="notify-allow-button">Permitir</button>
 		</div>	
 	</div>
+	<div id="popUpFeedbackContainer">
+	</div>
+	<div id="popUpReadMoreButton">
+		<header class="bar_readMore_button">
+			<img src="./.plan/images/xIcon.png" alt="" id="closePopUpReadMore"/>
+		</header>	
+		<div class="read-more-container-popUp">
+			<h2>${name_sector}</h2>
+			<p>${content_descp_more}</p>
+		</div>
+	</div>
 	<div id="popUpOwnerButton">
 	</div>
 	<main>
@@ -61,17 +72,31 @@
 		<section class="panel-admin">
 			<div class="panel-box-left">
 				<h2>Painel</h2>
-				<div class="call-section">
+				<div class="call-section" id="call-section-box">
 					<img src=".plan/images/call-open.png" alt="">
 					<h3>Chamados</h3>
 				</div>
-			</div>
-			<div class="panel-box-right">
-				<div class="receiver-call-content">
-					<img src="./.plan/images/note_icon.png" alt="">
-					<h2>Chamados Recebidos</h2>
+				<div class="feedback-section" id="feedback-section-box" style='background-color: transparent;'>
+					<img src="./css/images/feedbackIcon.png" alt="">
+					<h3>Feedback</h3>
 				</div>
-				<div class="box-input-call" id="input-call-info">
+			</div>
+			<div class="panel-box-right" id="panel-box-right-content">
+				<div id="panelBoxInputCall">
+					<div class="receiver-call-content">
+						<img src="./.plan/images/note_icon.png" alt="">
+						<h2>Chamados Recebidos</h2>
+					</div>
+					<div class="box-input-call" id="input-call-info">
+					</div>
+				</div>
+				<div id="panelBoxFeedback">
+					<div class="feedback-title">
+						<img class='feedback-received' src="./.plan/images/silenceEmojiWhite.png" alt="">
+						<h2>Feedbacks Recebidos</h2>
+					</div>
+					<div id="feedback-call-input" class="box-feedback-input">
+					</div>
 				</div>
 			</div>
 		</section>
@@ -80,5 +105,6 @@
 	<script src='./js/admin_panel.js'></script>
 	<script src='./js/notification_system.js'></script>
 	<script src='./js/update_container.js'></script>
+	<script src='./js/change_button_admin_panel.js'></script>
 </body>
 </html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<div class="popUpFeedbackButton">
+		<header class="bar_upper_feedback">
+			<p id="title_feedback_popUp">name_sector</p>
+			<img src="./.plan/images/xIcon.png" alt="" id="close_feedback_icon"/>
+		</header>
+		<div class="feedback-container-popUp">
+			<p id="content_feedback_popUp">content</p>
+		</div>
+	</div>
+</html>

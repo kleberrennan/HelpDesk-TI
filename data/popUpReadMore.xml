@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <div id="popUpReadMoreButton">
+    <header class="bar_readMore_button">
+      <img src="./.plan/images/xIcon.png" alt="" id="closePopUpReadMore"/>
+    </header>
+    <div class="read-more-container-popUp">
+      <h2 id="name_sector_read_more">${name_sector}</h2>
+      <p id="paragraph_sector_content">${content_descp_more}</p>
+    </div>
+  </div>
+  <css>
+    <rule selector=".bar_readMore_button">
+      <property name="display">flex</property>
+      <property name="overflow-y">auto</property>
+      <property name="justify-content">flex-end</property>
+      <property name="background-color">#f0f0f0</property>
+      <property name="border-radius">inherit</property>
+      <property name="width">100%</property>
+    </rule>
+    <rule selector=".bar_readMore_button img">
+      <property name="width">24px</property>
+      <property name="height">24px</property>
+      <property name="margin-right">3px</property>
+      <property name="cursor">pointer</property>
+    </rule>
+    <rule selector="#popUpReadMoreButton">
+      <property name="display">flex</property>
+      <property name="flex-direction">column</property>
+      <property name="align-self">flex-start</property>
+      <property name="align-items">flex-start</property>
+      <property name="width">30em</property>
+      <property name="height">20em</property>
+      <property name="position">absolute</property>
+      <property name="z-index">1000</property>
+      <property name="top">50%</property>
+      <property name="right">50%</property>
+      <property name="transform">translate(50%, -50%)</property>
+      <property name="background-color">#fffcfc</property>
+      <property name="border">1px solid #5c5c5c</property>
+      <property name="border-radius">0.4em</property>
+      <property name="border-top-right-radius">0px</property>
+    </rule>
+    <rule selector="#popUpReadMoreButton p">
+      <property name="text-align">center</property>
+    </rule>
+  </css>
+</document>

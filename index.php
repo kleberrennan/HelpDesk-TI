@@ -21,6 +21,14 @@
 	<script src="./js/external/jquery.js"></script>
 </head>
 <body>
+	<div class="notify-alert-box">
+		<img src="./.plan/images/tiSupport.png" alt="">
+		<p>Deseja receber notificações?</p>
+		<div class="buttons-notifications">
+			<button id="notify-cancel-button">Cancelar</button>
+			<button id="notify-allow-button">Permitir</button>
+		</div>	
+	</div>
 	<main>
 		<header>
 			<div class="logo">
@@ -28,7 +36,7 @@
 			</div>
 		<div class="user" id="userAccount">
 				<div class="iconsUser">	
-					<img src="./.plan/images/notificationIcon.png" alt="" class="notification-icon">
+					<img src="./.plan/images/notificationIcon.png" alt="" id="notification-icon">
 					<img src="./.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
 				</div>
 				<div id="userAccDropdown">
@@ -76,6 +84,7 @@
 					<option value="OFFMonitor">Monitor Desligado</option>
 					<option value="NOTonerPrint">Impressora sem toner</option>
 					<option value="SnackOpt">Convida a gente para o lanche :)</option>
+					<option value="DifficultSEI">Dificuldades com o SEI-MA</option>
 					<option value="OTHERReasons">Outros Motivos</option>
 				</select>
 			</div>
@@ -89,6 +98,10 @@
 				<div id="success_request">
 					<img src="./.plan/images/sucessIcon.png"  alt="">
 					<p>Pedido efetuado com sucesso!</p>
+				</div>
+				<div id="success_feedback">
+					<img src="./.plan/images/sucessIcon.png" alt="">
+					<p>Feedback efetuado com sucesso!</p>
 				</div>
 				<div id="error_no_reason">
 					<img src="./.plan/images/cautionIcon.png" alt="">
@@ -110,6 +123,10 @@
 					<img src="./.plan/images/cautionIcon.png" alt="">
 					<p>Você precisa informar o motivo na caixa!</p>
 				</div>
+				<div id="error_noFeedbackMsg">
+					<img src="./.plan/images/cautionIcon.png" alt="">
+					<p>Você precisa informar o seu feedback!</p>
+				</div>
 				<button class="call-support-ti" type="button" id="submit_button">
 					<img src="./.plan/images/dialogueBox.png" alt="">
 					<p>Chamar</p>
@@ -120,7 +137,7 @@
 			<div class="separator_box"></div>
 		</div>	
 		<section class="message_box_section" id='messageBoxID'>
-			<div class="header_box">
+			<div class="header_box" id="header_box">
 				<img src="./.plan/images/silenceEmoji.png" alt="" id="silenceEmojiAnimation">
 				<h2>Quer dizer algo para a gente?<br>Ficará no sigilo</h2>   
 				<div class="input_box">
@@ -128,7 +145,17 @@
 					<img src="./.plan/images/send_message_button.png" alt="" id='sendInputBox'>
 				</div>
 			</div>
-		</div>
+		</section>
+		<section class="notification-worker-sent" id="notific-worker-section">
+			<div class="title-notification" id="title-notific">
+				<img src="./.plan/images/sucessIcon.png" alt="">
+				<h2>Alguém atendeu!</h2>
+			</div>
+			<div class="worker-box-notification" id="worker-box-notific">
+				<img src="./.plan/images/toolIconAccepted.png" alt="">
+				<p class="worker-notification-content" id="worker-notific-content"></p>
+			</div>
+		</section>
 	</main>
 	<script>
 		var sessionUser = '<?php echo $user_session; ?>';
@@ -136,5 +163,7 @@
 	<script src='./js/index_button.js' type="text/javascript"></script>
 	<script src='./js/notification_system.js' type='text/javascript'></script>
 	<script src='./js/index_select_box.js'></script>
+	<script src='./js/update-index-worker.js'></script>
+	<script src='./js/input_box_message.js'></script>
 </body>
 </html>
