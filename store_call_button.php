@@ -8,7 +8,7 @@ $reason_request = $_POST['reason'];
 
 $timezone = new DateTimeZone('America/Belem');
 $timedate = new DateTime('now', $timezone);
-$timedate->modify('-3 hours');
+$timedate->modify('-6 hours');
 
 $getTimeDate = $timedate->getTimestamp();
 
