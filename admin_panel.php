@@ -106,5 +106,6 @@
 	<script src='./js/notification_system.js'></script>
 	<script src='./js/update_container.js'></script>
 	<script src='./js/change_button_admin_panel.js'></script>
+	<script src='./js/config.js'></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 const arrow_right = document.getElementById('arrow_select_box_right');
 const arrow_left = document.getElementById('arrow_select_box_left');
+
 const ti_support_view = document.getElementById('support_ti_view');
 const ti_feedback = document.getElementById('messageBoxID');
 const ti_feedback_separator = document.getElementById('separator-wrapper_box_unique_id');
+
 const selectable_box_id = document.getElementById('selectable_box_id');
 
 const option01_menu = document.getElementById('option01_menu');

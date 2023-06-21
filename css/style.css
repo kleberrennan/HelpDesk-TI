@@ -727,7 +727,7 @@ main .login-section .form-input-login .login-submit {
 } 
 
 .call-sector .sector-content {
-	font-size: 1.4em;
+	font-size: 0.6em;
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	line-height: 1.3em;
@@ -819,7 +819,7 @@ main .login-section .form-input-login .login-submit {
 }
 
 .sector-content {
-	font-size: 1.4em; 
+	font-size: 1.1em; 
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	line-height: 1.3em;

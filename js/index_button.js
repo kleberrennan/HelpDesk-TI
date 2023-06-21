@@ -22,12 +22,10 @@ userAcc.addEventListener('mouseover', function() {
 		dropdown_menu_admin.style.display = 'flex';
 		dropdown_menu_user.style.display = 'flex';
 		dropdown_menu_user.style.transform = "translate(0px, 0px)";
-		console.log('c');
 	} else {
 		dropdown_menu_user.style.display = 'flex';
 		dropdown_menu_user.style.transform = "translate(0px, 0px)";
 		dropdown_menu_admin.style.display = 'none';
-		console.log('b');
 	}
 
 	if(userAcc.textContent.includes('Logue')) { 
@@ -65,27 +63,21 @@ function create_request_call() {
 	localStorage.setItem('createdRequest', JSON.stringify(dataArr));
 }; 
 
-function store_call_button() {
-	console.log('store_call_button');
-	
+function store_call_button() {	
 	const xhr = new XMLHttpRequest();
 
 	xhr.open('POST', '../store_call_button.php', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 	xhr.onload = function () {
 		if(xhr.status == 200) {
-			console.log('xhrstatus200');
 			var response_data = xhr.responseText;
 			if (response_data.includes('ExistsRow') === true) {
-				console.log('ExistsRow');
 				success_request.style.display = 'none';
 				already_exists.style.display = 'flex';
 			} else if(response_data.includes('NoExists') === true) {
-				console.log('NoExists');
 				success_request.style.display = 'flex';
 				already_exists.style.display = 'none';
 				if(reasonCallSelect.value == 'OTHERReasons')	{
-					console.log('otherREasoncahekrakf');
 					var descp_reason = input_more_descp_reason.value;
 
 					$.ajax({
@@ -116,7 +108,7 @@ function store_call_button() {
 							console.log(response);
 						},
 						error: function(xhr, status, error) {
-							console.log(error);
+							console.log(xhr, status, error);
 						}
 					})
 				}
@@ -129,7 +121,6 @@ function store_call_button() {
 };
 
 submit_button.addEventListener('click', function() {
-	console.log('submitClick');
 	const error_isAdmin = document.getElementById('error_isAdmin');
 	const inputDescpReason = document.getElementById('input_more_descp_reason');
 	const success_request = document.getElementById('success_request');
@@ -168,7 +159,6 @@ reasonCallSelect.addEventListener('change', function() {
 	const other_reason = 'OTHERReasons';	
 	var reason_message_initial = reasonCallSelect.value;
 
-	console.log('change!');
 	if(reason_message_initial == 'ChooseOption') {
 		submit_button.classList.remove('disabled');
 		error_div.style.display = 'none';
@@ -180,7 +170,6 @@ reasonCallSelect.addEventListener('change', function() {
 	}; 
 	
 	if(sessionUser.length > 0) {
-		console.log('CheckCondition01');
 		if(reason_message_initial == other_reason) {
 			separator_box_other_reason.style.display = 'block';
 			reason_descp_other_reason.style.display = 'flex';

@@ -23,7 +23,7 @@ function changeStatusCall(containerId) {
 
 function changeOwnerBox(button_id, name_worker) {
 	$.ajax({
-		url: "../owner_switch_call.php",
+		url: dataPath.ownerSwitchCall,
 		method: "POST",
 		data: {
 			name_worker: name_worker,
@@ -45,7 +45,7 @@ const popUpReadMore = document.getElementById('popUpReadMoreButton');
 
 function openReadMore(name_sector, reason_descp) {
 	$.ajax({
-		url: "../data/popUpReadMore.xml",
+		url: dataPath.popUp.readMore,
 		dataType: "xml",
 		success: function(data) {
 			var cssRulesReadMore = $(data).find("css").text();
@@ -74,9 +74,8 @@ function openReadMore(name_sector, reason_descp) {
 const feedback_container = document.getElementById('feedback-call-input');
 
 function openFeedback(id_request, name_sector, feedback_content) {
-	console.log('openFeedClick');
 	$.ajax({
-		url: "../data/popUpFeedback.xml",
+		url: dataPath.popUp.feedback,
 		dataType: "xml",
 		success: function(data) {
 			var htmlContent = $(data).find("div").html();
@@ -104,7 +103,7 @@ function openFeedback(id_request, name_sector, feedback_content) {
 
 function openPopup(button_id) {
 	$.ajax({
-		url: "../data/popUpOwner.xml",
+		url: dataPath.popUp.owner,
 		dataType: "xml",
 		success: function(data) {
 			var cssRules = $(data).find("css").text();
@@ -171,10 +170,18 @@ function getNumber(str) {
 }
 
 var idDataFeedback = [];
+function xmlParser(responseData) {
+	var xmlString = new XMLSerializer().serializeToString(responseData);
+	var parser = new DOMParser();
+	var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+
+	return xmlDoc;
+}
+
 function updateDivCall() {
 	if(feedback_box_section.style.backgroundColor !== 'transparent') {
 		$.ajax({
-			url: '../feedback_received.php',
+			url: dataPath.updateDiv.feedbackReceived,
 			method: 'GET',
 			dataType: 'xml',
 			success: function(response) {
@@ -211,7 +218,7 @@ function updateDivCall() {
 		});
 	} else if(feedback_box_section.style.backgroundColor === 'transparent') {
 		$.ajax({
-			url: '../process_request.php',
+			url: dataPath.updateDiv.processRequest,
 			method: 'GET',
 			dataType: 'xml',
 			success: function(response) {
@@ -220,11 +227,8 @@ function updateDivCall() {
 				if(response === null || isEmptyResponse === '') {
 					isStored = [];
 				} else if (response !== null) {
-					var xmlString = new XMLSerializer().serializeToString(response);
-					xmlString = xmlString.replace('/<br>/g', '&#10;');
-					var parser = new DOMParser();
-					var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-				
+					var xmlDoc = xmlParser(response);
+
 					var id_request = xmlDoc.querySelectorAll('data');
 					for(let countId = 0; countId < id_request.length; countId++) {
 						let idToCheck = id_request[countId].querySelectorAll('id_request').textContent;
@@ -270,7 +274,6 @@ function updateDivCall() {
 }
 
 function pushNotificationSupport() {
-	console.log('pushNotificationSupport');
 	$.ajax({
 		url: 'send_notification.php',
 		method: 'GET',
