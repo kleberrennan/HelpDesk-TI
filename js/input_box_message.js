@@ -12,7 +12,7 @@ send_input_box.addEventListener('click', function() {
 
 		error_noFeedbackMsg.style.display = 'flex';
 		header_box.appendChild(error_noFeedbackMsg);
-	} else if(sessionUser === 'Suporte' || sessionUser.length === 0) {
+	} else if(sessionUser === dataString.admin || sessionUser.length === 0) {
 		return undefined;
 	}
 	else {

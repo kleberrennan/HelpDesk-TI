@@ -1,16 +1,24 @@
+const dataString = {
+	admin: 'Suporte',
+}
+
 const dataPath = {
-	ownerSwitchCall: 'owner_switch_call.php',
 	popUp: {
 		readMore:  'data/popUpReadMore.xml',
 		feedback:  'data/popUpFeedback.xml',
 		owner:	'data/popUpOwner.xml',
 	},
 	requests: {
-		feedback: 'feedback_sent.php',
+		ownerSwitchCall: 'php/owner_switch_call.php',
+		deleteRequest: 'php/delete_request.php',
+		callButton: 'php/store_call_button.php',
+		sendNotification: 'php/send_notification.php',
+		feedback: 'php/feedback_sent.php',
+		specialReason: 'php/special_reason_other.php',
 	},
 
 	updateDiv: {
-		feedbackReceived:  'feedback_received.php',
-		processRequest:  'process_request.php'
+		feedbackReceived:  'php/feedback_received.php',
+		processRequest:  'php/process_request.php'
 	}
 }

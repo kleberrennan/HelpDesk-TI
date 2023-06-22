@@ -23,7 +23,7 @@ function changeStatusCall(containerId) {
 
 function changeOwnerBox(button_id, name_worker) {
 	$.ajax({
-		url: dataPath.ownerSwitchCall,
+		url: dataPath.requests.ownerSwitchCall,
 		method: "POST",
 		data: {
 			name_worker: name_worker,
@@ -136,9 +136,8 @@ function openPopup(button_id) {
 	});
 }
 
-/*Close With X Button The Owner Menu*/
 function buttonDeleteCall(id_request) {
-	xhr.open('POST', '../delete_request.php', true);
+	xhr.open('POST', dataPath.requests.deleteRequest, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() { 
 		if (xhr.readyState === 4 && xhr.status === 200) { 
@@ -247,8 +246,6 @@ function updateDivCall() {
 					
 									var description_sector = id_request[counter].querySelector('description-sector').textContent;
 									$("#paragraph_sector_content").html(description_sector);
-									console.log(response);
-									console.log(description_sector);
 									containerReadMore.style.display = 'flex';
 								}
 
@@ -275,7 +272,7 @@ function updateDivCall() {
 
 function pushNotificationSupport() {
 	$.ajax({
-		url: 'send_notification.php',
+		url: dataPath.requests.sendNotification,
 		method: 'GET',
 		data: 'json',
 		success: function(response) {
@@ -292,8 +289,8 @@ function pushNotificationSupport() {
 				}
 			})
 		},
-		error: function(error) {
-			console.log(error);
+		error: function(xhr, status, error) {
+			console.log(xhr, status, error);
 		}
 	}) 
 }

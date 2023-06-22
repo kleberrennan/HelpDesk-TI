@@ -18,7 +18,7 @@ silenceEmojiAnimation.addEventListener('click', function() {
 });
 
 userAcc.addEventListener('mouseover', function() {
-	if(sessionUser.includes('Suporte')) { 
+	if(sessionUser.includes(dataString.admin)) { 
 		dropdown_menu_admin.style.display = 'flex';
 		dropdown_menu_user.style.display = 'flex';
 		dropdown_menu_user.style.transform = "translate(0px, 0px)";
@@ -66,7 +66,7 @@ function create_request_call() {
 function store_call_button() {	
 	const xhr = new XMLHttpRequest();
 
-	xhr.open('POST', '../store_call_button.php', true);
+	xhr.open('POST', dataPath.requests.callButton, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 	xhr.onload = function () {
 		if(xhr.status == 200) {
@@ -81,7 +81,7 @@ function store_call_button() {
 					var descp_reason = input_more_descp_reason.value;
 
 					$.ajax({
-						url: '../special_reason_other.php',
+						url: dataPath.requests.specialReason,
 						method: 'POST',
 						data: {
 							data_descp: descp_reason,
@@ -97,12 +97,12 @@ function store_call_button() {
 
 				} else {
 					$.ajax({
-						url: 'send_notification.php',
+						url: dataPath.requests.sendNotification,
 						method: 'POST',
 						data: {
 							title: "PEDIDO NOVO",
 							notification: "Um novo pedido foi recebido!",
-							recipient: 'Suporte'
+							recipient: dataString.admin
 						},
 						success: function(response) {
 							console.log(response);
@@ -127,9 +127,9 @@ submit_button.addEventListener('click', function() {
 
 	var reason_message_initial = reasonCallSelect.value;
 
-	if(reason_message_initial == 'ChooseOption' && sessionUser != 'Suporte') {	
+	if(reason_message_initial == 'ChooseOption' && sessionUser != dataString.admin) {	
 		error_div.style.display = 'flex';
-	} else if(sessionUser == 'Suporte') {
+	} else if(sessionUser == dataString.admin) {
 		error_isAdmin.style.display = 'flex';
 	} else {	
 		error_div.style.display = 'none';
