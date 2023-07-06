@@ -46,11 +46,11 @@
 						echo '<a href="#" class="user_link" id="userDropdown">' . $_SESSION["user_name"] . '</a>';
 						echo '</div>';
 					} else {
-						echo '<a href="./login.php" class="user_link"> Logue </a>';
+						echo '<a href="./php/login.php" class="user_link"> Logue </a>';
 					}
 ?>
 					<div class="dropdown_menu" id="dropdown_menu_user">
-						<a href="./logout.php">Deslogar</a>
+						<a href="./php/logout.php">Deslogar</a>
 						<a id="isAdminPanel" href="./admin_panel.php">Painel</a>
 					</div>
 				</div>
@@ -165,5 +165,6 @@
 	<script src='./js/index_select_box.js'></script>
 	<script src='./js/update-index-worker.js'></script>
 	<script src='./js/input_box_message.js'></script>
+	<script src='./js/config.js'></script>
 </body>
 </html>

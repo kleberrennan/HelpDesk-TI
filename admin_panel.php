@@ -5,7 +5,7 @@
 		session_start();
 		$user_session = $_SESSION["user_name"];
 		if(!isset($user_session)) {
-			header('Location: index.php');	
+			header('Location: ../index.php');	
 		}	
 	} 
 ?>
@@ -62,8 +62,8 @@
 					}
 ?>
 					<div class="dropdown_menu" id="dropdown_menu_user">
-						<a href="./logout.php">Deslogar</a>
-						<a id="isAdminPanel" href="./admin_panel.php">Painel</a>
+						<a href="./php/logout.php">Deslogar</a>
+						<a id="isAdminPanel" href="../admin_panel.php">Painel</a>
 					</div>
 				</div>
 			</div>

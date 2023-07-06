@@ -12,13 +12,12 @@ const feedback_box_section = document.getElementById('feedback-section-box');
 function changeStatusCall(containerId) {
 		var element_class = document.querySelector('.withOwnerButton_' + containerId);
 		var element_id = document.querySelector('#idButton_' + containerId);
-
+		
 		element_class.style.filter = 'blur(2px)';
 		element_class.style.cursor = 'none';
 		element_class.disabled = true;
 		element_id.style.filter = 'blur(0px)';
 		element_id.disabled = false;
-		element_id.style.cursor = 'pointer';
 }
 
 function changeOwnerBox(button_id, name_worker) {
@@ -73,7 +72,7 @@ function openReadMore(name_sector, reason_descp) {
 
 const feedback_container = document.getElementById('feedback-call-input');
 
-function openFeedback(id_request, name_sector, feedback_content) {
+function openFeedback(bodyData, name_sector, feedback_content) {
 	$.ajax({
 		url: dataPath.popUp.feedback,
 		dataType: "xml",
@@ -90,7 +89,7 @@ function openFeedback(id_request, name_sector, feedback_content) {
 			});
 			const title_feedback = document.getElementById('title_feedback_popUp');
 
-			title_feedback.innerHTML = name_sector + "#" + id_request;
+			title_feedback.innerHTML = name_sector + "#" + bodyData;
 
 			const descp_feedback = document.getElementById('content_feedback_popUp');
 
@@ -128,6 +127,7 @@ function openPopup(button_id) {
 					changeOwnerBox(button_id, list_workers_li[count].textContent);
 				});
 			}
+
 			popUp.style.display = 'block';
 		},
 		error: function(xhr, status, error) {
@@ -137,6 +137,7 @@ function openPopup(button_id) {
 }
 
 function buttonDeleteCall(id_request) {
+	console.log('delete');
 	xhr.open('POST', dataPath.requests.deleteRequest, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() { 
@@ -147,10 +148,9 @@ function buttonDeleteCall(id_request) {
 			} 
 		}; 
 	};  
-
 	xhr.send(`id_request=${encodeURIComponent(id_request)}`);
 	isDeleted = true;
-	lastButton = id_request;
+	lastButton = bodyData;
 }
 
 const input_call = document.querySelectorAll('#input_call_info');
@@ -177,6 +177,25 @@ function xmlParser(responseData) {
 	return xmlDoc;
 }
 
+function getOwnerBox(button_id) {
+	$.ajax({
+		url: dataPath.requests.getOwnerCall,
+		method: 'POST',
+		dataType: 'text',
+		data: {
+			sector_id: `${button_id}`,
+		},
+		success: function(response) {
+			$('#owner_worker_show_' + button_id).html(response);
+			changeStatusCall(button_id);
+			console.log(response);
+		},
+		error: function(xhr, status, error) {
+			console.log(xhr + status + error);
+		},
+	})
+}
+
 function updateDivCall() {
 	if(feedback_box_section.style.backgroundColor !== 'transparent') {
 		$.ajax({
@@ -195,10 +214,10 @@ function updateDivCall() {
 					var xmlDoc = parserFB.parseFromString(xmlStringFeedback, 'text/xml');
 
 				
-					var id_requestData = xmlDoc.querySelectorAll('data');
+					var bodyDataData = xmlDoc.querySelectorAll('data');
 
-					for(let countToCheckFB = 0; countToCheckFB < id_requestData.length; countToCheckFB++) {
-						let idToCheckFB = id_requestData[countToCheckFB].querySelector('id_request').textContent;
+					for(let countToCheckFB = 0; countToCheckFB < bodyDataData.length; countToCheckFB++) {
+						let idToCheckFB = bodyDataData[countToCheckFB].querySelector('id_request').textContent;
 						if(!idDataFeedback.includes(idToCheckFB)) {
 							var bodyElement = xmlDoc.querySelectorAll('html');
 							$('#feedback-call-input').append(bodyElement[countToCheckFB].textContent);
@@ -225,41 +244,54 @@ function updateDivCall() {
 				
 				if(response === null || isEmptyResponse === '') {
 					isStored = [];
+					idWorker = [];
 				} else if (response !== null) {
 					var xmlDoc = xmlParser(response);
+	
+					var bodyElement = xmlDoc.querySelectorAll('html');						
+					var bodyData = xmlDoc.querySelectorAll('data');
+					for(let countId = 0; countId < bodyData.length; countId++) {
+						var idToCheck = bodyData[countId].querySelector('id_request').textContent;
+						var ownerRequest = bodyData[countId].querySelector('owner_request').textContent;
 
-					var id_request = xmlDoc.querySelectorAll('data');
-					for(let countId = 0; countId < id_request.length; countId++) {
-						let idToCheck = id_request[countId].querySelectorAll('id_request').textContent;
-					
-						if(!isStored.includes(idToCheck)) {
-							var bodyElement = xmlDoc.querySelectorAll('html');
-							
-							var bodyData = xmlDoc.querySelectorAll('data');
-							for(var counter = 0; counter < bodyElement.length; counter++) {
-								$('#input-call-info').append(bodyElement[counter].textContent);
-								if(bodyElement[counter].innerHTML.includes('Outros Motivos')) {
-									console.log('Text');
-									let idContainerRead = id_request[counter].querySelector('id_request').textContent;
+					}	
 
-									var containerReadMore = document.querySelector('#read-more-container_' + idContainerRead);
-					
-									var description_sector = id_request[counter].querySelector('description-sector').textContent;
-									$("#paragraph_sector_content").html(description_sector);
-									containerReadMore.style.display = 'flex';
-								}
+					var arrDOM = Array.from(bodyElement);
+					var finalHTML = arrDOM.map(function(e) {
+						return e.innerHTML;
+					}).join('').replace(/]]>/g, '');
+					console.log(finalHTML);
+					$('#input-call-info').html(finalHTML);
 
-								if(!bodyData[counter].textContent.includes('Sem posse')) {
-									var buttonElementId = getNumber(bodyData[counter].textContent);
-									changeStatusCall(buttonElementId);	
-								}
-							};
-							 
-							pushNotificationSupport();
-							
-							isStored.push(idToCheck);
-						}
+					$("#owner_worker_show_" + idToCheck).html(ownerRequest);
+					if(ownerRequest !== 'Sem posse') {
+						let containerRequest = document.querySelector('.buttonSuccess_' + idToCheck);
+						containerRequest.style.filter = 'blur(0px)';
+						containerRequest.disabled = false;
 					}
+
+					if(!isStored.includes(idToCheck)) {
+						for(let counter = 0; counter < bodyElement.length; counter++) {							
+							if(bodyElement[counter].innerHTML.includes('Outros Motivos')) {
+								let idContainerRead = bodyData[counter].querySelector('id_request').textContent;
+
+								var containerReadMore = document.querySelector('#read-more-container_' + idContainerRead);
+				
+								var description_sector = bodyData[counter].querySelector('description-sector').textContent;
+								$("#paragraph_sector_content").html(description_sector);
+								containerReadMore.style.display = 'flex';
+							}
+
+							if(!bodyData[counter].textContent.includes('Sem posse')) {
+								var buttonElementId = getNumber(bodyData[counter].textContent);
+								changeStatusCall(buttonElementId);	
+							}
+						};
+						pushNotificationSupport();
+						
+						isStored.push(idToCheck);
+					}
+
 				}
 			},
 			error: function(xhr, status, error) {
@@ -268,7 +300,7 @@ function updateDivCall() {
 				console.log('Error: ', error);
 			}
 	})};
-}
+};
 
 function pushNotificationSupport() {
 	$.ajax({
@@ -295,4 +327,4 @@ function pushNotificationSupport() {
 	}) 
 }
 
-setInterval(updateDivCall, 500);
+setInterval(updateDivCall, 1000);

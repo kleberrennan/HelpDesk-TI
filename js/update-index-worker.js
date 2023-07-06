@@ -5,7 +5,7 @@ const workerSection = document.getElementById('notific-worker-section');
 
 function checkIfOwnerExists() {
 	$.ajax({
-		url: '../check_owner.php',
+		url: '../php/check_owner.php',
 		method: 'POST',
 		data: {
 			nameUser: sessionUser,

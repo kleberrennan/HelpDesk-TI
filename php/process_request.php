@@ -41,30 +41,32 @@
     <owner_request>{$owner_request}</owner_request>
   </data>
   <html><![CDATA[
-	<div id='callDivRequest'>
-					  <p class='sector-content'>Setor: {$name_sector}<br>Razão: {$reason_request}<br>Hora: {$time_date}</p>
-					  <div class='read-more-container' id='read-more-container_{$id_request}' onclick='openReadMore(\"$name_sector\", \"$reason_descp\")'>
-						<img src='./.plan/images/readMoreIcon.png' alt=''>
-						<h3>Leia<br>Mais</h3>
-					  </div> 	
-					  <div class='wrapper_interaction'>
-						<div class='no_author_container'>
-						  <img src='./.plan/images/contractIconScaled.png' alt=''>
-						  <p id='owner_worker_show_{$id_request}'>{$owner_request}</p>
-						</div>
-						<div class='button-container-call'>
-						  <button onclick='openPopup({$id_request})' id='idOwnerButton' class='withOwnerButton_{$id_request}'>
-							<img src='./.plan/images/iconPeople.png' alt=''>
-							<p>Posse</p>
-						  </button>
-							<button type='button' class='buttonStyleSucess' id='idButton_{$id_request}' onclick='buttonDeleteCall({$id_request})' disabled>
-							<img src='./.plan/images/correct_icon.png' alt=''>
-							Atendido
-						  </button>
-						</div>
-					  </div>
+	<div id='call_${id_request}'>
+		<div id='callDivRequest'>
+				  <p class='sector-content'>Setor: {$name_sector}<br>Razão: {$reason_request}<br>Hora: {$time_date}</p>
+				  <div class='read-more-container' id='read-more-container_{$id_request}' onclick='openReadMore(\"$name_sector\", \"$reason_descp\")'>
+					<img src='./.plan/images/readMoreIcon.png' alt=''>
+					<h3>Leia<br>Mais</h3>
+				  </div> 	
+				  <div class='wrapper_interaction'>
+					<div class='no_author_container'>
+					  <img src='./.plan/images/contractIconScaled.png' alt=''>
+					  <p id='owner_worker_show_{$id_request}'>{$owner_request}</p>
 					</div>
+					<div class='button-container-call'>
+					  <button onclick='openPopup({$id_request})' id='idOwnerButton' class='withOwnerButton_{$id_request}'>
+						<img src='./.plan/images/iconPeople.png' alt=''>
+						<p>Posse</p>
+					  </button>
+						<button type='button' class='buttonSuccess_${id_request} buttonStyleSucess' id='idButton_{$id_request}' onclick='buttonDeleteCall({$id_request})' disabled>
+						<img src='./.plan/images/correct_icon.png' alt=''>
+						Atendido
+					  </button>
+					</div>
+				  </div>
 				</div>
+			</div>
+	</div>
   ]]></html>
 ";
 

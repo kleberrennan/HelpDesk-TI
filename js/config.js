@@ -10,6 +10,7 @@ const dataPath = {
 	},
 	requests: {
 		ownerSwitchCall: 'php/owner_switch_call.php',
+		getOwnerCall: 'php/get_owner_call.php',
 		deleteRequest: 'php/delete_request.php',
 		callButton: 'php/store_call_button.php',
 		sendNotification: 'php/send_notification.php',

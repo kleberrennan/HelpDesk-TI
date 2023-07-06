@@ -31,12 +31,12 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 				$_SESSION['user_id'] = $tbl_sector['id_user_admin'];
 				$_SESSION['user_name'] = $tbl_sector['name_user_admin'];	
 
-				header("Location: admin_panel.php");
+				header("Location: ../admin_panel.php");
 			} else {
 				$_SESSION['user_id'] = $tbl_sector['id_sector']; 
 				$_SESSION['user_name'] = $tbl_sector['name_user'];
 
-				header("Location: index.php");
+				header("Location: ../index.php");
 			}	
 				
 		} else { 
@@ -50,17 +50,17 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 <head>
 	<meta charset="UTF-8">
 	<title>TI: Login</title>
-	<link rel="stylesheet" href="./css/style.css">
-	<link rel="icon" type="image/x-icon" href="./.plan/images/tiSupport.png">
+	<link rel="stylesheet" href="../css/style.css">
+	<link rel="icon" type="image/x-icon" href="../.plan/images/tiSupport.png">
 </head>
 <body>
 	<main>
 		<header>
 			<div class="logo">
-				<a href="./index.php"><img src="./.plan/images/logoBgTransparent.png" alt="Logo do Iterma"/></a>
+				<a href="./index.php"><img src="../.plan/images/logoBgTransparent.png" alt="Logo do Iterma"/></a>
 			</div>
 			<div class="user">
-				<img src="./.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
+				<img src="../.plan/images/logoUserMain.png" alt="Ícone de Usuário" class="logo-user">
 				<?php
 				if(isset($_SESSION['user_name'])) { 
 					echo '<a href="index.php" class="user_link">' . $_SESSION["user_name"] . '</a>'; 
@@ -72,7 +72,7 @@ if(isset($_POST['user_name']) || isset($_POST['user_passw'])) {
 		</header>
 		<section class="login-section">
 			<div class="icon-login">
-				<img src="./.plan/images/loginWriteBook.png" alt="">
+				<img src="../.plan/images/loginWriteBook.png" alt="">
 			</div>
 			<div class="form-input-login">
 				<form action="" method="POST">
