@@ -16,6 +16,7 @@ const dataPath = {
 		sendNotification: 'php/send_notification.php',
 		feedback: 'php/feedback_sent.php',
 		specialReason: 'php/special_reason_other.php',
+		checkCallRequest: 'php/check_request.php',
 	},
 
 	updateDiv: {

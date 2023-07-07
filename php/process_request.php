@@ -1,6 +1,9 @@
 <?php
 	include('./connection.php');
 	header('Content-Type: application/xml');
+	header("Cache-Control: no-cache, no-store, must-revalidate");
+	header('Pragma: no-cache');
+	header('Expires: 0');
 
 	if(!isset($_SESSION)) {
 		session_start();
@@ -41,8 +44,8 @@
     <owner_request>{$owner_request}</owner_request>
   </data>
   <html><![CDATA[
-	<div id='call_${id_request}'>
-		<div id='callDivRequest'>
+	<div id='call_{$id_request}'>
+		<div id='callDivRequest' class='callDivRequest_{$id_request}'>
 				  <p class='sector-content'>Setor: {$name_sector}<br>Razão: {$reason_request}<br>Hora: {$time_date}</p>
 				  <div class='read-more-container' id='read-more-container_{$id_request}' onclick='openReadMore(\"$name_sector\", \"$reason_descp\")'>
 					<img src='./.plan/images/readMoreIcon.png' alt=''>

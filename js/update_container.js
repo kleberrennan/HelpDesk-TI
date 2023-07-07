@@ -4,10 +4,11 @@ var currentContainer = document.getElementById('input-call-info');
 
 var counter = 0;
 var isDeleted = false;
-var lastButton = 0;
 
 const popUp = document.getElementById('popUpOwnerButton');
 const feedback_box_section = document.getElementById('feedback-section-box');
+
+let isStored = [];
 
 function changeStatusCall(containerId) {
 		var element_class = document.querySelector('.withOwnerButton_' + containerId);
@@ -137,24 +138,20 @@ function openPopup(button_id) {
 }
 
 function buttonDeleteCall(id_request) {
-	console.log('delete');
+	//console.log(id_request in isStored);
+
 	xhr.open('POST', dataPath.requests.deleteRequest, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() { 
-		if (xhr.readyState === 4 && xhr.status === 200) { 
+		if (xhr.readyState === 4 && xhr.status === 200) {		
 			location.reload();
-			if(xhr.getResponseHeader('XReload-Page') == 'true'){ 
-				location.reload();
-			} 
-		}; 
-	};  
+		};
+	}; 	
 	xhr.send(`id_request=${encodeURIComponent(id_request)}`);
-	isDeleted = true;
-	lastButton = bodyData;
 }
 
 const input_call = document.querySelectorAll('#input_call_info');
-var isStored = [];
+
 
 function getNumber(str) {
 	var regexNum = /\d+/;
@@ -212,10 +209,8 @@ function updateDivCall() {
 					var xmlStringFeedback = new XMLSerializer().serializeToString(response);
 					var parserFB = new DOMParser();
 					var xmlDoc = parserFB.parseFromString(xmlStringFeedback, 'text/xml');
-
-				
+	
 					var bodyDataData = xmlDoc.querySelectorAll('data');
-
 					for(let countToCheckFB = 0; countToCheckFB < bodyDataData.length; countToCheckFB++) {
 						let idToCheckFB = bodyDataData[countToCheckFB].querySelector('id_request').textContent;
 						if(!idDataFeedback.includes(idToCheckFB)) {
@@ -261,16 +256,22 @@ function updateDivCall() {
 						return e.innerHTML;
 					}).join('').replace(/]]>/g, '');
 					console.log(finalHTML);
+					
 					$('#input-call-info').html(finalHTML);
 
 					$("#owner_worker_show_" + idToCheck).html(ownerRequest);
 					if(ownerRequest !== 'Sem posse') {
 						let containerRequest = document.querySelector('.buttonSuccess_' + idToCheck);
+						let ownerRequest = document.querySelector('.withOwnerButton_' + idToCheck);
 						containerRequest.style.filter = 'blur(0px)';
 						containerRequest.disabled = false;
+						containerRequest.style.cursor = 'pointer';
+						ownerRequest.style.filter = 'blur(2px)';
+						ownerRequest.disabled = true;
+						ownerRequest.style.cursor = 'none';
 					}
 
-					if(!isStored.includes(idToCheck)) {
+					if(isStored.hasOwnProperty(idToCheck) === false) {
 						for(let counter = 0; counter < bodyElement.length; counter++) {							
 							if(bodyElement[counter].innerHTML.includes('Outros Motivos')) {
 								let idContainerRead = bodyData[counter].querySelector('id_request').textContent;
@@ -287,11 +288,12 @@ function updateDivCall() {
 								changeStatusCall(buttonElementId);	
 							}
 						};
-						pushNotificationSupport();
+						//pushNotificationSupport();
 						
-						isStored.push(idToCheck);
-					}
-
+						isStored[`${idToCheck}`] = true;
+						console.log(isStored);
+						console.log(idToCheck in isStored);
+					}	
 				}
 			},
 			error: function(xhr, status, error) {
@@ -328,3 +330,5 @@ function pushNotificationSupport() {
 }
 
 setInterval(updateDivCall, 1000);
+
+setInterval(function() { location.reload() }, 10000);
