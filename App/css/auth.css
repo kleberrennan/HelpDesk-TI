@@ -1,0 +1,99 @@
+@import url("./pattern.css");
+
+.container-auth {
+    justify-content: start !important;
+    height: 20em;
+    width: 20em;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 1em;
+}
+
+.title-auth {
+    height: 3.5em;
+    width: 100%;
+    justify-content: space-between !important;
+    padding: 0 0.5em;
+    font-size: 1.5em;
+    user-select: none;
+    color: #226DDE;
+    text-transform: uppercase;
+}
+
+.title-auth img {
+    height: 3.5em;
+    width: 2em;
+}
+
+.title-auth p {
+    font-weight: lighter;
+}
+
+.title-auth p span {
+    font-weight: 900;
+}
+
+.input-form-auth {
+    align-items: start !important;
+    width: 100%;
+    height: 10em;
+    padding: 0 1em;
+}
+
+.input-form-auth label {
+    color: #4278DF;
+    margin-top: 0.6em;
+}
+
+.input-form-auth input {
+    height: 4em;
+    width: 100%;
+    padding: 0 0.5em;
+    border-radius: 0.5em;
+    background-color: #7AABF3;
+}
+
+.button-container {
+    height: 100%;
+    width: 100%;
+}
+
+.button-container button {
+    height: 80%;
+    width: 50%;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 2.5em;
+    border-radius: 0.5em;
+    text-transform: uppercase;
+    background-color: #00C0FF;
+}
+
+.message-error-container {
+    display: none;
+    overflow-wrap: break-word;
+    width: 17em;
+    position: absolute;
+    background-color: #fff;
+    top: 0;
+    right: 0;
+    align-items: start !important;
+}
+
+.message-error-container .title-err {
+    background-color: #ff0000;
+    width: inherit;
+    color: #fff;
+    font-size: 2em;
+}
+
+.message-error-container .description-err {
+    overflow-wrap: break-word;
+    width: inherit;
+}
+
+.message-error-container .description-err p {
+    font-size: 1.3em;
+    text-align: center;
+}
