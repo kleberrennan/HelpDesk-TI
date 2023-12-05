@@ -76,7 +76,7 @@ $(document).ready(function() {
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
-                    url: window.location.pathname + "/../Server/index.php",
+                    url: "/../Server/index.php",
                     data: JSON.stringify(requestData),
                     success: function(response) {
                         var baseURL = "";

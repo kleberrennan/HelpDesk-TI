@@ -7,21 +7,12 @@ const multiplierHeightChat = 20;
 const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
 const CURRENT_HOST = window.location.host; 
 
-function envCheck(host, currentValue, newValue) {
-    if(host == "localhost" || host == "127.0.0.1") {
-        return currentValue;
-    } else {
-        return newValue;
-    }
-}
-
-var ACTION_URL = envCheck(CURRENT_HOST, "/App/Server/Handler/Actions.php", "Test/HelpDesk-TI/App/Server/Handler/Actions.php");
+var ACTION_URL = "../../Server/Handler/Actions.php";
 var isAnimateErr = false;
 
 function getDashboardName() {
     const currentDashboard = window.location.pathname;
-    
-    var posName = envCheck(CURRENT_HOST, 4, 6);
+    const posName = 4;
 
     const pageName = currentDashboard.split("/")[posName].replace(/\.php$/, "");
     return pageName;
