@@ -1,8 +1,10 @@
 @import url('./pattern.css');
 
 .root {
+    display: flex;
     width: 100% !important;
     background: #0F4573;
+    overflow-y: scroll;
 }
 
 .panel-left {
@@ -17,7 +19,6 @@
     font-size: 1.5em;
     margin-top: 0.2em;
     height: 3.5em;
-    width: 100%;
     word-break: break-all;
     justify-content: start;
     align-items: start;
@@ -62,10 +63,6 @@
 
 .opt-active {
     background-color: #003A8F;
-}
-
-.root {
-    display: flex !important;
 }
 
 .icon-sectors img {
@@ -114,7 +111,6 @@
 }
 
 .container-wrapper {
-    border: 1px solid #fff;
     color: #fff;
     width: 100%;
 }
@@ -136,9 +132,14 @@
     background-color: #6BDDDD;
 }
 
+.img-support-ti {
+    height: 10em;
+    width: 10em;
+}
+
 .img-support-ti img {
-    height: 12em;
-    width: 12em;
+    height: inherit;
+    width: inherit;
 }
 
 .reason-call {
@@ -189,6 +190,10 @@
 
 .citizen-opt-content-data {
     justify-content: start !important;
+}
+
+.content-panel-ti-calls {
+    display: none;
 }
 
 .main-data {
@@ -259,7 +264,7 @@
 }
 
 .message-recipient-show {
-    font-size: 1.7em;
+    font-size: 0.9em;
     padding: 0.2em;
     overflow-wrap: anywhere;
     border-top-left-radius: 0.2em;
@@ -313,17 +318,31 @@
 }
 
 .input-message-chat-ti {
-
-    padding: 0 0.5em;
+    padding: 0 1em;
     width: inherit;
     background-color: #fff;
+}
+
+.input-message-chat-ti textarea {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    vertical-align: middle;
+    resize: none;
+    outline: none;
+    overflow-y: hidden;
+    width: inherit;
+    padding: 0.5em;
+    max-height: 100px;
+    height: 30px;
+    border-radius: 1em;
 }
 
 .input-message-chat-ti img {
     margin: 0 1em;
     cursor: pointer;
     width: 2em;
-    height: 2em;
+    height: 20px;
 }
 
 .main-content-home-ti {
@@ -389,8 +408,12 @@
     height: 100%;
 }
 
+.call-receiver-citizen {
+    display: none;
+}
+
 .box-input-calls-ti {
-    height: 100%;
+    height: 88vh;
     width: inherit;
     border: 0.5em solid #00C0FF;
     background-color: #fff;
@@ -439,15 +462,15 @@
 }
 
 #chatWithSector {
-    display: flex;
+    display: none;
     height: 100vh;
     flex-direction: column;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
 }
 
-#receiveCallsTI {
-    display: none;
+#menuSwitchCallType {
+    display: flex;
 }
 
 .input-message-chat-ti .input-user-container {
@@ -481,23 +504,18 @@
 }
 
 .feedbackBtn {
-    display: flex;
-    flex-direction: column;
-    padding: 0.1em;
-    justify-content: center;
-    align-items: center;
-    visibility: visible;
-    margin: 0.75em 0;
-    width: 20em;
-    height: 8.5em;
+    padding: 0.2em;
+    margin: 0.75em;
     background-color: #003A8F;
     border: 1px solid #fff;
     border-radius: 0.5em;
+    overflow-wrap: break-word;
+
 }
 
 .feedbackBtn p {
     text-align: center;
-    font-size: 0.8em;
+    font-size: 0.7em;
     user-select: none;
     margin-top: 0.5em;
 }
@@ -516,6 +534,70 @@
 
 .feedbackBtn .emotionsOpts img {
     cursor: pointer;
+    margin: 0 1.5em;
     height: 4em;
     width: 4em;
+}
+
+#feedbackSector {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#versesBible {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: inherit;
+    height: inherit;
+    font-style: italic;
+    font-size: 1em;
+}
+
+.bibleVerses p {
+    width: 22em;
+    overflow-wrap: break-word;
+}
+
+.space-text {
+    width: inherit;
+}
+
+#openChatWithSupport {
+    cursor: not-allowed;
+    opacity: 0.3;
+}
+
+.popUpErr {
+    display: none;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    position: absolute;
+    overflow-wrap: break-word;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    width: 13em;
+}
+
+.popUpErr .title-err {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: inherit;
+    color: #fff;
+    background-color: #ff0000;
+}
+
+.popUpErr .description-err {
+    width: inherit;
+    overflow-wrap: break-word;
+    background-color: #fff;
+}
+
+.popUpErr .description-err p {
+    text-align: center;
 }

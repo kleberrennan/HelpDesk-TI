@@ -40,7 +40,7 @@
     .box-input-calls-ti {
         display: flex;
         flex-direction: column;
-        height: calc(100% - 5.5em);
+        height: 80%;
         margin: 0.2em 0;
         padding: 1em 0;
         width: 100%;
@@ -52,7 +52,7 @@
         flex-direction: row;
         position: fixed;
         width: 100%;
-        bottom: 0;
+        bottom: 2.25em;
         z-index: 999;
     }
 
@@ -216,7 +216,7 @@
 
 @media only screen and (max-width: 740px) {
     .root {
-        overflow: hidden;
+        overflow-y: scroll;
     }
 
     .box-input-calls-ti .call-ti-sector {

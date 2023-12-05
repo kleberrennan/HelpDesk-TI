@@ -44,3 +44,9 @@
     height: 100%;
     width: 100vw;
 }
+
+.content-panel-ti-calls {
+    display: none;
+    height: 65%;
+    width: 100vw;
+}

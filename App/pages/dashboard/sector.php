@@ -1,16 +1,20 @@
 <?php
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
 session_start();
 
-if(isset($_COOKIE["tokenUser"])) {
-    $token = $_COOKIE["tokenUser"];
-    $url = "http://127.0.0.1/App/server/index.php";
+require_once(__DIR__ . "/../../Server/Define/constants.php");
+
+$_SESSION[COOKIE_TOKEN_USER] = $_COOKIE[COOKIE_TOKEN_USER];
+
+if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) {
+    $token = $_SESSION[COOKIE_TOKEN_USER];
+    $sectorType = "SETOR";
+    $url = URL_SERVER;
     $curl = curl_init();
     $requestData = array(
         "name" => "getUserDetails",
         "param" => [
-            "userToken" => $token
+            "userToken" => $token,
+            "typeUser" => $sectorType
         ]
     );
 
@@ -35,7 +39,9 @@ if(isset($_COOKIE["tokenUser"])) {
     } else {
         $responseDecode = json_decode($response, true);
 
-        if($responseDecode !== null) {
+        if(isset($responseDecode['response']['status']) && $responseDecode['response']['status'] == USER_TYPE_IS_NOT_EQUAL) {
+            header("Location: http://127.0.0.1/App/index.php");
+        } else if($responseDecode !== null && isset($responseDecode['response']['message'])) {
             $userName = $responseDecode['response']['message']['userName'];
             $_SESSION["userName"] = $userName;
         }
@@ -72,7 +78,14 @@ if(isset($_COOKIE["tokenUser"])) {
             <div class="main-data center-container-flex-column">
                 <p class="title-main-data"><span>Centro</span> Iterma</p>
                 <p class="version-program">v1.0</p>
-                <p class="title-dashboard-data">Olá <?php echo $_SESSION['userName'] ?>!
+                <p class="title-dashboard-data">Olá 
+                    <?php
+                        if(isset($_SESSION['userName'])) {
+                            echo $_SESSION['userName'];
+                        } else {
+                            echo "Unnamed";
+                        }
+                        ?>!
             </div>
             <div class="options-container">
                 <div id="opt-home" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between opt-active">
@@ -90,6 +103,10 @@ if(isset($_COOKIE["tokenUser"])) {
                 <div id="opt-about" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between">
                     <img src="../../assets/dashboard/sector/aboutIcon.png" alt="Sobre" class="opt-image-dashboard">
                     <p>Sobre</p>
+                </div>
+                <div id="opt-logout-sector" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between">
+                    <img src="../../assets/dashboard/logoutIcon.png" alt="Sair" class="opt-image-dashboard">
+                    <p>Sair</p>
                 </div>
             </div>
         </div>
@@ -111,14 +128,24 @@ if(isset($_COOKIE["tokenUser"])) {
             </div>
         </div>
         <div class="support-call-container content-panel center-container-flex-column" id="opt-support-call-content">
+            <div id="popupErrSupportTI" class="popUpErr">
+                <div class="title-err">
+                    <p>ERRO</p>
+                </div>
+                <div class="description-err">
+                    <p></p>
+                </div>
+            </div>
             <div id="chatWithTI" class="container-wrapper">
                 <div class="title-chat-ti center-container-flex-column">CHAT COM TI</div>
                 <div class="messages-container" id="chatTIMessages">
                     
                 </div>
-                <div class="input-message-chat-ti center-container-flex-row">
-                    <textarea name="input-message-ti" id="inputMessageTI"></textarea>
-                    <img src="../../assets/dashboard/sector/sendMessage.png" alt="sendInput" id="sendInputMessageTI">
+                <div class="space-text">
+                    <div class="input-message-chat-ti center-container-flex-row">
+                        <textarea name="input-message-ti" id="inputMessageTI" rows="1" cols="1" placeholder="Digite uma mensagem"></textarea>
+                        <img src="../../assets/dashboard/sector/sendMessage.png" alt="sendInput" id="sendInputMessageTI">
+                    </div>
                 </div>
             </div>
             <div class="container-wrapper center-container-flex-column" id="supportCallTI">
@@ -134,31 +161,37 @@ if(isset($_COOKIE["tokenUser"])) {
                 <div class="separator-support-content"></div>
                 <div class="reason-call center-container-flex-column">
                     <h3>Motivo da Chamada</h3>
-                    <select name="reasonCall" class="none-border" id="">
-                        <option value="choose" disabled>Escolha a razão</option>
-                        <option value="noInternet">Sem Internet</option>
+                    <select name="reasonCall" class="none-border" id="reasonCall">
+                        <option value="Escolha a razão" disabled>Escolha a razão</option>
+                        <option value="Sem Internet">Sem Internet</option>
                     </select>
                 </div>
-                <div class="button-call-ti center-container-flex-row">
+                <div class="button-call-ti center-container-flex-row" id="buttonCallTI">
                     <img src="../../assets/dashboard/sector/callBtnIcon.png" alt="">
                     <p>CHAMAR</p>
                 </div>
-                <div class="feedbackBtn">
-                    <div class="emotionsOpts">
-                        <div class="badEmote">
-                            <img src="../../assets/dashboard/sector/FeedbackIcon/emote_1_bad.png" alt="Bad">
-                            <p>Ruim</p>
+                <div class="feedbackBtn" id="feedbackBtn">
+                    <div id="feedbackSector">
+                        <div class="emotionsOpts">
+                            <div class="badEmote">
+                                <img src="../../assets/dashboard/sector/FeedbackIcon/emote_1_bad.png" alt="Bad">
+                                <p>Ruim</p>
+                            </div>
+                            <div class="averageEmote">
+                                <img src="../../assets/dashboard/sector/FeedbackIcon/emote_2_average.png" alt="Average">
+                                <p>+/-</p>
+                            </div>
+                            <div class="goodEmote">
+                                <img src="../../assets/dashboard/sector/FeedbackIcon/emote_3_good.png" alt="Good">
+                                <p>Bom</p>
+                            </div>
                         </div>
-                        <div class="averageEmote">
-                            <img src="../../assets/dashboard/sector/FeedbackIcon/emote_2_average.png" alt="Average">
-                            <p>+/-</p>
-                        </div>
-                        <div class="goodEmote">
-                            <img src="../../assets/dashboard/sector/FeedbackIcon/emote_3_good.png" alt="Good">
-                            <p>Bom</p>
-                        </div>
+                        <p>O <span>chamado</span> apenas será liberado após avaliação!</p>
                     </div>
-                    <p>O <span>chamado</span> apenas será liberado após avaliação!</p>
+                    <div id="versesBible" class="bibleVerses">
+                        <p>Não fui eu que ordenei a você? Seja forte e corajoso! Não se apavore nem desanime, pois o Senhor, o seu Deus, estará com você por onde você andar" - Josué 1:9</p>
+                    </div>
+                    
                 </div>
             </div>  
             <div class="panel-right-support-call">

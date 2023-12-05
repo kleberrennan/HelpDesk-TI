@@ -1,3 +1,5 @@
+const ACTION_URL = "http://127.0.0.1/App/Server/Handler/Actions.php";
+
 var isAnimate = false;
 
 function showError(idErrorContainer, idErrMsg, messageErr) {
@@ -59,22 +61,34 @@ $(document).ready(function() {
             case ERROR_CODE[NOERROR]:
                 const userName = $(authArrInputs[0]).val();
                 const userPassw = $(authArrInputs[1]).val();
+                const SUPPORT = "TI";
+                const CITIZEN = "CIDADAO";
 
-                const userData = {
-                    "name": "generateToken",
-                    "param": {
-                        "userName": userName,
-                        "userPassw": userPassw,
-                    },
-                };
-
+                const requestData = {
+                    name: "generateToken",
+                    param: {
+                        userName: userName,
+                        userPassw: userPassw
+                    }
+                }
+                
                 $.ajax({
                     method: 'POST',
                     contentType: 'application/json',
-                    url: '/App/server/index.php',
-                    data: JSON.stringify(userData),
+                    dataType: 'json',
+                    url: window.location.pathname + "/../Server/index.php",
+                    data: JSON.stringify(requestData),
                     success: function(response) {
-                        window.location.replace('/App/pages/dashboard/sector.php');
+                        switch(userName) {
+                            case SUPPORT:
+                                window.location.replace('/App/pages/dashboard/ti.php');
+                                break;
+                            case CITIZEN:
+                                window.location.replace('/App/pages/dashboard/citizen.php');
+                                break;
+                            default:
+                                window.location.replace('/App/pages/dashboard/sector.php');
+                        }
                     },
                     error: function(err) {
                         console.error("Error: " + err);

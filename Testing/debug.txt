@@ -1,8 +1,0 @@
-{
-        "name":"generateToken",
-        "param":{
-            "name_user": "DATGL",
-            "passw_user": "DATGL123",
-            "type_user": "SECTOR"
-        }
-    }

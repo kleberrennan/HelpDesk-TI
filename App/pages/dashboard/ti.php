@@ -1,5 +1,59 @@
 <?php
-    
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+session_start();
+
+require_once(dirname(__DIR__) . "/../Server/Define/constants.php");
+
+$_SESSION[COOKIE_TOKEN_USER] = $_COOKIE["tokenUser"];
+
+if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) {
+    $token = $_SESSION[COOKIE_TOKEN_USER];
+    $sectorType = "TI";
+    $url = URL_SERVER;
+    $curl = curl_init();
+    $requestData = array(
+        "name" => "getUserDetails",
+        "param" => [
+            "userToken" => $token,
+            "typeUser" => $sectorType
+        ]
+    );
+
+    $requestJSON = json_encode($requestData);
+
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $requestJSON);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        "Authorization: Bearer $token",
+        "Content-Type: application/json" 
+    ));
+
+    $response = curl_exec($curl);
+    $error = curl_error($curl);
+
+    if(curl_errno($curl)) {
+        echo "Error: " . $error;
+    } else {
+        $responseDecode = json_decode($response, true);
+
+        if(isset($responseDecode['response']['status']) && $responseDecode['response']['status'] == USER_TYPE_IS_NOT_EQUAL) {
+            header("Location: http://127.0.0.1/App/index.php");
+        } else if($responseDecode !== null && isset($responseDecode['response']['message'])) {
+            $userName = $responseDecode['response']['message']['userName'];
+            $_SESSION["userName"] = $userName;
+        }
+    }
+
+    curl_close($curl);
+} else {
+    session_destroy();
+    header("Location: http://127.0.0.1/App/index.php");   
+}    
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -39,15 +93,19 @@
                     <img src="../../assets/dashboard/support/receivedCallWhite.png" alt="Suporte" class="opt-image-dashboard">
                     <p>Relatórios</p>
                 </div>
+                <div id="opt-logout-ti" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between">
+                    <img src="../../assets/dashboard/logoutIcon.png" alt="Sair" class="opt-image-dashboard">
+                    <p>Sair</p>
+                </div>
             </div>
         </div>
-        <div class="content-panel center-container-flex-column" id="opt-home-ti-content">
+        <div class="content-panel center-container-flex-column active-data-opt" id="opt-home-ti-content">
             <div class="main-content-home-ti center-container-flex-column">
                 <img src="../../assets/dashboard/support/charMainTI.png" alt="TIUser">
                 <p>Painel de <span>Suporte</span></p>
             </div>
         </div>
-        <div class="content-panel center-container-flex-column active-data-opt" id="opt-ti-receiver-content">
+        <div class="content-panel-ti-calls center-container-flex-column" id="opt-ti-receiver-content">
             <div class="choose-type-call center-container-flex-row" id="menuSwitchCallType">
                 <div class="ti-call-type call-type-active" id="callTypeTI">
                     <img src="../../assets/dashboard/sector/callIcon.png" alt="">
@@ -119,6 +177,7 @@
                 </div>
                 
             </div>
+            <div class="call-receiver-citizen" id="callTypeCitizen-content">test</div>
         </div>
         <div class="support-call-container content-panel center-container-flex-column" id="opt-report-generate-content">
            reports

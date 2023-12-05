@@ -1,5 +1,14 @@
 {
+    "autoload": {
+        "psr-4": {
+            "ITERMA\\Handler\\": "./App/Server/Handler",
+            "ITERMA\\Agent\\": "./App/Server/Agent",
+            "ITERMA\\Socket\\": "./App/Server/Socket"
+        }
+    },
     "require": {
-        "firebase/php-jwt": "^6.9"
+        "firebase/php-jwt": "^6.9",
+        "cboden/ratchet": "^0.4.4",
+        "react/zmq": "^0.4.0"
     }
 }

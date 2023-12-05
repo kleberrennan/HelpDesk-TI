@@ -1,167 +1,443 @@
 const TICHAT = 1;
 const SECTORCHAT = 2;
+const DEFAULT_VALUE = 0;
+const SUCCESS_CALL_SECTOR ="successCall";
+const CALL_NOT_ATTENDED = "stillCall";
+const multiplierHeightChat = 20;
+const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
 
-function getUserData() {
-    $.ajax({
-        method: 'POST',
-        url: "../../server/index.php",
-        contentType: 'application/json',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(data),
-        success: function(response) {
-            console.log(response);
-        },
-        error: function(error) {
-            console.error(error);
-        }
-    })
-}
+const ACTION_URL = window.location.pathname + "/../../../Server/Handler/Actions.php";
+
+var isAnimateErr = false;
 
 function getDashboardName() {
     const currentDashboard = window.location.pathname;
-
     const pageName = currentDashboard.split("/")[4].replace(/\.php$/, "");
-
     return pageName;
+}
+
+function showMsg(idContainer, message, typeMsg) {
+    var imgContainer = '';
+
+    if(isAnimateErr == false) {
+        isAnimateErr = true;
+        if(typeMsg != undefined && typeMsg != null) {
+            switch(typeMsg) {
+                case SUCCESS_CALL_SECTOR:
+                    imgContainer = '<img src="../../assets/dashboard/sector/shyDev.png" alt="Success Call Sector" class="img-call">';
+
+                    $(idContainer).css({
+                        'padding': '0.2em',
+                        'background-color': '#0D7FA3',
+                        'color': '#fff',
+                    })
+
+                    $(`${idContainer} .description-err`).css({
+                        'display': 'flex',
+                        'flex-direction': 'row',
+                        'justify-content': 'center',
+                        'align-items': 'center',
+                        'background-color': '#0D7FA3',
+                        'color': '#fff'
+                    });
+
+                    $(`${idContainer} .title-err`).css({
+                        'display': 'none',
+                    })
+                    if($(`${idContainer} .img-call`).length == 0) {
+                        $(`${idContainer} .description-err`).prepend(imgContainer);
+                    }
+
+                    $(`${idContainer} .img-call`).css({
+                        'width': '5em',
+                        'height': '5em',
+                    })
+                    break;
+                    case CALL_NOT_ATTENDED:
+                        imgContainer = '<img src="../../assets/dashboard/sector/waitCall.png" alt="Success Call Sector" class="img-call">';
+
+                        $(idContainer).css({
+                            'padding': '0.2em',
+                            'background-color': '#003A8F',
+                            'color': '#fff',
+                        })
+
+                        $(`${idContainer} .description-err`).css({
+                            'display': 'flex',
+                            'flex-direction': 'row',
+                            'justify-content': 'center',
+                            'align-items': 'center',
+                            'background-color': '#003A8F',
+                            'color': '#fff'
+                        });
+
+                        $(`${idContainer} .title-err`).css({
+                            'display': 'none',
+                        })
+                        if($(`${idContainer} .img-call`).length == 0) {
+                            $(`${idContainer} .description-err`).prepend(imgContainer);
+                        }
+
+                        $(`${idContainer} .img-call`).css({
+                            'width': '5em',
+                            'height': '5em',
+                        })
+                        break;
+            }
+        }
+
+        $(`${idContainer} .description-err p`).text(message);
+        $(idContainer).css({display: 'flex', opacity: '100', 'margin-right': '0'}).animate({
+            opacity: '90',
+            'margin-right': '1em'
+        }, 1000, function() {
+            $(idContainer).css({display: 'none'});
+            isAnimateErr = false;
+        });
+    }
+}
+var shiftPressed = true;
+
+function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat) {
+    const ENTER_KEY = "Enter"; 
+    
+    var counterSpace = 1;
+    var newSize = defaultValueTextArea;
+    var isOnlyEnter = false;
+    var checkText = textarea.selectionStart;
+
+    if(key === "Shift") {
+        counterSpace += 1;
+        shiftPressed = true;
+    }
+
+    if(shiftPressed && key === ENTER_KEY) {
+        if (textarea.val() === "" || checkText > 0) {
+            isOnlyEnter = true;
+        } else {
+            isOnlyEnter = false;
+            newSize = newSize + multiplierHeightChat;
+
+            if (newSize == 50) {
+                textarea.css({
+                    'overflow-y': 'scroll',
+                });
+            }
+
+            textarea.css({
+                'height': newSize + 'px',
+            });
+            shiftPressed = false;
+        }
+    } else if (!shiftPressed && key === ENTER_KEY) {
+        isOnlyEnter = true;
+        counterSpace = 1;
+        sendMsgChat($("#chatTIMessages"), $("#inputMessageTI"));
+        textarea.val('');
+        textarea.css({
+            'height': defaultValueTextArea + "px",
+            'overflow-y': 'hidden',
+        });
+    }
+
+    return {
+        shiftPressed: shiftPressed,
+        counterSpace: counterSpace,
+        newSize: newSize,
+        isOnlyEnter: isOnlyEnter
+    }
+}
+
+function generateVerseBible() {
+    const bibleVerses = [
+        ` "Não fui eu que ordenei a você? Seja forte e corajoso! 
+           Não se apavore nem desanime, pois o Senhor, o seu Deus, 
+           estará com você por onde você andar" - Josué 1:9`,
+        ` "E Adão conheceu Eva, que ela ficou grávida de Samael, 
+           o anjo desejável, e ela concebeu e deu à luz a Caim e 
+           ela disse: "Tenho adquirido um homem do anjo desejável" - Gênesis 4:1`,
+        ` "Quem derramar sangue do homem,
+           pelo homem seu sangue será derramado;
+           porque à imagem de Deus
+           foi o homem criado." - Gênesis 9:6`,
+        ` "Encontro esta lei que atua em mim: Quando faço o bem,
+           o mal me acompanha. Intimamente o meu ser
+           tem prazer na Lei de Deus; mas vejo outra lei atuando nos 
+           membros do meu corpo, guerreando contra a lei da minha mente, 
+           tornando-me prisioneiro da lei do pecado que atua em mim".
+           Romanos 7:21-23`
+    ];
+
+    let randNumber = Math.floor(Math.random() * bibleVerses.length);
+    randNumber = randNumber % bibleVerses.length;
+
+    $("#versesBible p").text(bibleVerses[randNumber]);
 }
 
 function switchOption(idContainer, currentOpt, activeClass) {
     const activeOpt = 0;
     const activeContent = 1;
 
+    if (currentOpt === "opt-support-call") {
+        generateVerseBible();
+    }
+
     $(`#${currentOpt}`).removeClass(activeClass[activeOpt]);
     $(`#${idContainer}`).addClass(activeClass[activeOpt]);
     $(`#${currentOpt}-content`).removeClass(activeClass[activeContent]);
     $(`#${idContainer}-content`).addClass(activeClass[activeContent]);
+
     return idContainer;
 }
 
 function startChatFeature(targetChat, checkClick) {
     const NO_CHAT_CONTAINER = 0;
     const CHAT_CONTAINER = 1;
-    var toggleContainerIDs = [];
+    let toggleContainerIDs = [];
 
-    switch(targetChat) {
+    switch (targetChat) {
         case TICHAT:
             toggleContainerIDs = ['#supportCallTI', '#chatWithTI'];
             break;
         case SECTORCHAT:
-            if(checkClick) {
-                $("#menuSwitchCallType").css({display: 'none'});
-            } else {
-                $("#menuSwitchCallType").css({display: 'flex'});
-            }
-
+            $("#menuSwitchCallType").css({ display: checkClick ? 'none' : 'flex' });
             toggleContainerIDs = ['#receiveCallsTI', '#chatWithSector'];
             break;
     }
-    if(checkClick) {
-        $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({display: 'none'});
-        $(toggleContainerIDs[CHAT_CONTAINER]).css({display: 'flex'});
-        return false;
+
+    if (checkClick) {
+        $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'none' });
+        $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'flex' });
     } else {
-        $(toggleContainerIDs[CHAT_CONTAINER]).css({display: 'none'});
-        $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({display: 'flex', 'flex-direction': 'column'});
-        return true;             
+        $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'none' });
+        $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'flex', 'flex-direction': 'column' });
     }
+
+    return !checkClick;
 }
 
 function initOptions(optsArr, currentOpt, typeOpt) {
     optsArr.forEach((idOpt) => {
-        $(`#${idOpt}`).click(function(event) {
-            switch(typeOpt) {
-                case 1:
-                    const activeClassDashboard = ["opt-active", "active-data-opt"];
+        $(`#${idOpt}`).click(function (event) {
+            const activeClass = typeOpt === 1 ? ["opt-active", "active-data-opt"] : ["call-type-active", "active-type-call"];
 
-                    if(event.target.id === "") {
-                        currentOpt = switchOption(event.currentTarget.id, currentOpt, activeClassDashboard);
-                    } else {
-                        currentOpt = switchOption(event.target.id, currentOpt, activeClassDashboard);
-                    }
-                break;
-                case 2:
-                    const activeClassCallType = ["call-type-active", "active-type-call"];
-
-                    if(event.target.id === "") {
-                        currentOpt = switchOption(event.currentTarget.id, currentOpt, activeClassCallType);
-                    } else {
-                        currentOpt = switchOption(event.target.id, currentOpt, activeClassCallType);
-                    }
-                break;
+            if (event.target.id) {
+                currentOpt = switchOption(event.target.id, currentOpt, activeClass);
+            } else {
+                currentOpt = switchOption(event.currentTarget.id, currentOpt, activeClass);
             }
-        })
+        });
     });
 }
 
+function formatTextOutput(inputText, isChat = false) {
+    let formatText = inputText.replace(/\n/g, isChat ? "" : "<br>");
+    return formatText;
+}
+
 function sendMsgChat(idChat, idInput) {
-    if(idInput.val().trim() === "") {
-        console.log("EMPTY");
+    if (idInput.val().trim() === "") {
+        return;
     } else {
         idChat.append(
             `<div class='message-recipient'>
                 <div class='message-recipient-show'>
-                    ${idInput.val()}
+                    ${formatTextOutput(idInput.val())}
                 </div>
             </div>`
         );
     }
 }
 
-//getUserData();
+function generateOrdersBoxes(idContainer) {
+    return $.ajax({
+        method: "POST",
+        url: ACTION_URL,
+        data: {
+            action: "listAllOrders"
+        },
+        success: function(response) {
+            var data = JSON.parse(JSON.parse(response));
+            var orders = data.response.message;
+            var ordersArr = [];
+            var dataHTML = "";
+
+            Object.keys(orders).forEach((index) => {
+                const order = orders[index];
+                ordersArr.push(order.idcall);
+
+                dataHTML += `
+                                <div data-order="${order.idcall}" class="call-ti-sector center-container-flex-row">
+                                    <div class="metadata-call">
+                                        <p><span>SETOR: </span>${order.userName}</p>
+                                        <p><span>RAZÃO: </span>${order.reasoncall}</p>
+                                        <p><span>HORA: </span>${order.calltimestamp}</p>
+                                    </div>
+                                    <div class="options-call center-container-flex-row">
+                                        <div class='center-container-flex-row'>
+                                            <img src="../../assets/dashboard/support/chatTIOpt.png" alt="chat" id=orderChat_${order.idcall}>
+                                            <img src="../../assets/dashboard/support/bookTIOpt.png" alt="readMore" id="openReadMoreCall_call_1">
+                                        </div>
+                                        <div class='center-container-flex-row'>
+                                            <img src="../../assets/dashboard/support/workerTIOpt.png" alt="ownerCall" id="assignOwnerCall_call_1">
+                                            <img src="../../assets/dashboard/support/finishTIOpt.png" alt="finishCall" id="finishCall_call_1">
+                                        </div>
+                                    </div>
+                                </div>
+                            `
+                ;
+            });
+            
+            $(idContainer).html(dataHTML);
+
+            return ordersArr;
+        }, error: function(error) {
+            console.error("Error: " + error);
+        }
+    })
+}
 
 $(document).ready(() => {
     const userType = getDashboardName();
 
-    const ENTER_KEYBOARD_CODE = 13;
+    const firstOptSector = "opt-home";
+    const optSectorArr = [firstOptSector, "opt-citizen-call", "opt-support-call", "opt-about"];
 
+    const ENTER_KEYBOARD_CODE = 13;
     const dashboardOptions = 1;
     const callTypeOptions = 2;
 
-    switch(userType) {
+    switch (userType) {
         case 'sector':
-            function execAnimation() {
-                $("#panelAnimate .main-data").css({marginLeft: '0px'}).animate({
-                    'marginLeft': '1em',
-                }, 2000, function() {
-                    $("#panelAnimate").css({marginLeft: '0px'});
-                })
-            }
-            //execAnimation();
-            console.log("tear");
-            const firstOptSector = "opt-home";
-            const optSectorArr = [firstOptSector, "opt-citizen-call", "opt-support-call", "opt-about"];
-
             var currentOpt = firstOptSector;
-            var chatWithTIClick = true;
+
+            var shiftPressed = false;
+            var counterSpace = 1;
+            var newSize = DEFAULT_VALUE_SIZE_TEXTAREA;
+            var isOnlyEnter = false;
+            var checkClick = false;
 
             currentOpt = initOptions(optSectorArr, currentOpt, dashboardOptions);
 
-            $("#openChatWithSupport").click(function() {
-                chatWithTIClick = startChatFeature(TICHAT, chatWithTIClick);
+            $("#openChatWithSupport").click(function () {
+                checkClick = startChatFeature(TICHAT, checkClick);
             });
 
-            if(chatWithTIClick) {
-                $("#sendInputMessageTI").click(function() {
-                    if($("#inputMessageTI").val() === "") 
-                    { return; } else {
-                        //sendMsgChat("#chatTIMessages")
-                        $("#chatTIMessages").append(
-                            `<div class='message-recipient'>
-                                <div class='message-recipient-show'>
-                                    ${$("#inputMessageTI").val()}
-                                </div>
-                            </div>`
-                        );
+            $("#inputMessageTI").on("keydown", function (e) {
+                const textarea = $("#inputMessageTI");
+                const key = e.originalEvent.key;
 
-                        $("inputMessageTI").attr("value", "");
-                    }
+                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat);
+
+                shiftPressed = result.shiftPressed;
+                counterSpace = result.counterSpace;
+                isOnlyEnter = result.isOnlyEnter;
+            });
+
+            $("#inputMessageTI").on("input", function () {
+                const textarea = $("#inputMessageTI");
+
+                if (isOnlyEnter) {
+                    textarea.val("");
+                    isOnlyEnter = false;
+                }
+                textarea.text(textarea.val());
+            });
+
+            $("#sendInputMessageTI").click(function () {
+                const inputVal = $("#inputMessageTI").val();
+                if (inputVal === "") {
+                    return;
+                } else {
+                    sendMsgChat($("#chatTIMessages"), $("#inputMessageTI"));
+                    $("#inputMessageTI").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
+                }
+            });
+
+            function checkOrderExistence() {
+                return new Promise(function(resolve, reject) {
+                    $.ajax({
+                        method: 'POST',
+                        url: ACTION_URL,
+                        data: {
+                            action: 'checkOrderSector',
+                        },
+                        success: function(response) {
+                            try {
+                                let result = JSON.parse(response);
+                                let toJSON = JSON.parse(result);
+                                resolve(toJSON.response.message);
+                            } catch(err) {
+                                reject(err);
+                            }
+                        },
+                        error: function(err) {
+                            console.error(err);
+                            reject(err);
+                        }
+                    })
                 })
+                
             }
 
+            $("#buttonCallTI").click(function() {
+                const select = $("#reasonCall");
+                const optionValue = select.val();
+                const idPopUp = "#popupErrSupportTI"; 
+                const DEFAULT_OPTION = $("#reasonCall option:first");
+                
+                if(optionValue == DEFAULT_OPTION) {
+                    showMsg(idPopUp, "Selecione uma razão!");
+                } else {
+                    checkOrderExistence().then(function(isOrder) {
+                        if(isOrder == false) {
+                            const requestUser = {
+                                'name': "insertOrderSector",
+                                'param': {
+                                    'reasonCall': optionValue
+                                }
+                            }
+    
+                            $.ajax({
+                                method: 'POST',
+                                url: ACTION_URL,
+                                data: {
+                                    action: requestUser['name'],
+                                    data: requestUser['param']
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                }, error: function(err) {
+                                    console.error(err);
+                                }
+                            })
+                        } else {
+                            showMsg(idPopUp, "Calminha amigão! O seu chamado ainda está em atendimento!", CALL_NOT_ATTENDED);
+                        }
+                    }).catch(function(error) {
+                        console.error(error);
+                    })
+                }
+            });
+
+            $("#opt-logout-sector").click(function() {
+                $.ajax({
+                    method: 'POST',
+                    url: ACTION_URL,
+                    data: {
+                        action: "logout"
+                    },
+                    success: function(response) {
+                        //console.log(response);
+                        window.location.reload();
+                    }, error: function(err) {
+                        console.error(err);
+                    }
+                })
+            })
+
             break;
+
         case 'ti':
             const firstOptTI = "opt-home-ti";
             const firstOptCallType = "callTypeTI";
@@ -169,34 +445,93 @@ $(document).ready(() => {
             const optTIArr = [firstOptTI, "opt-ti-receiver", "opt-report-generate"];
             const optCallTypeArr = [firstOptCallType, "callTypeCitizen"];
 
-            var currentOptDashboard = firstOptTI;
-            var currentOptTypeCall = firstOptCallType;
-
-            var chatWithSectorClick = true;
+            let currentOptDashboard = firstOptTI;
+            let currentOptTypeCall = firstOptCallType;
 
             currentOptDashboard = initOptions(optTIArr, currentOptDashboard, dashboardOptions);
             currentOptTypeCall = initOptions(optCallTypeArr, currentOptTypeCall, callTypeOptions);
-            
-            const closeChat = $("#closeChatSector");
-            const sendMsg = $("#sendInputMessageSECTOR");
-            const userMsg = $("#messageChatInput");
-            const receiverMsg = $("#chatSECTORMessages")
 
-            $("#openChatWithSector_call_1").click(function() {
-                chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
-                console.log(chatWithSectorClick);
+            let chatWithSectorClick = true;
+
+            generateOrdersBoxes("#receiveCallsTI").done(function(orders) {
+                var orderJSON = JSON.parse(JSON.parse(orders)).response.message;
+
+                Object.values(orderJSON).forEach((order) => {
+                    $(`#orderChat_${order.idcall}`).click(function() {
+                        chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
+                    })
+                })
             });
 
-            if(chatWithSectorClick) {
-                closeChat.click(function() {
+            var shiftPressed = false;
+            var counterSpace = 1;
+            var newSize = DEFAULT_VALUE_SIZE_TEXTAREA;
+            var isOnlyEnter = false;
+            var checkClick = false;
+
+            currentOpt = initOptions(optSectorArr, currentOpt, dashboardOptions);
+
+            $("#openChatWithSupport").click(function () {
+                checkClick = startChatFeature(TICHAT, checkClick);
+            });
+
+            $("#messageChatInput").on("keydown", function (e) {
+                const textarea = $("#inputMessageTI");
+                const key = e.originalEvent.key;
+
+                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat);
+
+                shiftPressed = result.shiftPressed;
+                counterSpace = result.counterSpace;
+                isOnlyEnter = result.isOnlyEnter;
+            });
+
+            $("#messageChatInput").on("input", function () {
+                const textarea = $("#messageChatInput");
+
+                if (isOnlyEnter) {
+                    textarea.val("");
+                    isOnlyEnter = false;
+                }
+                textarea.text(textarea.val());
+            });
+
+            $("#messageChatInput").click(function () {
+                const inputVal = $("#inputMessageTI").val();
+                if (inputVal === "") {
+                    return;
+                } else {
+                    sendMsgChat($("#chatTIMessages"), $("#messageChatInput"));
+                    $("#messageChatInput").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
+                }
+            });
+
+            if (chatWithSectorClick) {
+                $("#closeChatSector").click(function () {
                     chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
-                })
-                
-                sendMsg.click(function() {
-                    console.log(userMsg.val());
-                    sendMsgChat(receiverMsg, userMsg)
-                })
+                });
+
+                $("#sendInputMessageSECTOR").click(function () {
+                    sendMsgChat($("#chatSECTORMessages"), $("#messageChatInput"));
+                });
             }
-        break;
+
+
+            $("#opt-logout-ti").click(function() {
+                $.ajax({
+                    method: 'POST',
+                    url: ACTION_URL,
+                    data: {
+                        action: "logout"
+                    },
+                    success: function(response) {
+                        window.location.reload();
+                    }, error: function(err) {
+                        console.error(err);
+                    }
+                })
+            })
+
+            break;
     }
-})
+});
