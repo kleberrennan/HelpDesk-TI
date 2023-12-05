@@ -98,7 +98,7 @@ function showMsg(idContainer, message, typeMsg) {
 }
 var shiftPressed = true;
 
-function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat) {
+function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat, receiverBox, isTI = false) {
     const ENTER_KEY = "Enter"; 
     
     var counterSpace = 1;
@@ -110,7 +110,7 @@ function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat
         counterSpace += 1;
         shiftPressed = true;
     }
-
+    console.log(textarea.val())
     if(shiftPressed && key === ENTER_KEY) {
         if (textarea.val() === "" || checkText > 0) {
             isOnlyEnter = true;
@@ -132,10 +132,11 @@ function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat
     } else if (!shiftPressed && key === ENTER_KEY) {
         isOnlyEnter = true;
         counterSpace = 1;
-        sendMsgChat($("#chatTIMessages"), $("#inputMessageTI"));
+        sendMsgChat(receiverBox, textarea);
         textarea.val('');
+
         textarea.css({
-            'height': defaultValueTextArea + "px",
+            'height': isTI ? '100%' : defaultValueTextArea + "px",
             'overflow-y': 'hidden',
         });
     }
@@ -264,6 +265,7 @@ function generateOrdersBoxes(idContainer) {
 
             Object.keys(orders).forEach((index) => {
                 const order = orders[index];
+                const newTimestamp = new Date(order.calltimestamp);
                 ordersArr.push(order.idcall);
 
                 dataHTML += `
@@ -271,7 +273,7 @@ function generateOrdersBoxes(idContainer) {
                                     <div class="metadata-call">
                                         <p><span>SETOR: </span>${order.userName}</p>
                                         <p><span>RAZÃO: </span>${order.reasoncall}</p>
-                                        <p><span>HORA: </span>${order.calltimestamp}</p>
+                                        <p><span>HORA: </span>${newTimestamp.getHours()}:${newTimestamp.getMinutes()}</p>
                                     </div>
                                     <div class="options-call center-container-flex-row">
                                         <div class='center-container-flex-row'>
@@ -309,6 +311,7 @@ $(document).ready(() => {
 
     switch (userType) {
         case 'sector':
+            console.log("sector");
             var currentOpt = firstOptSector;
 
             var shiftPressed = false;
@@ -325,9 +328,10 @@ $(document).ready(() => {
 
             $("#inputMessageTI").on("keydown", function (e) {
                 const textarea = $("#inputMessageTI");
+                const receiverBox = $("#chatTIMessages");
                 const key = e.originalEvent.key;
 
-                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat);
+                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat, receiverBox);
 
                 shiftPressed = result.shiftPressed;
                 counterSpace = result.counterSpace;
@@ -476,10 +480,11 @@ $(document).ready(() => {
             });
 
             $("#messageChatInput").on("keydown", function (e) {
-                const textarea = $("#inputMessageTI");
+                const textarea = $("#messageChatInput");
+                const receiverBox = $("#chatSECTORMessages");
                 const key = e.originalEvent.key;
 
-                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat);
+                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat, receiverBox, true);
 
                 shiftPressed = result.shiftPressed;
                 counterSpace = result.counterSpace;
@@ -497,7 +502,7 @@ $(document).ready(() => {
             });
 
             $("#messageChatInput").click(function () {
-                const inputVal = $("#inputMessageTI").val();
+                const inputVal = $("#messageChatInput").val();
                 if (inputVal === "") {
                     return;
                 } else {

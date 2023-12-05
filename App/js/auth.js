@@ -79,15 +79,23 @@ $(document).ready(function() {
                     url: window.location.pathname + "/../Server/index.php",
                     data: JSON.stringify(requestData),
                     success: function(response) {
+                        var baseURL = "";
+
+                        if(window.location.host == "localhost" || window.location.host == "127.0.0.1") {
+                            baseURL = "/App/pages/dashboard";
+                        } else {
+                            baseURL = "/Test/HelpDesk-TI/App/pages/dashboard"
+                        }
+
                         switch(userName) {
                             case SUPPORT:
-                                window.location.replace('/App/pages/dashboard/ti.php');
+                                window.location.replace(`${baseURL}/ti.php`);
                                 break;
                             case CITIZEN:
-                                window.location.replace('/App/pages/dashboard/citizen.php');
+                                window.location.replace(`${baseURL}/citizen.php`);
                                 break;
                             default:
-                                window.location.replace('/App/pages/dashboard/sector.php');
+                                window.location.replace(`${baseURL}/sector.php`);
                         }
                     },
                     error: function(err) {

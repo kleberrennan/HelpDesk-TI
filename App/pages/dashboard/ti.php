@@ -133,7 +133,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                         </div>
                         <div class="input-message-chat-ti center-container-flex-row">
                             <div class="input-user-container">
-                                <input type="text" id="messageChatInput"/>
+                                <textarea name="input-message-ti" id="messageChatInput" rows="1" cols="1" placeholder="Digite uma mensagem"></textarea>
                             </div>
                             <img src="../../assets/dashboard/sector/sendMessage.png" alt="sendInput" id="sendInputMessageSECTOR">
                         </div>
