@@ -5,21 +5,25 @@ const SUCCESS_CALL_SECTOR ="successCall";
 const CALL_NOT_ATTENDED = "stillCall";
 const multiplierHeightChat = 20;
 const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
+const CURRENT_HOST = window.location.host; 
 
-const ACTION_URL = "/App/Server/Handler/Actions.php";
-console.log(ACTION_URL)
+function envCheck(host, currentValue, newValue) {
+    if(host == "localhost" || host == "127.0.0.1") {
+        return currentValue;
+    } else {
+        return newValue;
+    }
+}
 
+var ACTION_URL = envCheck(CURRENT_HOST, "/App/Server/Handler/Actions.php", "Test/HelpDesk-TI/App/Server/Handler/Actions.php");
 var isAnimateErr = false;
 
 function getDashboardName() {
-    const CURRENT_HOST = window.location.host; 
     const currentDashboard = window.location.pathname;
-    var posName = 4;
-    if(CURRENT_HOST !== "localhost" || CURRENT_HOST !== "127.0.0.1") {
-        posName = 6;
-    }
+    
+    var posName = envCheck(CURRENT_HOST, 4, 6);
 
-    const pageName = currentDashboard.split("/")[4].replace(/\.php$/, "");
+    const pageName = currentDashboard.split("/")[posName].replace(/\.php$/, "");
     return pageName;
 }
 
@@ -318,7 +322,6 @@ $(document).ready(() => {
 
     switch (userType) {
         case 'sector':
-            console.log("sector");
             var currentOpt = firstOptSector;
 
             var shiftPressed = false;
