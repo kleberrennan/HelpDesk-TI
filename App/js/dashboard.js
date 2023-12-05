@@ -6,12 +6,19 @@ const CALL_NOT_ATTENDED = "stillCall";
 const multiplierHeightChat = 20;
 const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
 
-const ACTION_URL = window.location.pathname + "/../../../Server/Handler/Actions.php";
+const ACTION_URL = "/App/Server/Handler/Actions.php";
+console.log(ACTION_URL)
 
 var isAnimateErr = false;
 
 function getDashboardName() {
+    const CURRENT_HOST = window.location.host; 
     const currentDashboard = window.location.pathname;
+    var posName = 4;
+    if(CURRENT_HOST !== "localhost" || CURRENT_HOST !== "127.0.0.1") {
+        posName = 6;
+    }
+
     const pageName = currentDashboard.split("/")[4].replace(/\.php$/, "");
     return pageName;
 }
