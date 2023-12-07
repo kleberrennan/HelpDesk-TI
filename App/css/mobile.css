@@ -267,9 +267,3 @@
         background-color: #fff;
     }
 }
-
-@media only screen and (max-height: 800px) {
-    .messages-container {
-        height: 25em;
-    }
-}

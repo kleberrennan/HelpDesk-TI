@@ -7,6 +7,8 @@ require_once(dirname(__DIR__) . "/../Server/Define/constants.php");
 
 $_SESSION[COOKIE_TOKEN_USER] = $_COOKIE["tokenUser"];
 
+$nonceNumber = base64_encode(random_bytes(16));
+
 if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) {
     $token = $_SESSION[COOKIE_TOKEN_USER];
     $sectorType = "TI";
@@ -62,7 +64,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' script-src 'self' https://code.jquery.com"
+        content="default-src 'self'; connect-src 'self' ws://localhost:8080 ws://127.0.0.1:8080 wss://127.0.0.1:8080; script-src 'self' https://code.jquery.com 'nonce-<?php echo $nonceNumber?>';"
     />
     <title>CI: SETOR</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -71,8 +73,9 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
 
     <link rel="stylesheet" href="../../css/dashboard.css"/>
     <link rel="stylesheet" href="../../css/mobile.css"/>
+    <script id="autoload" src="../../js/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
-<body>
+<body data-page-type="dashboard" data-page="ti">
     <div class="root">
         <div class="panel-left">
             <div class="main-data center-container-flex-column">
@@ -183,6 +186,5 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
            reports
         </div>
     </div>
-    <script src="../../js/dashboard.js"></script>
 </body>
 </html>

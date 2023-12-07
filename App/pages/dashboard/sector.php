@@ -5,6 +5,10 @@ require_once(__DIR__ . "/../../Server/Define/constants.php");
 
 $_SESSION[COOKIE_TOKEN_USER] = $_COOKIE[COOKIE_TOKEN_USER];
 
+$hostname = $_SERVER['SERVER_ADDR'];
+
+$nonceNumber = base64_encode(random_bytes(16));
+
 if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) {
     $token = $_SESSION[COOKIE_TOKEN_USER];
     $sectorType = "SETOR";
@@ -40,7 +44,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
         $responseDecode = json_decode($response, true);
 
         if(isset($responseDecode['response']['status']) && $responseDecode['response']['status'] == USER_TYPE_IS_NOT_EQUAL) {
-            header("Location: http://127.0.0.1/App/index.php");
+            header("Location: http://$hostname/App/index.php");
         } else if($responseDecode !== null && isset($responseDecode['response']['message'])) {
             $userName = $responseDecode['response']['message']['userName'];
             $_SESSION["userName"] = $userName;
@@ -50,7 +54,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     curl_close($curl);
 } else {
     session_destroy();
-    header("Location: http://127.0.0.1/App/index.php");   
+    header("Location: http://$hostname/App/index.php");   
 }
 ?>
 
@@ -61,7 +65,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' script-src 'self' https://code.jquery.com"
+        content="default-src 'self' script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
     />
     <title>Dashboard: Setor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -71,8 +75,9 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <link rel="stylesheet" href="../../css/dashboard.css"/>
     <link rel="stylesheet" href="../../css/mobile.css"/>
     <link rel="stylesheet" href="../../css/animate.css"/>
+    <script id="autoload" src="../../js/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
-<body>
+<body data-page-type="dashboard" data-page="sector">
     <div class="root">
         <div class="panel-left" id="panelAnimate">
             <div class="main-data center-container-flex-column">
@@ -210,6 +215,5 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
             </div>
         </div>
     </div>
-    <script src="../../js/dashboard.js"></script>
 </body>
 </html>

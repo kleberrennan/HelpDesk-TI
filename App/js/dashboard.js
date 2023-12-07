@@ -5,9 +5,11 @@ const SUCCESS_CALL_SECTOR ="successCall";
 const CALL_NOT_ATTENDED = "stillCall";
 const multiplierHeightChat = 20;
 const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
-const CURRENT_HOST = window.location.host; 
+const CURRENT_HOST = window.location.host;
+const ID_TI = 2;
 
-var ACTION_URL = "../../Server/Handler/Actions.php";
+const ACTION_URL = "../../Server/Handler/Actions.php";
+var currentIdOrder = 0;
 var isAnimateErr = false;
 
 function getDashboardName() {
@@ -100,7 +102,7 @@ function showMsg(idContainer, message, typeMsg) {
 }
 var shiftPressed = true;
 
-function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat, receiverBox, isTI = false) {
+function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat, receiverBox, isTI = false, socketChat) {
     const ENTER_KEY = "Enter"; 
     
     var counterSpace = 1;
@@ -112,7 +114,7 @@ function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat
         counterSpace += 1;
         shiftPressed = true;
     }
-    console.log(textarea.val())
+
     if(shiftPressed && key === ENTER_KEY) {
         if (textarea.val() === "" || checkText > 0) {
             isOnlyEnter = true;
@@ -134,7 +136,7 @@ function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat
     } else if (!shiftPressed && key === ENTER_KEY) {
         isOnlyEnter = true;
         counterSpace = 1;
-        sendMsgChat(receiverBox, textarea);
+        sendMsgChat(receiverBox, textarea, socketChat, ID_TI, currentIdOrder);
         textarea.val('');
 
         textarea.css({
@@ -211,6 +213,7 @@ function startChatFeature(targetChat, checkClick) {
     if (checkClick) {
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'flex' });
+
     } else {
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'flex', 'flex-direction': 'column' });
@@ -238,17 +241,40 @@ function formatTextOutput(inputText, isChat = false) {
     return formatText;
 }
 
-function sendMsgChat(idChat, idInput) {
-    if (idInput.val().trim() === "") {
-        return;
+function insertDataToChatBox(idChat, isCurrentUser = true, message) {
+    if(isCurrentUser) {
+        idChat.append(
+            `<div class='message-recipient'>
+                <div class='message-recipient-show'>
+                    ${formatTextOutput(message)}
+                </div>
+            </div>`
+        );
     } else {
         idChat.append(
             `<div class='message-recipient'>
                 <div class='message-recipient-show'>
-                    ${formatTextOutput(idInput.val())}
+                    TRIGGERTRIGGER!${formatTextOutput(message)}
                 </div>
             </div>`
         );
+    }
+}
+
+function sendMsgChat(idChat, idInput, socketChat, srcId, targetId, isCurrentUser = true) {
+    if (idInput.val().trim() === "") {
+        return;
+    } else {
+        const sendMsg = {
+            action: "sendOrderMessage",
+            srcId: srcId,
+            targetId: targetId,
+            message: idInput.val()
+        }
+
+        socketChat.send(JSON.stringify(sendMsg));
+
+        insertDataToChatBox(idChat, true, sendMsg['message']);
     }
 }
 
@@ -279,7 +305,7 @@ function generateOrdersBoxes(idContainer) {
                                     </div>
                                     <div class="options-call center-container-flex-row">
                                         <div class='center-container-flex-row'>
-                                            <img src="../../assets/dashboard/support/chatTIOpt.png" alt="chat" id=orderChat_${order.idcall}>
+                                            <img src="../../assets/dashboard/support/chatTIOpt.png" alt="chat" id=orderChat_${order.idcall} data-idOrder=${order.idcall}>
                                             <img src="../../assets/dashboard/support/bookTIOpt.png" alt="readMore" id="openReadMoreCall_call_1">
                                         </div>
                                         <div class='center-container-flex-row'>
@@ -299,6 +325,55 @@ function generateOrdersBoxes(idContainer) {
             console.error("Error: " + error);
         }
     })
+}
+
+var openConnections = [];
+
+function initChatSocketSector(orderId) {
+    if(openConnections.includes(orderId)) {
+        return;
+    } else {
+        openConnections.push(orderId);
+        chatOrder = new WebSocket("ws://127.0.0.1:8080");
+
+        chatOrder.onopen = function(e) {
+            const registerUser = {
+                action: "registerUser",
+                srcId: orderId
+            }
+
+            chatOrder.send(JSON.stringify(registerUser));
+        }
+
+        chatOrder.onmessage = function(e) {
+            console.log(e.data);
+        }
+    }
+
+    return chatOrder;
+}
+
+function initChatSocketTI(orderId) {
+    if(openConnections.includes(orderId)) {
+        return;
+    } else {
+        openConnections.push(orderId);
+        chatOrder = new WebSocket("ws://127.0.0.1:8080");
+
+        chatOrder.onopen = function(e) {
+            const registerUser = {
+                action: "registerUser",
+                srcId: ID_TI
+            }
+
+            chatOrder.send(JSON.stringify(registerUser));
+        }
+
+        chatOrder.onmessage = function(e) {
+            insertDataToChatBox($("#chatSECTORMessages"), false, e.data);
+        }
+    }
+    return chatOrder;
 }
 
 $(document).ready(() => {
@@ -354,7 +429,7 @@ $(document).ready(() => {
                 if (inputVal === "") {
                     return;
                 } else {
-                    sendMsgChat($("#chatTIMessages"), $("#inputMessageTI"));
+                    sendMsgChat($("#chatTIMessages"), $("#inputMessageTI"), ID_TI, currentIdOrder);
                     $("#inputMessageTI").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
                 }
             });
@@ -458,11 +533,15 @@ $(document).ready(() => {
 
             let chatWithSectorClick = true;
 
+            var chatOrder = "";
+
             generateOrdersBoxes("#receiveCallsTI").done(function(orders) {
                 var orderJSON = JSON.parse(JSON.parse(orders)).response.message;
 
                 Object.values(orderJSON).forEach((order) => {
                     $(`#orderChat_${order.idcall}`).click(function() {
+                        chatOrder = initChatSocketTI(order.idcall);
+                        currentIdOrder = order.idcall;
                         chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
                     })
                 })
@@ -485,7 +564,7 @@ $(document).ready(() => {
                 const receiverBox = $("#chatSECTORMessages");
                 const key = e.originalEvent.key;
 
-                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat, receiverBox, true);
+                const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat, receiverBox, true, chatOrder);
 
                 shiftPressed = result.shiftPressed;
                 counterSpace = result.counterSpace;
@@ -507,7 +586,7 @@ $(document).ready(() => {
                 if (inputVal === "") {
                     return;
                 } else {
-                    sendMsgChat($("#chatTIMessages"), $("#messageChatInput"));
+                    sendMsgChat($("#chatTIMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
                     $("#messageChatInput").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
                 }
             });
@@ -515,10 +594,14 @@ $(document).ready(() => {
             if (chatWithSectorClick) {
                 $("#closeChatSector").click(function () {
                     chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
+                    openConnections.pop(currentIdOrder);
+                    $("#chatSECTORMessages").html("");
                 });
 
                 $("#sendInputMessageSECTOR").click(function () {
-                    sendMsgChat($("#chatSECTORMessages"), $("#messageChatInput"));
+                    const inputVal = $("#messageChatInput").val();
+
+                    sendMsgChat($("#chatSECTORMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
                 });
             }
 

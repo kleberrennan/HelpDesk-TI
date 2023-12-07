@@ -76,26 +76,18 @@ $(document).ready(function() {
                     method: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
-                    url: "/../Server/index.php",
+                    url: "/App/Server/index.php",
                     data: JSON.stringify(requestData),
                     success: function(response) {
-                        var baseURL = "";
-
-                        if(window.location.host == "localhost" || window.location.host == "127.0.0.1") {
-                            baseURL = "/App/pages/dashboard";
-                        } else {
-                            baseURL = "/Test/HelpDesk-TI/App/pages/dashboard"
-                        }
-
                         switch(userName) {
                             case SUPPORT:
-                                window.location.replace(`${baseURL}/ti.php`);
+                                window.location.replace(`/App/pages/dashboard/ti.php`);
                                 break;
                             case CITIZEN:
-                                window.location.replace(`${baseURL}/citizen.php`);
+                                window.location.replace(`/App/pages/dashboard/citizen.php`);
                                 break;
                             default:
-                                window.location.replace(`${baseURL}/sector.php`);
+                                window.location.replace(`/App/pages/dashboard/sector.php`);
                         }
                     },
                     error: function(err) {
