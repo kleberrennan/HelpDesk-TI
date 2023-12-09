@@ -133,6 +133,9 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                             <img src="../../assets/dashboard/support/closeIcon.png" alt="closeIcon" id="closeChatSector">
                         </div>
                         <div class="messages-container" id="chatSECTORMessages">
+                            <div id="loadingChat">
+                                <p>Carregando...</p>
+                            </div>
                         </div>
                         <div class="input-message-chat-ti center-container-flex-row">
                             <div class="input-user-container">

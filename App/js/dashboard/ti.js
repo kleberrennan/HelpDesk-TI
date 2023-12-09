@@ -32,6 +32,7 @@ var chatOrder = "";
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
     Object.values(orders).forEach((order) => {
         $(`#orderChat_${order}`).click(function() {
+            const loadingChat = $("#loadingChat").css({display: 'flex'});
             const receiverBox = $("#chatSECTORMessages");
             const idUserOrder = $(`#orderChat_${order}`).data("userorder-id");
             const userName = $(`#orderChat_${order}`).data('username');
@@ -55,6 +56,8 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
                     chatOrder = initChatSocket(ID_TI, receiverBox, true, dataToSend);
                 } else {
+                    loadingChat.css({display: 'none'});
+                    getChatMessages(idUserOrder, receiverBox);
                     chatOrder = initChatSocket(ID_TI, receiverBox, true)
                 }
             })
@@ -117,7 +120,7 @@ $("#messageChatInput").click(function () {
 if (chatWithSectorClick) {
     $("#closeChatSector").click(function () {
         chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
-        $("#chatSECTORMessages").html("");
+        $("#chatSECTORMessages .message-recipient, #chatSECTORMessages .message-recipient-external").remove();
     });
 
     $("#sendInputMessageSECTOR").click(function () {
