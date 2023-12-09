@@ -20,6 +20,8 @@ const multiplierHeightChat = 20;
 let currentOptDashboard = firstOptTI;
 let currentOptTypeCall = firstOptCallType;
 
+var currentIdOrder = 0;
+
 currentOptDashboard = initOptions(optTIArr, currentOptDashboard, dashboardOptions);
 currentOptTypeCall = initOptions(optCallTypeArr, currentOptTypeCall, callTypeOptions);
 
@@ -30,8 +32,34 @@ var chatOrder = "";
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
     Object.values(orders).forEach((order) => {
         $(`#orderChat_${order}`).click(function() {
-            chatOrder = initChatSocketTI(order.idcall);
-            currentIdOrder = order.idcall;
+            const receiverBox = $("#chatSECTORMessages");
+            const idUserOrder = $(`#orderChat_${order}`).data("userorder-id");
+            const userName = $(`#orderChat_${order}`).data('username');
+
+            $(receiverBox).data("currentChatOrder", idUserOrder);
+            $("#titleChat").html(`CHAT COM ${userName}`)
+            POST("../../Server/Handler/Actions.php", {
+                action: "getRequestStatusTI",
+                data: {
+                    targetSector: idUserOrder
+                }
+            }).then(function(response) {
+                const dataJSON = JSON.parse(JSON.parse(response));
+
+                if(dataJSON.response.message == false ) { 
+                    const dataToSend = {
+                        action: "callSector",
+                        targetSector: idUserOrder,
+                        isRequested: true
+                    }
+
+                    chatOrder = initChatSocket(ID_TI, receiverBox, true, dataToSend);
+                } else {
+                    chatOrder = initChatSocket(ID_TI, receiverBox, true)
+                }
+            })
+
+            currentIdOrder = $(`#orderChat_${order}`).data("userorder-id");
             chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
         })
     })
@@ -45,10 +73,21 @@ var checkClick = false;
 
 $("#messageChatInput").on("keydown", function (e) {
     const textarea = $("#messageChatInput");
-    const receiverBox = $("#chatSECTORMessages");
     const key = e.originalEvent.key;
 
-    const result = handleKeydown(textarea, key, DEFAULT_VALUE_SIZE_TEXTAREA, multiplierHeightChat, receiverBox, true, chatOrder);
+    const result = handleKeydown
+    (
+        textarea, 
+        key, 
+        DEFAULT_VALUE_SIZE_TEXTAREA, 
+        multiplierHeightChat, 
+        true, 
+        ID_TI, 
+        currentIdOrder, 
+        chatOrder,
+        $("#chatSECTORMessages"),
+        ID_TI
+        );
 
     shiftPressed = result.shiftPressed;
     counterSpace = result.counterSpace;
@@ -70,7 +109,7 @@ $("#messageChatInput").click(function () {
     if (inputVal === "") {
         return;
     } else {
-        sendMsgChat($("#chatTIMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
+        sendToSocketMessage($("#chatTIMessages"), chatOrder, ID_TI, currentIdOrder);
         $("#messageChatInput").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
     }
 });
@@ -78,14 +117,13 @@ $("#messageChatInput").click(function () {
 if (chatWithSectorClick) {
     $("#closeChatSector").click(function () {
         chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
-        openConnections.pop(currentIdOrder);
         $("#chatSECTORMessages").html("");
     });
 
     $("#sendInputMessageSECTOR").click(function () {
         const inputVal = $("#messageChatInput").val();
 
-        sendMsgChat($("#chatSECTORMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
+        sendToSocketMessage($("#chatSECTORMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
     });
 }
 

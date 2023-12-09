@@ -128,7 +128,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                     <div id="chatWithSector" class="container-wrapper">
                         <div class="title-chat-sector center-container-flex-row">
                             <div class="title-chat center-container-flex-column">
-                                <p>CHAT COM [SETOR]</p>
+                                <p id="titleChat">CHAT COM [SETOR]</p>
                             </div>
                             <img src="../../assets/dashboard/support/closeIcon.png" alt="closeIcon" id="closeChatSector">
                         </div>

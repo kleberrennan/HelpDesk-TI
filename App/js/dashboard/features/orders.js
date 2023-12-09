@@ -22,7 +22,7 @@ function generateOrdersBoxes(idContainer, url) {
                                         </div>
                                         <div class="options-call center-container-flex-row">
                                             <div class='center-container-flex-row'>
-                                                <img src="../../assets/dashboard/support/chatTIOpt.png" alt="chat" id=orderChat_${order.idcall} data-server-idOrder=${order.idcall}>
+                                                <img src="../../assets/dashboard/support/chatTIOpt.png" alt="chat" id=orderChat_${order.idcall} data-userOrder-id=${order.authorcallid} data-userName=${order.userName}>
                                                 <img src="../../assets/dashboard/support/bookTIOpt.png" alt="readMore" id="openReadMoreCall_call_1">
                                             </div>
                                             <div class='center-container-flex-row'>

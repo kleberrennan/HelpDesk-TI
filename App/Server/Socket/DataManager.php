@@ -34,45 +34,52 @@ class DataManager implements MessageComponentInterface {
                $from->userId = $userId;
    
                $this->users->attach($from);
+
+               echo $from->userId . "Established" . PHP_EOL;
             
-               $from->send("User Registered: $userId" . PHP_EOL);
                break;
 
+            case "callSector":
+               if(isset($data["targetSector"])) {
+                  $stmt = $this->database->prepare("INSERT INTO requestStatus(sectorId, isRequested) VALUES(:sectorId, :isRequested)");
+                  $stmt->bindParam(":sectorId", $data["targetSector"], \PDO::PARAM_INT);
+                  $stmt->bindParam(":isRequested", $data["isRequested"], \PDO::PARAM_BOOL);
+                  $stmt->execute();
+               }
+               
+               foreach($this->users as $user) {
+                  if($user->userId == $data["targetSector"]) {
+                     $user->send(json_encode($data));
+                  }
+               }
+               break;
             case "sendOrderMessage":
                if(!isset($data["srcId"])) {
                   echo "srcId was not defined!";
                   exit(1);
                }
-               $stmt = $this->database->prepare("SELECT * FROM orderSector WHERE idcall = :idOrder");
-               $stmt->bindParam(":idOrder", $data["targetId"], \PDO::PARAM_INT);
+
+               $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
+               $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
+               $stmt->bindParam(":targetUser", $data["targetId"], \PDO::PARAM_INT);
+               $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
                $stmt->execute();
+               
+               $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-               $resultOrder = $stmt->fetch(\PDO::FETCH_ASSOC);
-               if(isset($resultOrder["authorcallid"])) {
-                  $authorCall = $resultOrder["authorcallid"];
-                  $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
-                  $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
-                  $stmt->bindParam(":targetUser", $authorCall, \PDO::PARAM_INT);
-                  $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
-                  $stmt->execute();
-                  
-                  $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-                  if(!is_array($result)) {
-                     echo "Error: Database Insert Message Failed";
-                     exit(1);
-                  }
-               } else {
-                  echo "Error: AuthorCallId wasn't found!";
+               if(!is_array($result)) {
+                  echo "Error: Database Insert Message Failed";
                   exit(1);
                }
-
                foreach($this->users as $user) {
-                  $user->send($data["message"]);
-               }
+                  if($user->userId == $from->userId) continue;
+                  if($user->userId == $data['targetId']) {
+                     $user->send(json_encode($data));
+                  }      
+               };
                break;
-         }
-      }
+         };
+      };
    }
 
    public function onClose(ConnectionInterface $conn) {

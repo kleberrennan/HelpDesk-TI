@@ -47,7 +47,9 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
             header("Location: http://$hostname/App/index.php");
         } else if($responseDecode !== null && isset($responseDecode['response']['message'])) {
             $userName = $responseDecode['response']['message']['userName'];
+            $userId = $responseDecode['response']['message']['userId'];
             $_SESSION["userName"] = $userName;
+            $_SESSION["userId"] = $userId;
         }
     }
 
@@ -65,7 +67,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
+        content="default-src 'self' connect-src 'self' ws://127.0.0.1:8080/ wss://127.0.0.1:8080/; script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
     />
     <title>Dashboard: Setor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -200,7 +202,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                 </div>
             </div>  
             <div class="panel-right-support-call">
-                <img src="../../assets/dashboard/sector/callIcon.png" alt="" id="openChatWithSupport">
+                <img src="../../assets/dashboard/sector/callIcon.png" alt="" id="openChatWithSupport" data-id-user=<?php echo $_SESSION["userId"]?>>
             </div>
         </div>
         <div class="content-panel center-container-flex-column citizen-opt-content-data" id="opt-about-content">

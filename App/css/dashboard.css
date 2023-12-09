@@ -275,6 +275,25 @@
     background-color: #1362A6;
 }
 
+.message-recipient-external {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 0;
+    justify-content: start;
+    align-items: start;
+}
+
+.message-recipient-show-external {
+    font-size: 0.9em;
+    padding: 0.2em;
+    overflow-wrap: anywhere;
+    border-top-left-radius: 0.2em;
+    border-bottom-left-radius: 0.2em;
+    max-width: 50%;
+    color: #fff;
+    background-color: #083b68;
+}
+
 .title-chat-ti {
     color: #0F4573;
     width: inherit;

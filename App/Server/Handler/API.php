@@ -88,6 +88,7 @@ class API extends REST {
 
         $response['userName'] = $result['username'];
         $response['userType'] = $result['usertype'];
+        $response['userId'] = $userToken->userId;
 
         $this->returnResponse(SUCCESSFULL_RESPONSE, $response);
     }
@@ -139,7 +140,6 @@ class API extends REST {
                 (CHECK_ORDER_ISNT_BOOL, "Check Variable isn't bool!");
         }
 
-
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
     }
 
@@ -158,6 +158,22 @@ class API extends REST {
 
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
     } 
+
+    public function getRequestStatusTI() {
+        $this->validateParam('userToken', $this->param["userToken"], STRING);
+
+        $userToken = JWT::decode($this->param['userToken'], new Key(SECRET_KEY, 'HS256'));
+        
+        $order = new Order();
+        $order->setIdUser($this->param['targetSector']);
+        $result = $order->checkRequest();
+
+        if(!is_bool($result)) {
+            $this->returnResponse(ORDER_IS_NOT_ARRAY, "getRequestStatusTI Order is not a bool!");
+        }
+
+        $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
+    }
 
     public function logout() {
         $this->returnResponse(LOGOUT_SUCCESSFULLY,

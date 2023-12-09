@@ -7,16 +7,26 @@ const INDEX_PAGE = "index";
 const SECTOR_DASHBOARD = "sector";
 const TI_DASHBOARD = "ti";
 
-function insertScript(scriptPath, nonce = null, isFirst = false) {
-    if(!isFirst) {
-        $("body").append(`
-                    <script src="${scriptPath}.js" nonce="${nonce}"></script>
-        `);
-    } else {
-        $("body").prepend(`
-                    <script src="${scriptPath}.js" nonce="${nonce}"></script>
-        `);
-    }
+function insertScript(scripts, nonce = null, isFirst = false) {
+    return new Promise(function(resolve, reject) {
+        if(typeof scripts !== 'object' && scripts instanceof Array) {
+            reject("Scripts isn't an array!");
+        }
+
+        scripts.forEach((script) => {
+            if(!isFirst) {
+                $("body").append(`
+                            <script src="${script}.js" nonce="${nonce}"></script>
+                `);
+            } else {
+                $("body").prepend(`
+                            <script src="${script}.js" nonce="${nonce}"></script>
+                `);
+            }
+
+            resolve(script);
+        })
+    })
 }
 
 function POST(url, data) {
@@ -42,23 +52,34 @@ $(document).ready(function() {
 
     switch(currentPage) {
         case INDEX_PAGE:
-            insertScript("./js/auth/auth", NONCE);
+            const indexScripts = ["./js/auth/auth"];
+
+            insertScript(indexScripts, NONCE);
             break;
         case SECTOR_DASHBOARD:
-            insertScript("../../js/dashboard/features/socket", NONCE);
-            insertScript("../../js/dashboard/features/notification", NONCE);
-            insertScript("../../js/dashboard/features/options", NONCE);
-            insertScript("../../js/dashboard/features/bible", NONCE);
-            insertScript("../../js/dashboard/sector", NONCE);
-            insertScript("../../js/dashboard/features/chat", NONCE);  
+            const sectorScripts = [
+                "../../js/dashboard/features/options",
+                "../../js/dashboard/features/keydown", 
+                "../../js/dashboard/features/socket",
+                "../../js/dashboard/features/notification",
+                "../../js/dashboard/features/bible",
+                "../../js/dashboard/features/chat",
+                "../../js/dashboard/sector"
+            ];
+            
+            insertScript(sectorScripts, NONCE);  
             break;
         case TI_DASHBOARD:
-            insertScript("../../js/dashboard/features/keydown", NONCE); 
-            insertScript("../../js/dashboard/features/chat", NONCE); 
-            insertScript("../../js/dashboard/features/socket", NONCE);
-            insertScript("../../js/dashboard/features/orders", NONCE);
-            insertScript("../../js/dashboard/features/options", NONCE);
-            insertScript("../../js/dashboard/ti", NONCE);
+            const tiScripts = [
+                "../../js/dashboard/features/keydown", 
+                "../../js/dashboard/features/socket",
+                "../../js/dashboard/features/orders",
+                "../../js/dashboard/features/options",
+                "../../js/dashboard/features/chat",
+                "../../js/dashboard/ti"
+            ];
+
+            insertScript(tiScripts, NONCE); 
             break;
         }
     }

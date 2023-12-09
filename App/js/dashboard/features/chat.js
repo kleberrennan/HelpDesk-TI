@@ -1,4 +1,5 @@
 function formatTextOutput(inputText, isChat = false) {
+    console.log(inputText)
     let formatText = inputText.replace(/\n/g, isChat ? "" : "<br>");
     return formatText;
 }
@@ -36,7 +37,7 @@ function startChatFeature(targetChat, checkClick) {
     return !checkClick;
 }
 
-function sendMsgChat(idChat, idInput, socketChat, srcId, targetId, isCurrentUser = true) {
+function sendToSocketMessage(idInput, socketChat, srcId, targetId) {
     if (idInput.val().trim() === "") {
         return;
     } else {
@@ -46,15 +47,18 @@ function sendMsgChat(idChat, idInput, socketChat, srcId, targetId, isCurrentUser
             targetId: targetId,
             message: idInput.val()
         }
+        console.log(sendMsg);
 
         socketChat.send(JSON.stringify(sendMsg));
-
-        insertDataToChatBox(idChat, true, sendMsg['message']);
     }
 }
 
-function insertDataToChatBox(idChat, isCurrentUser = true, message) {
-    if(isCurrentUser) {
+function insertDataToChatBox(idChat, message, currentUser) {
+    if ($.trim(message) === "") {
+        return;
+    }
+
+    if(currentUser) {
         idChat.append(
             `<div class='message-recipient'>
                 <div class='message-recipient-show'>
@@ -64,9 +68,9 @@ function insertDataToChatBox(idChat, isCurrentUser = true, message) {
         );
     } else {
         idChat.append(
-            `<div class='message-recipient'>
-                <div class='message-recipient-show'>
-                    TRIGGERTRIGGER!${formatTextOutput(message)}
+            `<div class='message-recipient-external'>
+                <div class='message-recipient-show-external'>
+                    ${formatTextOutput(message)}
                 </div>
             </div>`
         );

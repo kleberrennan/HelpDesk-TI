@@ -71,6 +71,10 @@ if(isset($_POST["action"]) && !empty( $_POST["action"]))    {
         case "listAllOrders":
             execAPI("listAllOrders", ['userToken' => $token]);
             break;
+        case 'getRequestStatusTI':
+            $targetSector = $_POST['data']['targetSector'];
+            execAPI('getRequestStatusTI', ['userToken' => $token, 'targetSector' => $targetSector]);
+            break;
         case 'checkOrderSector':
             execAPI('checkOrderSector', ['userToken'=> $token]);
             break;

@@ -27,3 +27,31 @@ function switchOption(idContainer, currentOpt, activeClass) {
 
     return idContainer;
 }
+
+function isRequestedCall(btnId, idSector, isSector = false) {
+    POST("../../Server/Handler/Actions.php", {
+        action: "getRequestStatusTI",
+        data: {
+            targetSector: idSector
+        }
+    }).then(function(response) {
+        const dataJSON = JSON.parse(JSON.parse(response));
+        console.log(dataJSON)
+        if(isSector) {
+            if(dataJSON.response.message == true) {
+                $(btnId).css({cursor: 'pointer', opacity: '1'});
+                $(btnId).click(function () {
+                    checkClick = startChatFeature(TICHAT, !checkClick);
+                });
+
+                webSocket = initChatSocket(userId, receiverBox, false);
+            } else {
+                $(btnId).css({cursor: 'not-allowed', opacity: '0.3'});
+                webSocket = null;
+            }
+        }
+
+        return webSocket;
+    })
+    
+}

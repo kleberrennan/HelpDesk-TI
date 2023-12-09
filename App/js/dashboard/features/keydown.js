@@ -1,11 +1,22 @@
-function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat, receiverBox, isTI = false, socketChat) {
+function handleKeydown
+    (
+        textarea, 
+        key, 
+        defaultValueTextArea, 
+        multiplierHeightChat,  
+        isTI = false, 
+        srcId,
+        targetId,
+        socketChat,
+        receiverBox,
+        currentUser
+    ) {
     const ENTER_KEY = "Enter"; 
-    
     var counterSpace = 1;
     var newSize = defaultValueTextArea;
     var isOnlyEnter = false;
     var checkText = textarea.selectionStart;
-
+        
     if(key === "Shift") {
         counterSpace += 1;
         shiftPressed = true;
@@ -32,7 +43,15 @@ function handleKeydown(textarea, key, defaultValueTextArea, multiplierHeightChat
     } else if (!shiftPressed && key === ENTER_KEY) {
         isOnlyEnter = true;
         counterSpace = 1;
-        sendMsgChat(receiverBox, textarea, socketChat, ID_TI, currentIdOrder);
+
+        sendToSocketMessage(textarea, socketChat, srcId, targetId);
+        
+        insertDataToChatBox(
+            receiverBox, 
+            textarea.val(),
+            true
+        )
+
         textarea.val('');
 
         textarea.css({

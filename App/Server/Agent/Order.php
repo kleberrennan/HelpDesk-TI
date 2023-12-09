@@ -80,6 +80,27 @@ class Order {
         }
     }
 
+    public function checkRequest() {
+        try {
+            $userId = $this->getIdUser();
+            $result = false;
+            $sql = "SELECT * FROM requestStatus WHERE sectorId = :idUser";
+            $stmt = $this->dbConn->prepare($sql);
+            $stmt->bindParam(':idUser', $userId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if($stmt->rowCount() > 0) {
+                $result = true;
+            }
+
+            return $result;
+        } catch(\PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
     public function check() {
         try {
             $userId = $this->getIdUser();
