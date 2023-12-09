@@ -42,8 +42,10 @@ $(document).ready(function() {
     }
 
     currentOpt = initOptions(optSectorArr, currentOpt, dashboardOptions);
-
+    
     webSocket = isRequestedCall(CHAT_TI, userId, true);
+
+    getChatMessages(ID_TI, receiverBox);
 
     $(INPUT_CHAT_TI).on("keydown", function (e) {
         const textarea = $("#inputMessageTI");

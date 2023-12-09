@@ -51,32 +51,36 @@ if(isset($_POST["action"]) && !empty( $_POST["action"]))    {
 
     switch($action) {
         case "generateToken":
-            execAPI("generateToken", [
+            execAPI($action, [
                 "userToken" => $token,
                 "userName" => $_POST["userName"],
                 "userPassw" => $_POST["userPassw"],
             ]);
             break;
         case "logout":
-            execAPI("logout", ["userToken" => $token]);
+            execAPI($action, ["userToken" => $token]);
             break;
         case 'insertOrderSector':
             $reasonCall = $_POST['data']['reasonCall'];
             execAPI(
-                "insertOrderSector", [
+                $action, [
                     "userToken" => $token,
                     "reasonCall" => $reasonCall
             ]);
             break;
         case "listAllOrders":
-            execAPI("listAllOrders", ['userToken' => $token]);
+            execAPI($action, ['userToken' => $token]);
             break;
         case 'getRequestStatusTI':
             $targetSector = $_POST['data']['targetSector'];
-            execAPI('getRequestStatusTI', ['userToken' => $token, 'targetSector' => $targetSector]);
+            execAPI($action, ['userToken' => $token, 'targetSector' => $targetSector]);
+            break;
+        case 'getChatMessages':
+            $targetId = $_POST['data']['targetId'];
+            execAPI($action, ['userToken' => $token, 'targetId' => $targetId]);
             break;
         case 'checkOrderSector':
-            execAPI('checkOrderSector', ['userToken'=> $token]);
+            execAPI($action, ['userToken'=> $token]);
             break;
     }
 }

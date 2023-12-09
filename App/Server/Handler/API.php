@@ -10,6 +10,7 @@ use ZMQContext;
 use ITERMA\Handler\REST;
 use ITERMA\Agent\User;
 use ITERMA\Agent\Order;
+use ITERMA\Agent\Chat;
 
 class API extends REST {
     private $ISSUER = 'localhost';
@@ -157,15 +158,32 @@ class API extends REST {
         }
 
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
-    } 
+    }
+
+    public function getChatMessages() {
+        $this->validateParam('userToken', $this->param["userToken"], STRING);
+        $this->validateParam('targetId', $this->param['targetId'], STRING);
+
+        $userToken = JWT::decode($this->param['userToken'], new Key(SECRET_KEY, 'HS256'));
+        $targetId = $this->param['targetId'];
+
+        $chat = new Chat();
+        $chat->setSrcId($userToken->userId);
+        $chat->setTargetId($targetId);
+
+        $result = $chat->getAllMessages();
+
+        $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
+    }
 
     public function getRequestStatusTI() {
         $this->validateParam('userToken', $this->param["userToken"], STRING);
 
         $userToken = JWT::decode($this->param['userToken'], new Key(SECRET_KEY, 'HS256'));
-        
+        $targetId = $this->param['targetSector'];
+
         $order = new Order();
-        $order->setIdUser($this->param['targetSector']);
+        $order->setIdUser($targetId);
         $result = $order->checkRequest();
 
         if(!is_bool($result)) {

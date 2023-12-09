@@ -1,7 +1,43 @@
 function formatTextOutput(inputText, isChat = false) {
-    console.log(inputText)
     let formatText = inputText.replace(/\n/g, isChat ? "" : "<br>");
     return formatText;
+}
+
+function getChatMessages(targetId, receiverBox) {
+    //Token user is already a source id!
+    const requestUser = {
+        action: "getChatMessages",
+        data: {
+            targetId: targetId
+        }
+    }
+
+    POST("../../Server/Handler/Actions.php", requestUser)
+        .then(function(response) {
+            const data = JSON.parse(JSON.parse(response));
+
+            var message = data.response.message;
+
+            message.replace(/\\n/g, '\n');
+
+            if(message.slice(-5) == "#%SEP") {
+                message = message.slice(0, -5);
+            }
+
+            let showMessage = message.split(/#%SEP(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(part => part.trim());
+
+            showMessage.forEach((msg) => {
+                var srcId = parseInt(msg.slice(0, 1));
+                var formatText = msg.slice(2);
+
+                //console.log("srcId: " + srcId + " targetId: " + targetId)
+                if(srcId != targetId) {
+                    insertDataToChatBox(receiverBox, formatText, true);
+                } else {
+                    insertDataToChatBox(receiverBox, formatText, false);
+                }
+            })
+        })
 }
 
 function startChatFeature(targetChat, checkClick) {

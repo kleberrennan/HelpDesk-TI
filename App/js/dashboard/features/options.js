@@ -36,7 +36,7 @@ function isRequestedCall(btnId, idSector, isSector = false) {
         }
     }).then(function(response) {
         const dataJSON = JSON.parse(JSON.parse(response));
-        console.log(dataJSON)
+          
         if(isSector) {
             if(dataJSON.response.message == true) {
                 $(btnId).css({cursor: 'pointer', opacity: '1'});

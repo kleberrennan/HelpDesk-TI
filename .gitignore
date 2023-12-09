@@ -1,3 +1,6 @@
 /Testing
 /vendor
 composer.lock
+/ElectronAPI/package-lock.json
+/ElectronAPI/out
+/ElectronAPI/node_modules
