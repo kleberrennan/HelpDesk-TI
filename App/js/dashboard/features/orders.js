@@ -12,13 +12,16 @@ function generateOrdersBoxes(idContainer, url) {
                     const order = orders[index];
                     const newTimestamp = new Date(order.calltimestamp);
                     ordersArr.push(order.idcall);
-        
+                    if(order.ownercall == null) {
+                        order.ownercall = "SEM POSSE";
+                    }
                     insertHTML += `
                                     <div class="call-ti-sector center-container-flex-row">
                                         <div class="metadata-call">
                                             <p><span>SETOR: </span>${order.userName}</p>
                                             <p><span>RAZÃO: </span>${order.reasoncall}</p>
                                             <p><span>HORA: </span>${newTimestamp.getHours()}:${newTimestamp.getMinutes()}</p>
+                                            <p id="ownerOrderTitle_${order.idcall}"><span>POSSE: </span>${order.ownercall}</p>
                                         </div>
                                         <div class="options-call center-container-flex-row">
                                             <div class='center-container-flex-row'>
@@ -26,7 +29,7 @@ function generateOrdersBoxes(idContainer, url) {
                                                 <img src="../../assets/dashboard/support/bookTIOpt.png" alt="readMore" id="openReadMoreCall_call_1">
                                             </div>
                                             <div class='center-container-flex-row'>
-                                                <img src="../../assets/dashboard/support/workerTIOpt.png" alt="ownerCall" id="assignOwnerCall_call_1">
+                                                <img src="../../assets/dashboard/support/workerTIOpt.png" alt="ownerCall" id="ownerBtn_${order.idcall}" data-userName=${order.userName}>
                                                 <img src="../../assets/dashboard/support/finishTIOpt.png" alt="finishCall" id="finishCall_call_1">
                                             </div>
                                         </div>

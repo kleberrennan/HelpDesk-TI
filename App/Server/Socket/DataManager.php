@@ -15,17 +15,25 @@ class DataManager implements MessageComponentInterface {
    }
 
    public function onOpen(ConnectionInterface $conn) {
-      echo "Connection Established! {$conn->resourceId}" . PHP_EOL;
+      $GREEN="\033[0;32m";
+      $YELLOW="\033[0;33m";
+      $NC="\033[0m";
+
+      echo $YELLOW . "[Socket Server]: " . $GREEN . "Connection Established! ID: {$conn->resourceId}" . PHP_EOL . $NC;
    }
 
    public function onMessage(ConnectionInterface $from, $msg) {
       $data = json_decode($msg, true);
 
       if(isset($data["action"])) {
+         $RED="\033[0;31m";
+         $GREEN="\033[0;32m";
+         $YELLOW="\033[0;33m";
+         $NC="\033[0m";
          switch($data["action"]) {
             case "registerUser":
                if(!isset($data["srcId"])) {
-                  echo "srcId was not defined!";
+                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
                   exit(1);
                }
 
@@ -35,7 +43,7 @@ class DataManager implements MessageComponentInterface {
    
                $this->users->attach($from);
 
-               echo $from->userId . "Established" . PHP_EOL;
+               echo $YELLOW . "[Socket Server]: " . $GREEN . $from->userId . " Established a connection!" . PHP_EOL . $NC;
             
                break;
 
@@ -55,7 +63,7 @@ class DataManager implements MessageComponentInterface {
                break;
             case "sendOrderMessage":
                if(!isset($data["srcId"])) {
-                  echo "srcId was not defined!";
+                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
                   exit(1);
                }
 
@@ -68,7 +76,7 @@ class DataManager implements MessageComponentInterface {
                $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
                if(!is_array($result)) {
-                  echo "Error: Database Insert Message Failed";
+                  echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
                   exit(1);
                }
                foreach($this->users as $user) {
@@ -83,13 +91,21 @@ class DataManager implements MessageComponentInterface {
    }
 
    public function onClose(ConnectionInterface $conn) {
+      $GREEN="\033[0;32m";
+      $YELLOW="\033[0;33m";
+      $NC="\033[0m";
+
       $this->users->detach($conn);
 
-      echo "Client {$conn->userId} leaves the connection!" . PHP_EOL;
+      echo $YELLOW . "[Socket Server]: " . $GREEN . "Client {$conn->userId} leaves the connection!" . PHP_EOL . $NC;
    }
 
    public function onError(ConnectionInterface $conn, \Exception $e) {
-      echo "An error occurred: {$e->getMessage()}";
+      $RED="\033[0;31m";
+      $YELLOW="\033[0;33m";
+      $NC="\033[0m";
+      
+      echo $YELLOW . "[Socket Server]: " . $RED . "An error occurred: {$e->getMessage()}" . PHP_EOL . $NC;
 
       $conn->close();
    }

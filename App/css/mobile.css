@@ -221,7 +221,7 @@
 
     .box-input-calls-ti .call-ti-sector {
         display: flex;
-        height: 13em;
+        height: 15.5em;
         width: 11.5em;
         align-items: start;
         justify-content: center;
@@ -247,11 +247,13 @@
     .call-ti-sector .options-call {
         width: 100%;
         height: 100%;
+        margin: 0.4em 0em;
     }
 
     .call-ti-sector .options-call img {
         height: 4em;
         width: 4em;
+        padding: 0.1em;
     }
 
     .metadata-call span {

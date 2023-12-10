@@ -96,6 +96,10 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                     <img src="../../assets/dashboard/support/receivedCallWhite.png" alt="Suporte" class="opt-image-dashboard">
                     <p>Relatórios</p>
                 </div>
+                <div id="opt-feedback" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between">
+                    <img src="../../assets/dashboard/support/feedbackBtn.png" alt="Suporte" class="opt-image-dashboard">
+                    <p>Feedback</p>
+                </div>
                 <div id="opt-logout-ti" class="center-container-flex-row opt-dashboard-left small-div-height opt-space-between">
                     <img src="../../assets/dashboard/logoutIcon.png" alt="Sair" class="opt-image-dashboard">
                     <p>Sair</p>
@@ -120,6 +124,19 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                 </div>
             </div>
             <div class="call-receiver-ti active-type-call" id="callTypeTI-content">
+                <!-- OWNER PopUp -->
+                <div id="ownerPopUp">
+                    <div class="title-owner center-container-flex-row">
+                        <div class="info-data-title">
+                            > <span>SETOR</span>: INSERIR POSSE
+                        </div>
+                        <div id="closeBtn">
+                            <img src="../../assets/dashboard/support/closeIcon.png" alt="">
+                        </div>
+                    </div>
+                    <div class="owner-options center-container-flex-column">
+                    </div>
+                </div>
                 <!-- READMORE BUTTON -->
                 <div id="readMoreSector" class="container-wrapper"></div>
                 <!-- POPUP OVERLAY -->
@@ -187,6 +204,9 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
         </div>
         <div class="support-call-container content-panel center-container-flex-column" id="opt-report-generate-content">
            reports
+        </div>
+        <div class="content-panel-feedback" id="opt-feedback-content">
+            <p>Feedback</p>
         </div>
     </div>
 </body>

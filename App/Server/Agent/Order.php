@@ -4,10 +4,13 @@ namespace ITERMA\Agent;
 use ITERMA\Agent\Database;
 class Order {
     private $userId;
+    private $ownerName; 
     private $dbConn;
 
     public function setIdUser($userId) { $this->userId = $userId; }
     public function getIdUser() { return $this->userId; }
+    public function setOwnerName($ownerName) { $this->ownerName = $ownerName; }
+    public function getOwnerName() { return $this->ownerName; }
 
     public function __construct() {
         $dbConn = new Database();
@@ -32,6 +35,24 @@ class Order {
         }
     }
 
+    public function setOwnerById() {
+        $ownerName = $this->getOwnerName();
+        $orderId = $this->getIdUser();
+
+        $sql = "UPDATE orderSector 
+                SET ownercall = :ownerName 
+                WHERE authorcallid = :idUser";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(":ownerName", $ownerName, \PDO::PARAM_STR);
+        $stmt->bindParam(":idUser", $orderId, \PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
     public function listAll() {
         try {
             $sql = "SELECT * FROM orderSector";

@@ -177,9 +177,8 @@ class API extends REST {
     }
 
     public function getRequestStatusTI() {
-        $this->validateParam('userToken', $this->param["userToken"], STRING);
+        $this->validateParam('targetSector', $this->param["targetSector"], STRING);
 
-        $userToken = JWT::decode($this->param['userToken'], new Key(SECRET_KEY, 'HS256'));
         $targetId = $this->param['targetSector'];
 
         $order = new Order();
@@ -193,6 +192,22 @@ class API extends REST {
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
     }
 
+    public function setOwnerOrder() {
+        $this->validateParam('ownerName', $this->param["ownerName"], STRING);
+        $this->validateParam('orderId', $this->param["orderId"], STRING);
+
+        $order = new Order();
+        $order->setOwnerName($this->param["ownerName"]);
+        $order->setIdUser($this->param["orderId"]);
+        $result = $order->setOwnerById();
+
+        if(!is_bool($result)) {
+            $this->returnResponse(ORDER_OWNER_RESULT_IS_NOT_BOOL,
+            "Order Owner Result is not a bool!");
+        }
+
+        $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
+    }
     public function logout() {
         $this->returnResponse(LOGOUT_SUCCESSFULLY,
             "Logout Sucessfully");

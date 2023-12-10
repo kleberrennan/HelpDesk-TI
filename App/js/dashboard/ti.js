@@ -8,7 +8,7 @@ const ID_TI = 2;
 const firstOptTI = "opt-home-ti";
 const firstOptCallType = "callTypeTI";
 
-const optTIArr = [firstOptTI, "opt-ti-receiver", "opt-report-generate"];
+const optTIArr = [firstOptTI, "opt-ti-receiver", "opt-report-generate", "opt-feedback"];
 const optCallTypeArr = [firstOptCallType, "callTypeCitizen"];
 
 const dashboardOptions = 1;
@@ -30,7 +30,55 @@ let chatWithSectorClick = true;
 var chatOrder = "";
 
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
+    const ownerOptions = ["Kleber", "Diorlan", "Italo"];
+    
+    $("#closeBtn").click(function() {
+        $("#ownerPopUp").css({display: 'none'});
+        $("#popUpOverlay").css({display: 'none'});
+    })
+
+    ownerOptions.forEach((owner, index) => {
+        $("#ownerPopUp .owner-options").append(
+            `<div>
+                <p id="ownerOpt_${index}">${owner}</p>
+            </div>`
+        );
+
+        $(`#ownerOpt_${index}`).click(function(e) {
+            const ownerName = e.currentTarget.innerText;
+            const orderId = $(`#ownerPopUp`).data("orderid");
+
+            const requestData = {
+                'action': 'setOwnerOrder',
+                'data': {
+                    'ownerName': ownerName,
+                    'orderId': orderId
+                }
+            }
+
+            POST(ACTION_URL, requestData).then(function(response) {
+                const idBox = $("#ownerPopUp").data('boxid');
+                
+                if(response) {
+                    $(`#ownerOrderTitle_${idBox}`).
+                        html(`<span>POSSE:</span> ${ownerName}`);
+                    $("#ownerPopUp").css({display: 'none'});
+                    $("#popUpOverlay").css({display: 'none'});
+                }
+            });
+        })
+    })
+
     Object.values(orders).forEach((order) => {
+        $(`#ownerBtn_${order}`).click(function() {
+            $("#popUpOverlay").css({display: 'flex'});
+            $("#ownerPopUp").css({display: 'flex'});
+            $("#ownerPopUp").data('orderid', $(`#orderChat_${order}`).data("userorder-id"));
+            $("#ownerPopUp").data('boxid', order);
+            $("#ownerPopUp .title-owner span")
+                .html($(`#ownerBtn_${order}`).data("username"));
+        });
+
         $(`#orderChat_${order}`).click(function() {
             const loadingChat = $("#loadingChat").css({display: 'flex'});
             const receiverBox = $("#chatSECTORMessages");

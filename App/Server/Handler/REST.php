@@ -98,9 +98,19 @@ class REST {
             $stmt->bindParam(":idUser", $payload->userId, \PDO::PARAM_INT);
             $stmt->execute();
             $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
             if(!is_array($user)) {
                 $this->returnResponse(INVALID_USER_PASS, 
                 "This user is not found!");
+            }
+
+            if(isset($_COOKIE['tokenUser'])) {
+                $cookieExp = $_COOKIE['tokenUser'];
+
+                if($cookieExp < time()) {
+                    header('Location: ' . $_SERVER['REQUEST_URI']);
+                    exit;
+                }
             }
 
             /*if($user['active'] == 0) {
