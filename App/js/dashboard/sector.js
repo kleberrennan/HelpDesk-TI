@@ -7,6 +7,7 @@ const ACTION_URL = "../../Server/Handler/Actions.php";
 const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
 const SUCCESS_CALL_SECTOR ="successCall";
 const CALL_NOT_ATTENDED = "stillCall";
+const OWNER_CALL_RECEIVED = "ownerEstablished";
 
 const firstOptSector = "opt-home";
 const optSectorArr = [firstOptSector, "opt-citizen-call", "opt-support-call", "opt-about"];

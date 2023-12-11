@@ -36,6 +36,7 @@ function POST(url, data) {
             url: url,
             data: data,
             success: function(response) {
+                console.log(response);
                 resolve(response);
             }, error: function(error) {
                 console.error(error);

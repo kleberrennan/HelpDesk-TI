@@ -57,11 +57,20 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
             }
 
             POST(ACTION_URL, requestData).then(function(response) {
+                const dataJSON = JSON.parse(JSON.parse(response));
                 const idBox = $("#ownerPopUp").data('boxid');
+                const requestSocket = {
+                    'action': 'getOwnerOrder',
+                    'ownerName': ownerName,
+                    'userId': $("#ownerPopUp").data('orderid')
+                }
                 
-                if(response) {
+                chatOrder = initChatSocket(ID_TI, null, true, requestSocket, true);
+
+                if(dataJSON.response.message) {
                     $(`#ownerOrderTitle_${idBox}`).
                         html(`<span>POSSE:</span> ${ownerName}`);
+                    
                     $("#ownerPopUp").css({display: 'none'});
                     $("#popUpOverlay").css({display: 'none'});
                 }

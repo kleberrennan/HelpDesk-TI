@@ -108,8 +108,10 @@ class REST {
                 $cookieExp = $_COOKIE['tokenUser'];
 
                 if($cookieExp < time()) {
-                    header('Location: ' . $_SERVER['REQUEST_URI']);
-                    exit;
+                    $response = array(
+                        "cookieExpired" => true
+                    );
+                    $this->returnResponse(COOKIE_EXPIRED, json_encode($response));
                 }
             }
 

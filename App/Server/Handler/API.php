@@ -200,7 +200,7 @@ class API extends REST {
         $order->setOwnerName($this->param["ownerName"]);
         $order->setIdUser($this->param["orderId"]);
         $result = $order->setOwnerById();
-
+        
         if(!is_bool($result)) {
             $this->returnResponse(ORDER_OWNER_RESULT_IS_NOT_BOOL,
             "Order Owner Result is not a bool!");

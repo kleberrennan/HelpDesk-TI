@@ -1,4 +1,6 @@
-function initChatSocket(idToRegister, receiverBox = null, isTI = false, action = null) {    
+var isActionSent = false;
+
+function initChatSocket(idToRegister, receiverBox = null, isTI = false, action = null, randId = false) {    
     var chatOrder = new WebSocket("ws://127.0.0.1:8080");
 
     chatOrder.onopen = function(e) {
@@ -9,6 +11,12 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, action =
 
         if(action != null) {
             chatOrder.send(JSON.stringify(action));
+            chatOrder.close();
+            return;
+        } 
+        
+        if(randId) {
+            return;
         }
 
         chatOrder.send(JSON.stringify(registerUser));
@@ -16,16 +24,31 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, action =
 
     chatOrder.onmessage = function(e) {
         const dataJSON = JSON.parse(e.data);
+        console.dir(dataJSON);
         if(isTI) {
-            console.log(receiverBox.data("currentChatOrder"));
-            console.dir(dataJSON);
-            if(receiverBox.data("currentChatOrder") == dataJSON.srcId) {
+            if(receiverBox != null && receiverBox.data("currentChatOrder") == dataJSON.srcId) {
                 insertDataToChatBox(receiverBox, dataJSON.message, false);
             }
         } else {
-            insertDataToChatBox(receiverBox, dataJSON.message, false);
+            if(dataJSON['action']) {
+                const action = dataJSON['action'];
+                console.log(action)
+                switch(action) {
+                    case 'getOwnerOrder':
+                        if(dataJSON && 'ownerName' in dataJSON) {
+                            var ownerName = dataJSON['ownerName'];
+                            showMsg("#popUpOwnerTI", `${ownerName} atendeu o chamado!`, OWNER_CALL_RECEIVED);
+                        } else { 
+                            throw new Error("ownerName property doesn't exists!");
+                        };
+                    
+                        break;
+                }
+            } else {
+                insertDataToChatBox(receiverBox, dataJSON.message, false);
+            }
         }
     }
-
+    
     return chatOrder;
 }

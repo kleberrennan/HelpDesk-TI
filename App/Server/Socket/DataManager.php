@@ -1,6 +1,8 @@
 <?php
 namespace ITERMA\Socket;
 
+error_reporting(0);
+
 use \Ratchet\ConnectionInterface;
 use \Ratchet\MessageComponentInterface;
 use \ITERMA\Agent\Database;
@@ -30,11 +32,12 @@ class DataManager implements MessageComponentInterface {
          $GREEN="\033[0;32m";
          $YELLOW="\033[0;33m";
          $NC="\033[0m";
+
          switch($data["action"]) {
             case "registerUser":
                if(!isset($data["srcId"])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
-                  exit(1);
+                  return;
                }
 
                $userId = $data["srcId"];
@@ -61,28 +64,52 @@ class DataManager implements MessageComponentInterface {
                   }
                }
                break;
+            case "getOwnerOrder":
+               if(!isset($data['ownerName'])) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
+                  return;
+               } else if(!isset($data['userId'])) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "userId was not defined!" . PHP_EOL . $NC;
+                  return;
+               }
+               
+               foreach($this->users as $client) {
+                  if($client->userId == $from->userId) continue;
+                  if($client->userId == $data['userId']) {
+                     $response = array(
+                        'action' => $data['action'],
+                        'ownerName' => $data['ownerName']
+                     );
+                     
+                     echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner defined to " . $data["userId"] . PHP_EOL . $NC;
+
+                     $client->send(json_encode($response));
+                  }
+               }
+               break;
             case "sendOrderMessage":
                if(!isset($data["srcId"])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
-                  exit(1);
+                  return;
                }
 
-               $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
-               $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
-               $stmt->bindParam(":targetUser", $data["targetId"], \PDO::PARAM_INT);
-               $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
-               $stmt->execute();
-               
-               $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-               if(!is_array($result)) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
-                  exit(1);
-               }
                foreach($this->users as $user) {
                   if($user->userId == $from->userId) continue;
                   if($user->userId == $data['targetId']) {
                      $user->send(json_encode($data));
+
+                     $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
+                     $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
+                     $stmt->bindParam(":targetUser", $data["targetId"], \PDO::PARAM_INT);
+                     $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
+                     $stmt->execute();
+                     
+                     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                     if(!is_array($result)) {
+                        echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
+                        return;
+                     }
                   }      
                };
                break;
@@ -94,10 +121,17 @@ class DataManager implements MessageComponentInterface {
       $GREEN="\033[0;32m";
       $YELLOW="\033[0;33m";
       $NC="\033[0m";
+      $connId = '';
 
+      if($conn->userId != "") {
+         $connId = $conn->userId;
+      } else {
+         $connId = $conn->resourceId;
+      }
+
+      echo $YELLOW . "[Socket Server]: " . $GREEN . "Client {$connId} leaves the connection!" . PHP_EOL . $NC;
+   
       $this->users->detach($conn);
-
-      echo $YELLOW . "[Socket Server]: " . $GREEN . "Client {$conn->userId} leaves the connection!" . PHP_EOL . $NC;
    }
 
    public function onError(ConnectionInterface $conn, \Exception $e) {

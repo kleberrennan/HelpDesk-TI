@@ -38,7 +38,7 @@ class Order {
     public function setOwnerById() {
         $ownerName = $this->getOwnerName();
         $orderId = $this->getIdUser();
-
+        $response = '';
         $sql = "UPDATE orderSector 
                 SET ownercall = :ownerName 
                 WHERE authorcallid = :idUser";
@@ -49,9 +49,10 @@ class Order {
 
         $stmt->execute();
 
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        return $result;
+        if($stmt->rowCount() > 0) {
+            $response = true;
+        }
+        return $response;
     }
     public function listAll() {
         try {

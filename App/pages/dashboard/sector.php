@@ -156,6 +156,12 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                 </div>
             </div>
             <div class="container-wrapper center-container-flex-column" id="supportCallTI">
+                <div id="popUpOwnerTI" class="popUpOwner">
+                    <div class="title-popUp">TI</div>
+                    <div class="description-ti">
+                        <p></p>
+                    </div>
+                </div>
                 <div class="img-support-ti">
                     <img src="../../assets/dashboard/sector/tiSupport.png" alt="ICON">
                 </div>

@@ -1,9 +1,10 @@
 function showMsg(idContainer, message, typeMsg) {
+    const isTypeMsg = typeMsg != undefined && typeMsg != null;
     var imgContainer = '';
 
     if(isAnimateErr == false) {
         isAnimateErr = true;
-        if(typeMsg != undefined && typeMsg != null) {
+        if(isTypeMsg) {
             switch(typeMsg) {
                 case SUCCESS_CALL_SECTOR:
                     imgContainer = '<img src="../../assets/dashboard/sector/shyDev.png" alt="Success Call Sector" class="img-call">';
@@ -64,16 +65,26 @@ function showMsg(idContainer, message, typeMsg) {
                             'width': '5em',
                             'height': '5em',
                         })
-                        break;
+                            break;
+                        case OWNER_CALL_RECEIVED:
+                            $(idContainer).css({
+                                display: "flex"
+                            })
+                            break;
             }
         }
 
-        $(`${idContainer} .description-err p`).text(message);
+        if(OWNER_CALL_RECEIVED) {
+            $(`${idContainer} .description-ti p`).text(message);
+        } else {
+            $(`${idContainer} .description-err p`).text(message);
+        }
         $(idContainer).css({display: 'flex', opacity: '100', 'margin-right': '0'}).animate({
             opacity: '90',
             'margin-right': '1em'
         }, 1000, function() {
-            $(idContainer).css({display: 'none'});
+            if(OWNER_CALL_RECEIVED) $(idContainer).css({display: 'flex'});
+            else $(idContainer).css({display: 'none'});
             isAnimateErr = false;
         });
     }
