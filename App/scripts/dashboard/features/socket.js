@@ -32,7 +32,7 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, action =
         } else {
             if(dataJSON['action']) {
                 const action = dataJSON['action'];
-                console.log(action)
+                
                 switch(action) {
                     case 'getOwnerOrder':
                         if(dataJSON && 'ownerName' in dataJSON) {
@@ -41,12 +41,12 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, action =
                         } else { 
                             throw new Error("ownerName property doesn't exists!");
                         };
-                    
+                        break;
+                    case 'sendOrderMessage':
+                        insertDataToChatBox(receiverBox, dataJSON.message, false);
                         break;
                 }
-            } else {
-                insertDataToChatBox(receiverBox, dataJSON.message, false);
-            }
+            };
         }
     }
     

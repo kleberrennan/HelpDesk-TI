@@ -91,6 +91,7 @@ $(document).ready(function() {
                         }
                     },
                     error: function(err) {
+                        console.dir(err);
                         console.error("Error: " + err);
                     }
                 })

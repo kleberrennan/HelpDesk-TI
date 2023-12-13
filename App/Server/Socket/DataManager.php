@@ -41,12 +41,21 @@ class DataManager implements MessageComponentInterface {
                }
 
                $userId = $data["srcId"];
-
+               
                $from->userId = $userId;
-   
-               $this->users->attach($from);
+               $from->userInstance = 0;
 
-               echo $YELLOW . "[Socket Server]: " . $GREEN . $from->userId . " Established a connection!" . PHP_EOL . $NC;
+               foreach($this->users as $storedClient) {
+                  if($storedClient->userId == $userId) {
+                     $userInstance = isset($storedClient->userInstance) ? $storedClient->userInstance + 1 : 1;
+                     $from->userInstance = $userInstance;
+                     break;
+                  }
+               }               
+
+               $this->users->attach($from);
+               
+               echo $YELLOW . "[Socket Server]: " . $GREEN . $from->userId . " with Instance: " . $from->userInstance . " Established a connection!" . PHP_EOL . $NC;
             
                break;
 
@@ -93,23 +102,23 @@ class DataManager implements MessageComponentInterface {
                   return;
                }
 
+               $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
+               $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
+               $stmt->bindParam(":targetUser", $data["targetId"], \PDO::PARAM_INT);
+               $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
+               $stmt->execute();
+               
+               $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+               if(!is_array($result)) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
+                  return;
+               }
+
                foreach($this->users as $user) {
                   if($user->userId == $from->userId) continue;
                   if($user->userId == $data['targetId']) {
                      $user->send(json_encode($data));
-
-                     $stmt = $this->database->prepare("INSERT INTO chat(fromUserId, toUserId, messageUser) VALUES(:srcUser, :targetUser, :messageUser)");
-                     $stmt->bindParam(":srcUser", $data["srcId"], \PDO::PARAM_INT);
-                     $stmt->bindParam(":targetUser", $data["targetId"], \PDO::PARAM_INT);
-                     $stmt->bindParam(":messageUser", $data["message"], \PDO::PARAM_STR);
-                     $stmt->execute();
-                     
-                     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-                     if(!is_array($result)) {
-                        echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
-                        return;
-                     }
                   }      
                };
                break;

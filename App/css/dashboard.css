@@ -249,7 +249,6 @@
 
 #opt-support-call-content {
     flex-direction: row;
-    padding-right: 0 !important;
 }
 
 #chatWithTI {
@@ -258,6 +257,12 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
+}
+
+#chatWithTI img {
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
 }
 
 #supportCallTI {
@@ -315,6 +320,8 @@
 }
 
 .title-chat-ti {
+    display: flex;
+    justify-content: space-between;
     color: #0F4573;
     width: inherit;
     font-size: 3em;
@@ -455,6 +462,7 @@
 .box-input-calls-ti {
     height: 88vh;
     width: inherit;
+    overflow-y: scroll;
     border: 0.5em solid #00C0FF;
     background-color: #fff;
 }

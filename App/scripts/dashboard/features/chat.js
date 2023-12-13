@@ -12,31 +12,36 @@ function getChatMessages(targetId, receiverBox) {
         }
     }
 
-    POST("../../Server/Handler/Actions.php", requestUser)
+    POST(config.server.ACTION_URL, requestUser)
         .then(function(response) {
+            console.log(response)
             const data = JSON.parse(JSON.parse(response));
 
             var message = data.response.message;
+            
+            if(!message) {
+                return;
+            } else {
+                message.replace(/\\n/g, '\n');
 
-            message.replace(/\\n/g, '\n');
-
-            if(message.slice(-5) == "#%SEP") {
-                message = message.slice(0, -5);
-            }
-
-            let showMessage = message.split(/#%SEP(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(part => part.trim());
-
-            showMessage.forEach((msg) => {
-                var srcId = parseInt(msg.slice(0, 1));
-                var formatText = msg.slice(2);
-
-                //console.log("srcId: " + srcId + " targetId: " + targetId)
-                if(srcId != targetId) {
-                    insertDataToChatBox(receiverBox, formatText, true);
-                } else {
-                    insertDataToChatBox(receiverBox, formatText, false);
+                if(message.slice(-5) == "#%SEP") {
+                    message = message.slice(0, -5);
                 }
-            })
+
+                let showMessage = message.split(/#%SEP(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(part => part.trim());
+
+                showMessage.forEach((msg) => {
+                    var srcId = parseInt(msg.slice(0, 1));
+                    var formatText = msg.slice(2);
+
+                    //console.log("srcId: " + srcId + " targetId: " + targetId)
+                    if(srcId != targetId) {
+                        insertDataToChatBox(receiverBox, formatText, true);
+                    } else {
+                        insertDataToChatBox(receiverBox, formatText, false);
+                    }
+                })
+            }
         })
 }
 
@@ -45,12 +50,12 @@ function startChatFeature(targetChat, checkClick) {
     const CHAT_CONTAINER = 1;
 
     let toggleContainerIDs = [];
-
+    console.log(conf.chat.TICHAT)
     switch (targetChat) {
-        case TICHAT:
-            toggleContainerIDs = ['#supportCallTI', '#chatWithTI'];
+        case conf.chat.TICHAT:
+            toggleContainerIDs = ['#supportCallTI', '#chatWithTI', '#chatTIMessages'];
             break;
-        case SECTORCHAT:
+        case conf.chat.SECTORCHAT:
             $("#menuSwitchCallType").css({ display: checkClick ? 'none' : 'flex' });
             toggleContainerIDs = ['#receiveCallsTI', '#chatWithSector'];
             break;
@@ -60,13 +65,14 @@ function startChatFeature(targetChat, checkClick) {
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'flex' });
         if($("body").data("page") == "sector") {
-            $("#openChatWithSupport").css({display: 'none'});
+            getChatMessages(conf.values.ID_TI, $(toggleContainerIDs[conf.chat.RECEIVER_BOX]));
+            $('#panelRightTI').css({display: 'none'});
         }
     } else {
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'flex', 'flex-direction': 'column' });
         if($("body").data("page") == "sector") {
-            $("#openChatWithSupport").css({display: 'flex'});
+            $('#panelRightTI').css({display: 'flex'});
         }
     }
 

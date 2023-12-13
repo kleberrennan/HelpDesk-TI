@@ -67,7 +67,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' connect-src 'self' ws://127.0.0.1:8080/ wss://127.0.0.1:8080/; script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
+        content="default-src 'self' connect-src 'self' ws://10.99.18.117:8080 ws://127.0.0.1:8080/ wss://127.0.0.1:8080/; script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
     />
     <title>Dashboard: Setor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -77,7 +77,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <link rel="stylesheet" href="../../css/dashboard.css"/>
     <link rel="stylesheet" href="../../css/mobile.css"/>
     <link rel="stylesheet" href="../../css/animate.css"/>
-    <script id="autoload" src="../../js/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
+    <script id="autoload" src="../../scripts/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
 <body data-page-type="dashboard" data-page="sector">
     <div class="root">
@@ -144,7 +144,10 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                 </div>
             </div>
             <div id="chatWithTI" class="container-wrapper">
-                <div class="title-chat-ti center-container-flex-column">CHAT COM TI</div>
+                <div class="title-chat-ti center-container-flex-row">
+                    <p>- CHAT COM TI</p>
+                    <img id="closeTIChat" src="../../assets/dashboard/support/closeIcon.png" alt="">
+                </div>
                 <div class="messages-container" id="chatTIMessages">
                     
                 </div>
@@ -207,7 +210,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                     
                 </div>
             </div>  
-            <div class="panel-right-support-call">
+            <div id="panelRightTI" class="panel-right-support-call">
                 <img src="../../assets/dashboard/sector/callIcon.png" alt="" id="openChatWithSupport" data-id-user=<?php echo $_SESSION["userId"]?>>
             </div>
         </div>

@@ -8,7 +8,7 @@ define("INTEGER", '2');
 define("STRING", '3');
 
 define('COOKIE_TOKEN_USER', "tokenUser");
-define("URL_SERVER", "http://localhost/App/Server/index.php");
+define("URL_SERVER", "http://127.0.0.1/App/Server/index.php");
 
 define("REQUEST_METHOD_NOT_VALID", 100);
 define("REQUEST_CONTENTTYPE_NOT_VALID", 101);

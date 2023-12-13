@@ -122,6 +122,15 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
             currentIdOrder = $(`#orderChat_${order}`).data("userorder-id");
             chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
         })
+    
+        $(`#finishCall_${order}`).click(function() {
+            const finishOrder = {
+                action: "deleteOrder",
+                data: {
+                    idOrder: order
+                }
+            }
+        })
     })
 });
 
@@ -175,30 +184,19 @@ $("#messageChatInput").click(function () {
 });
 
 if (chatWithSectorClick) {
-    $("#closeChatSector").click(function () {
+    $(conf.chat.CLOSE_CHAT_SECTOR).click(function () {
         chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
         $("#chatSECTORMessages .message-recipient, #chatSECTORMessages .message-recipient-external").remove();
     });
 
-    $("#sendInputMessageSECTOR").click(function () {
-        const inputVal = $("#messageChatInput").val();
-
+    $(conf.chat.SEND_CHAT_TI).click(function () {
         sendToSocketMessage($("#chatSECTORMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
     });
 }
 
 
 $("#opt-logout-ti").click(function() {
-    $.ajax({
-        method: 'POST',
-        url: ACTION_URL,
-        data: {
-            action: "logout"
-        },
-        success: function(response) {
-            window.location.reload();
-        }, error: function(err) {
-            console.error(err);
-        }
+    POST(config.server.ACTION_URL, {'action': 'logout'}).then(function() {
+        window.location.reload();
     })
 })

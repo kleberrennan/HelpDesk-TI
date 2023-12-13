@@ -30,7 +30,7 @@ function generateOrdersBoxes(idContainer, url) {
                                             </div>
                                             <div class='center-container-flex-row'>
                                                 <img src="../../assets/dashboard/support/workerTIOpt.png" alt="ownerCall" id="ownerBtn_${order.idcall}" data-userName=${order.userName}>
-                                                <img src="../../assets/dashboard/support/finishTIOpt.png" alt="finishCall" id="finishCall_call_1">
+                                                <img src="../../assets/dashboard/support/finishTIOpt.png" alt="finishCall" id="finishCall_${order.idcall}">
                                             </div>
                                         </div>
                                     </div>

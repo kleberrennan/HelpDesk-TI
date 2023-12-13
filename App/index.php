@@ -8,7 +8,7 @@ $nonceNumber = base64_encode(random_bytes(16));
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' script-src 'self' 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com"
+        content="default-src 'self'; script-src 'self' 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com"
     />
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -18,7 +18,7 @@ $nonceNumber = base64_encode(random_bytes(16));
     <title>CI: LOGAR</title>
 
     <link rel="stylesheet" href="./css/auth.css">
-    <script id="autoload" src="./js/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
+    <script id="autoload" src="./scripts/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
 <body data-page-type="auth" data-page="index">
     <div class="root center-container-flex-column">

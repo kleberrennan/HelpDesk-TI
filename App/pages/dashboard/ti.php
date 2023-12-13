@@ -64,7 +64,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self'; connect-src 'self' ws://localhost:8080 ws://127.0.0.1:8080 wss://127.0.0.1:8080; script-src 'self' https://code.jquery.com 'nonce-<?php echo $nonceNumber?>';"
+        content="default-src 'self'; connect-src 'self' ws://10.99.18.117:8080 ws://localhost:8080 ws://127.0.0.1:8080 wss://127.0.0.1:8080; script-src 'self' https://code.jquery.com 'nonce-<?php echo $nonceNumber?>';"
     />
     <title>CI: SETOR</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
@@ -73,7 +73,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
 
     <link rel="stylesheet" href="../../css/dashboard.css"/>
     <link rel="stylesheet" href="../../css/mobile.css"/>
-    <script id="autoload" src="../../js/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
+    <script id="autoload" src="../../scripts/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
 <body data-page-type="dashboard" data-page="ti">
     <div class="root">

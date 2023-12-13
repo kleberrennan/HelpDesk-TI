@@ -41,7 +41,7 @@ function isRequestedCall(btnId, idSector, isSector = false) {
             if(dataJSON.response.message == true) {
                 $(btnId).css({cursor: 'pointer', opacity: '1'});
                 $(btnId).click(function () {
-                    checkClick = startChatFeature(TICHAT, !checkClick);
+                    checkClick = startChatFeature(config.pages.sector.chat.TICHAT, !checkClick);
                 });
 
                 webSocket = initChatSocket(userId, receiverBox, false);

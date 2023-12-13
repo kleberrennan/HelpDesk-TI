@@ -1,12 +1,14 @@
 function showMsg(idContainer, message, typeMsg) {
+    const conf = config.pages.sector.stateCall;
     const isTypeMsg = typeMsg != undefined && typeMsg != null;
+    var isOwnerCall = false;
     var imgContainer = '';
 
     if(isAnimateErr == false) {
         isAnimateErr = true;
         if(isTypeMsg) {
             switch(typeMsg) {
-                case SUCCESS_CALL_SECTOR:
+                case conf.SUCCESS_CALL_SECTOR:
                     imgContainer = '<img src="../../assets/dashboard/sector/shyDev.png" alt="Success Call Sector" class="img-call">';
 
                     $(idContainer).css({
@@ -15,7 +17,7 @@ function showMsg(idContainer, message, typeMsg) {
                         'color': '#fff',
                     })
 
-                    $(`${idContainer} .description-err`).css({
+                    idContainer.find(".description-err").css({
                         'display': 'flex',
                         'flex-direction': 'row',
                         'justify-content': 'center',
@@ -24,19 +26,19 @@ function showMsg(idContainer, message, typeMsg) {
                         'color': '#fff'
                     });
 
-                    $(`${idContainer} .title-err`).css({
+                    idContainer.find(".title-err").css({
                         'display': 'none',
                     })
-                    if($(`${idContainer} .img-call`).length == 0) {
-                        $(`${idContainer} .description-err`).prepend(imgContainer);
+                    if($(idContainer).find(".img-call").length == 0) {
+                        $(idContainer).find(".description-err").prepend(imgContainer);
                     }
 
-                    $(`${idContainer} .img-call`).css({
+                    $(idContainer).find(".img-call").css({
                         'width': '5em',
                         'height': '5em',
                     })
                     break;
-                    case CALL_NOT_ATTENDED:
+                    case conf.CALL_NOT_ATTENDED:
                         imgContainer = '<img src="../../assets/dashboard/sector/waitCall.png" alt="Success Call Sector" class="img-call">';
 
                         $(idContainer).css({
@@ -45,7 +47,7 @@ function showMsg(idContainer, message, typeMsg) {
                             'color': '#fff',
                         })
 
-                        $(`${idContainer} .description-err`).css({
+                        $(idContainer).find(".description-err").css({
                             'display': 'flex',
                             'flex-direction': 'row',
                             'justify-content': 'center',
@@ -54,37 +56,37 @@ function showMsg(idContainer, message, typeMsg) {
                             'color': '#fff'
                         });
 
-                        $(`${idContainer} .title-err`).css({
+                        $(idContainer).find(".title-err").css({
                             'display': 'none',
                         })
-                        if($(`${idContainer} .img-call`).length == 0) {
-                            $(`${idContainer} .description-err`).prepend(imgContainer);
+                        if($(idContainer).find(".img-call").length == 0) {
+                            $(idContainer).find(".description-err").prepend(imgContainer);
                         }
 
-                        $(`${idContainer} .img-call`).css({
+                        $(idContainer).find(".img-call").css({
                             'width': '5em',
                             'height': '5em',
                         })
                             break;
-                        case OWNER_CALL_RECEIVED:
+                        case conf.OWNER_CALL_RECEIVED:
+                            isOwnerCall = true;
                             $(idContainer).css({
                                 display: "flex"
                             })
                             break;
             }
         }
+        console.log(isOwnerCall);
+        !isOwnerCall ? 
+            $(idContainer).find(".description-err p").text(message)
+            :
+            $(idContainer).find(".description-ti p").text(message)
 
-        if(OWNER_CALL_RECEIVED) {
-            $(`${idContainer} .description-ti p`).text(message);
-        } else {
-            $(`${idContainer} .description-err p`).text(message);
-        }
         $(idContainer).css({display: 'flex', opacity: '100', 'margin-right': '0'}).animate({
             opacity: '90',
             'margin-right': '1em'
         }, 1000, function() {
-            if(OWNER_CALL_RECEIVED) $(idContainer).css({display: 'flex'});
-            else $(idContainer).css({display: 'none'});
+            $(idContainer).css(isOwnerCall ? {'display': 'flex'} : {'display': 'none'});
             isAnimateErr = false;
         });
     }
