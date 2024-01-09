@@ -1,9 +1,9 @@
+const conf = config.pages.ti;
+
 const TICHAT = 1;
 const SECTORCHAT = 2;
 const DEFAULT_VALUE = 0;
 const ACTION_URL = "../../Server/Handler/Actions.php";
-
-const ID_TI = 2;
 
 const firstOptTI = "opt-home-ti";
 const firstOptCallType = "callTypeTI";
@@ -32,22 +32,34 @@ var chatOrder = "";
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
     const ownerOptions = ["Kleber", "Diorlan", "Italo"];
     
-    $("#closeBtn").click(function() {
-        $("#ownerPopUp").css({display: 'none'});
-        $("#popUpOverlay").css({display: 'none'});
+    $(conf.buttons.CLOSE_BTN_OWNER).click(function() {
+        $(conf.popups.OWNER_POPUP).css({display: 'none'});
+        $(conf.popups.OVERLAY).css({display: 'none'});
+    })
+
+    orders.forEach((ownerTitleId) => { 
+        const requestSocket = {
+            'action': 'registerUser',
+            'type': 'order',
+            'srcId': config.server.idChat.ID_TI,
+            'ownerId': ownerTitleId
+        }
+
+        chatOrder = initChatSocket(ownerTitleId, null, true, requestSocket, true);
     })
 
     ownerOptions.forEach((owner, index) => {
-        $("#ownerPopUp .owner-options").append(
-            `<div>
-                <p id="ownerOpt_${index}">${owner}</p>
-            </div>`
-        );
+        $(conf.popups.OWNER_POPUP)
+            .find('.owner-options')
+                .append(
+                    `<div>
+                        <p id="ownerOpt_${index}">${owner}</p>
+                    </div>`
+                );
 
         $(`#ownerOpt_${index}`).click(function(e) {
             const ownerName = e.currentTarget.innerText;
             const orderId = $(`#ownerPopUp`).data("orderid");
-
             const requestData = {
                 'action': 'setOwnerOrder',
                 'data': {
@@ -58,21 +70,24 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
             POST(ACTION_URL, requestData).then(function(response) {
                 const dataJSON = JSON.parse(JSON.parse(response));
-                const idBox = $("#ownerPopUp").data('boxid');
-                const requestSocket = {
+                const idBox = $(conf.popups.OWNER_POPUP).data('boxid');
+
+                /*const requestSocket = {
                     'action': 'getOwnerOrder',
                     'ownerName': ownerName,
-                    'userId': $("#ownerPopUp").data('orderid')
-                }
+                    'ownerTitleId': idBox,
+                    'userId': $(conf.popups.OWNER_POPUP).data('orderid')
+                }*/
                 
-                chatOrder = initChatSocket(ID_TI, null, true, requestSocket, true);
+                //chatOrder = initChatSocket(idBox, null, true, requestSocket, true);
 
                 if(dataJSON.response.message) {
+                    console.dir(idBox)
                     $(`#ownerOrderTitle_${idBox}`).
                         html(`<span>POSSE:</span> ${ownerName}`);
                     
-                    $("#ownerPopUp").css({display: 'none'});
-                    $("#popUpOverlay").css({display: 'none'});
+                    $(conf.popups.OWNER_POPUP).css({display: 'none'});
+                    $(conf.popups.OVERLAY).css({display: 'none'});
                 }
             });
         })
@@ -80,17 +95,17 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
     Object.values(orders).forEach((order) => {
         $(`#ownerBtn_${order}`).click(function() {
-            $("#popUpOverlay").css({display: 'flex'});
-            $("#ownerPopUp").css({display: 'flex'});
-            $("#ownerPopUp").data('orderid', $(`#orderChat_${order}`).data("userorder-id"));
-            $("#ownerPopUp").data('boxid', order);
-            $("#ownerPopUp .title-owner span")
+            $(conf.popups.OVERLAY).css({display: 'flex'});
+            $(conf.popups.OWNER_POPUP).css({display: 'flex'});
+            $(conf.popups.OWNER_POPUP).data('orderid', $(`#orderChat_${order}`).data("userorder-id"));
+            $(conf.popups.OWNER_POPUP).data('boxid', order);
+            $(conf.popups.OWNER_POPUP).find(".title-owner span")
                 .html($(`#ownerBtn_${order}`).data("username"));
         });
 
         $(`#orderChat_${order}`).click(function() {
             const loadingChat = $("#loadingChat").css({display: 'flex'});
-            const receiverBox = $("#chatSECTORMessages");
+            const receiverBox = $(conf.chat.RECEIVER_BOX);
             const idUserOrder = $(`#orderChat_${order}`).data("userorder-id");
             const userName = $(`#orderChat_${order}`).data('username');
 
@@ -111,11 +126,11 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                         isRequested: true
                     }
 
-                    chatOrder = initChatSocket(ID_TI, receiverBox, true, dataToSend);
+                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend);
                 } else {
                     loadingChat.css({display: 'none'});
                     getChatMessages(idUserOrder, receiverBox);
-                    chatOrder = initChatSocket(ID_TI, receiverBox, true)
+                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true)
                 }
             })
 
@@ -140,22 +155,22 @@ var newSize = DEFAULT_VALUE_SIZE_TEXTAREA;
 var isOnlyEnter = false;
 var checkClick = false;
 
-$("#messageChatInput").on("keydown", function (e) {
-    const textarea = $("#messageChatInput");
+$(conf.chat.MESSAGE_INPUT).on("keydown", function (e) {
+    const textarea = $(conf.chat.MESSAGE_INPUT);
     const key = e.originalEvent.key;
 
     const result = handleKeydown
     (
         textarea, 
         key, 
-        DEFAULT_VALUE_SIZE_TEXTAREA, 
-        multiplierHeightChat, 
+        config.pages.constants.DEFAULT_VALUE_SIZE_TEXTAREA, 
+        config.pages.constants.multiplierHeightChat, 
         true, 
-        ID_TI, 
+        config.server.idChat.ID_TI, 
         currentIdOrder, 
         chatOrder,
-        $("#chatSECTORMessages"),
-        ID_TI
+        $(conf.chat.RECEIVER_BOX),
+        config.server.idChat.ID_TI
         );
 
     shiftPressed = result.shiftPressed;
@@ -163,8 +178,8 @@ $("#messageChatInput").on("keydown", function (e) {
     isOnlyEnter = result.isOnlyEnter;
 });
 
-$("#messageChatInput").on("input", function () {
-    const textarea = $("#messageChatInput");
+$(conf.chat.MESSAGE_INPUT).on("input", function () {
+    const textarea = $(conf.chat.MESSAGE_INPUT);
 
     if (isOnlyEnter) {
         textarea.val("");
@@ -173,29 +188,30 @@ $("#messageChatInput").on("input", function () {
     textarea.text(textarea.val());
 });
 
-$("#messageChatInput").click(function () {
-    const inputVal = $("#messageChatInput").val();
+$(conf.chat.MESSAGE_INPUT).click(function () {
+    const inputVal = $(conf.chat.MESSAGE_INPUT).val();
     if (inputVal === "") {
         return;
     } else {
-        sendToSocketMessage($("#chatTIMessages"), chatOrder, ID_TI, currentIdOrder);
-        $("#messageChatInput").val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
+        sendToSocketMessage($(conf.chat.RECEIVER_BOX), chatOrder, config.server.idChat.ID_TI, currentIdOrder);
+        $(conf.chat.MESSAGE_INPUT).val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
     }
 });
 
 if (chatWithSectorClick) {
-    $(conf.chat.CLOSE_CHAT_SECTOR).click(function () {
+    $(conf.chat.CLOSE_CHAT_TI).click(function () {
         chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
-        $("#chatSECTORMessages .message-recipient, #chatSECTORMessages .message-recipient-external").remove();
+        $(conf.chat.RECEIVER_BOX).find('.message-recipient', '.message-recipient-external').remove();
     });
 
-    $(conf.chat.SEND_CHAT_TI).click(function () {
-        sendToSocketMessage($("#chatSECTORMessages"), $("#messageChatInput"), chatOrder, ID_TI, currentIdOrder);
+    $(conf.chat.SEND_CHAT_SECTOR).click(function () {
+        insertDataToChatBox($(conf.chat.RECEIVER_BOX), $(conf.chat.MESSAGE_INPUT).val(), true);
+        sendToSocketMessage($(conf.chat.MESSAGE_INPUT), chatOrder, config.server.idChat.ID_TI, currentIdOrder);
     });
 }
 
 
-$("#opt-logout-ti").click(function() {
+$(conf.buttons.LOGOUT).click(function() {
     POST(config.server.ACTION_URL, {'action': 'logout'}).then(function() {
         window.location.reload();
     })

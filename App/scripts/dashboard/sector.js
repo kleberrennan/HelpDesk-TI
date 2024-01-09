@@ -7,7 +7,7 @@ const receiverBox = $(conf.chat.RECEIVER_BOX);
 var currentOpt = conf.options.firstOptSector;
 var shiftPressed = false;
 var counterSpace = 1;
-var newSize = conf.values.DEFAULT_VALUE_SIZE_TEXTAREA;
+var newSize = config.pages.constants.DEFAULT_VALUE_SIZE_TEXTAREA;
 var isOnlyEnter = false;
 var checkClick = false;
 var isAnimateErr = false;
@@ -21,8 +21,8 @@ $(document).ready(function() {
     if(webSocket instanceof WebSocket) {
         webSocket = null;
     }
-
-    currentOpt = initOptions(conf.options.optSectorArr, currentOpt, conf.values.dashboardOptions);
+    
+    currentOpt = initOptions(conf.options.optSectorArr, currentOpt, config.pages.constants.dashboardOptions);
     
     webSocket = isRequestedCall(conf.chat.CHAT_TI, userId, true);
 
@@ -41,11 +41,11 @@ $(document).ready(function() {
             (
                 textarea, 
                 key, 
-                conf.values.DEFAULT_VALUE_SIZE_TEXTAREA, 
-                conf.values.multiplierHeightChat, 
+                config.pages.constants.DEFAULT_VALUE_SIZE_TEXTAREA, 
+                config.pages.constants.multiplierHeightChat, 
                 false, 
                 idToRegister, 
-                conf.values.ID_TI, 
+                config.pages.constants.ID_TI, 
                 webSocket, 
                 $(conf.chat.RECEIVER_BOX),
                 Object.keys(openConnection)[0]);
@@ -70,7 +70,7 @@ $(document).ready(function() {
         if (inputVal === "") {
             return;
         } else {
-            sendToSocketMessage($(conf.chat.INPUT_CHAT_TI), $(conf.chat.INPUT_CHAT_TI), conf.values.ID_TI, $(conf.chat.CHAT_TI).data('id-user'));
+            sendToSocketMessage($(conf.chat.INPUT_CHAT_TI), $(conf.chat.INPUT_CHAT_TI), config.pages.constants.ID_TI, $(conf.chat.CHAT_TI).data('id-user'));
             $(conf.INPUT_CHAT_TI).val('').val().replace(/(\r\n|\n|\r)/gm, '').trim();
         }
     });

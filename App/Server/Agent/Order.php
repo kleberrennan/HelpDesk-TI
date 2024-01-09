@@ -102,6 +102,26 @@ class Order {
         }
     }
 
+    public function checkOwnerById() {
+        try {
+            $userId = $this->getIdUser();
+            $sql = "SELECT ownercall FROM orderSector WHERE sectorId = :idUser";
+            $stmt = $this->dbConn->prepare($sql);
+            $stmt->bindParam(':idUser', $userId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if($result['ownercall'] == null) {
+                $result = false;
+            }
+
+            return $result;
+        } catch(\PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        } 
+    }
+
     public function checkRequest() {
         try {
             $userId = $this->getIdUser();

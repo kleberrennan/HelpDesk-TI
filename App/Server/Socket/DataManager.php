@@ -44,14 +44,19 @@ class DataManager implements MessageComponentInterface {
                
                $from->userId = $userId;
                $from->userInstance = 0;
-
                foreach($this->users as $storedClient) {
                   if($storedClient->userId == $userId) {
                      $userInstance = isset($storedClient->userInstance) ? $storedClient->userInstance + 1 : 1;
                      $from->userInstance = $userInstance;
                      break;
                   }
-               }               
+               }
+               var_dump($data);
+               if(isset($data["type"]) && $data["type"] == "order") {
+                  $orderId = $data["ownerId"];
+                  $from->orderId = $orderId;
+                  echo $YELLOW . "[TI]: " . $GREEN . $from->orderId . " order was set to " . $data["srcId"] . " user" . PHP_EOL . $NC;
+               }
 
                $this->users->attach($from);
                
@@ -75,8 +80,8 @@ class DataManager implements MessageComponentInterface {
                break;
             case "getOwnerOrder":
                if(!isset($data['ownerName'])) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
-                  return;
+                  //echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
+                  //return;
                } else if(!isset($data['userId'])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "userId was not defined!" . PHP_EOL . $NC;
                   return;
@@ -84,7 +89,7 @@ class DataManager implements MessageComponentInterface {
                
                foreach($this->users as $client) {
                   if($client->userId == $from->userId) continue;
-                  if($client->userId == $data['userId']) {
+                  //if($client->userId == $data['userId']) {
                      $response = array(
                         'action' => $data['action'],
                         'ownerName' => $data['ownerName']
@@ -93,7 +98,7 @@ class DataManager implements MessageComponentInterface {
                      echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner defined to " . $data["userId"] . PHP_EOL . $NC;
 
                      $client->send(json_encode($response));
-                  }
+                  //}
                }
                break;
             case "sendOrderMessage":
@@ -116,11 +121,17 @@ class DataManager implements MessageComponentInterface {
                }
 
                foreach($this->users as $user) {
-                  if($user->userId == $from->userId) continue;
+                  if($user->userId == $from->userId) {
+                        if($from->userInstance == $user->userInstance) continue;
+                        $data['currentUser'] = true;
+                        $user->send(json_encode($data));
+                     }
+
                   if($user->userId == $data['targetId']) {
+                     $data['currentUser'] = false;
                      $user->send(json_encode($data));
-                  }      
-               };
+                  }
+               }      
                break;
          };
       };

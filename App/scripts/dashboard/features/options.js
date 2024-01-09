@@ -28,9 +28,15 @@ function switchOption(idContainer, currentOpt, activeClass) {
     return idContainer;
 }
 
+function isOwnerDefined() { 
+    POST(config.server.ACTION_URL, {
+        action: conf.action.order.isOwnerDefined
+    })
+ }
+
 function isRequestedCall(btnId, idSector, isSector = false) {
-    POST("../../Server/Handler/Actions.php", {
-        action: "getRequestStatusTI",
+    POST(config.server.ACTION_URL, {
+        action: conf.action.order.isRequestedChat,
         data: {
             targetSector: idSector
         }
@@ -41,6 +47,7 @@ function isRequestedCall(btnId, idSector, isSector = false) {
             if(dataJSON.response.message == true) {
                 $(btnId).css({cursor: 'pointer', opacity: '1'});
                 $(btnId).click(function () {
+                    getChatMessages(config.pages.constants.ID_TI, $(conf.chat.RECEIVER_BOX));
                     checkClick = startChatFeature(config.pages.sector.chat.TICHAT, !checkClick);
                 });
 

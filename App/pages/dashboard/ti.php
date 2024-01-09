@@ -76,6 +76,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <script id="autoload" src="../../scripts/autoload.js" nonce="<?php echo $nonceNumber?>"></script>
 </head>
 <body data-page-type="dashboard" data-page="ti">
+    <div class="loading-page"><h1>Carregando...</h1></div>
     <div class="root">
         <div class="panel-left">
             <div class="main-data center-container-flex-column">
@@ -130,7 +131,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
                         <div class="info-data-title">
                             > <span>SETOR</span>: INSERIR POSSE
                         </div>
-                        <div id="closeBtn">
+                        <div id="closeBtnOwner">
                             <img src="../../assets/dashboard/support/closeIcon.png" alt="">
                         </div>
                     </div>

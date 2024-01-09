@@ -9,7 +9,6 @@ function handleKeydown
         targetId,
         socketChat,
         receiverBox,
-        currentUser
     ) {
     const ENTER_KEY = "Enter"; 
     var counterSpace = 1;
@@ -43,14 +42,15 @@ function handleKeydown
     } else if (!shiftPressed && key === ENTER_KEY) {
         isOnlyEnter = true;
         counterSpace = 1;
+        console.log("TRIGGER CHAT DATA: " + textarea.val());
 
-        sendToSocketMessage(textarea, socketChat, srcId, targetId);
-        
         insertDataToChatBox(
             receiverBox, 
             textarea.val(),
             true
-        )
+        );
+
+        sendToSocketMessage(textarea, socketChat, srcId, targetId);
 
         textarea.val('');
 

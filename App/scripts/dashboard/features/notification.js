@@ -74,6 +74,8 @@ function showMsg(idContainer, message, typeMsg) {
                                 display: "flex"
                             })
                             break;
+                        case conf.FEEDBACK_REQUIRED:
+                            break;
             }
         }
         console.log(isOwnerCall);

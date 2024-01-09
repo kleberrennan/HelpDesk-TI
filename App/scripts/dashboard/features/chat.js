@@ -14,8 +14,9 @@ function getChatMessages(targetId, receiverBox) {
 
     POST(config.server.ACTION_URL, requestUser)
         .then(function(response) {
-            console.log(response)
             const data = JSON.parse(JSON.parse(response));
+
+            console.dir(data)
 
             var message = data.response.message;
             
@@ -34,7 +35,6 @@ function getChatMessages(targetId, receiverBox) {
                     var srcId = parseInt(msg.slice(0, 1));
                     var formatText = msg.slice(2);
 
-                    //console.log("srcId: " + srcId + " targetId: " + targetId)
                     if(srcId != targetId) {
                         insertDataToChatBox(receiverBox, formatText, true);
                     } else {
@@ -50,7 +50,7 @@ function startChatFeature(targetChat, checkClick) {
     const CHAT_CONTAINER = 1;
 
     let toggleContainerIDs = [];
-    console.log(conf.chat.TICHAT)
+    
     switch (targetChat) {
         case conf.chat.TICHAT:
             toggleContainerIDs = ['#supportCallTI', '#chatWithTI', '#chatTIMessages'];
@@ -65,7 +65,7 @@ function startChatFeature(targetChat, checkClick) {
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'flex' });
         if($("body").data("page") == "sector") {
-            getChatMessages(conf.values.ID_TI, $(toggleContainerIDs[conf.chat.RECEIVER_BOX]));
+            getChatMessages(config.pages.constants.ID_TI, $(toggleContainerIDs[conf.chat.RECEIVER_BOX]));
             $('#panelRightTI').css({display: 'none'});
         }
     } else {
@@ -89,8 +89,9 @@ function sendToSocketMessage(idInput, socketChat, srcId, targetId) {
             targetId: targetId,
             message: idInput.val()
         }
-        console.log(sendMsg);
-
+        
+        idInput.val("");
+        
         socketChat.send(JSON.stringify(sendMsg));
     }
 }

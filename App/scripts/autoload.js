@@ -72,7 +72,9 @@ $(document).ready(function() {
                 "../../scripts/dashboard/sector"
             ];
             
-            insertScript(sectorScripts, NONCE);  
+            insertScript(sectorScripts, NONCE).then(
+                $(".loading-page").css({display: "none"})
+            ).finally($(".root").css({display: "flex"}));  
             break;
         case TI_DASHBOARD:
             const tiScripts = [
@@ -85,37 +87,9 @@ $(document).ready(function() {
                 "../../scripts/dashboard/ti"
             ];
 
-            insertScript(tiScripts, NONCE); 
+            insertScript(tiScripts, NONCE).then(
+                $(".loading-page").css({display: "none"})
+            ).finally($(".root").css({display: "flex"}));  
             break;
         }
     });
-
-/*
-const CHAT_TI = "#openChatWithSupport";
-const INPUT_CHAT_TI = "#inputMessageTI";
-const SEND_CHAT_TI = "#sendInputMessageTI";
-const SELECT_OPTIONS_CALL_TI = "#buttonCallTI";
-const CHAT_ID_POPUP = "#popupErrSupportTI";
-const ACTION_URL = "../../Server/Handler/Actions.php";
-const DEFAULT_VALUE_SIZE_TEXTAREA = 30;
-const SUCCESS_CALL_SECTOR ="successCall";
-const CALL_NOT_ATTENDED = "stillCall";
-const OWNER_CALL_RECEIVED = "ownerEstablished";
-
-const firstOptSector = "opt-home";
-const optSectorArr = [firstOptSector, "opt-citizen-call", "opt-support-call", "opt-about"];
-const dashboardOptions = 1;
-const callTypeOptions = 2;
-
-const multiplierHeightChat = 20;
-
-const TICHAT = 1;
-const SECTORCHAT = 2;
-const DEFAULT_VALUE = 0;
-
-const ID_TI = 2;
-
-const idToRegister = $(CHAT_TI).data('id-user');
-const userId = $("#openChatWithSupport").data("id-user");
-const receiverBox = $("#chatTIMessages");
-*/
