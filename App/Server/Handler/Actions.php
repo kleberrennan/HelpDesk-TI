@@ -33,7 +33,6 @@ function execAPI($serviceName, $paramRequest) {
     if(curl_errno($curl)) {
         echo "Error: " . $error;
     } else {
-        $responseJSON = json_decode($response, true);
         $responseEncode = json_encode($response);
         if($serviceName == 'logout') {
             setcookie(COOKIE_TOKEN_USER, '', time() - 3600, '/', '', false, true);
@@ -85,7 +84,10 @@ if(isset($_POST["action"]) && !empty( $_POST["action"]))    {
             execAPI($action, ['userToken' => $token, 'targetId' => $targetId]);
             break;
         case 'checkOrderSector':
-            execAPI($action, ['userToken'=> $token]);
+            execAPI($action, ['userToken' => $token]);
+            break;
+        case 'deleteOrder':
+            execAPI($action, ['userToken' => $token]);
             break;
     }
 }

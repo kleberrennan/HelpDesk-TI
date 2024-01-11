@@ -51,7 +51,7 @@ class DataManager implements MessageComponentInterface {
                      break;
                   }
                }
-               var_dump($data);
+
                if(isset($data["type"]) && $data["type"] == "order") {
                   $orderId = $data["ownerId"];
                   $from->orderId = $orderId;
@@ -80,25 +80,26 @@ class DataManager implements MessageComponentInterface {
                break;
             case "getOwnerOrder":
                if(!isset($data['ownerName'])) {
-                  //echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
-                  //return;
+                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
+                  return;
                } else if(!isset($data['userId'])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "userId was not defined!" . PHP_EOL . $NC;
                   return;
                }
-               
+
                foreach($this->users as $client) {
                   if($client->userId == $from->userId) continue;
-                  //if($client->userId == $data['userId']) {
+                  if($client->orderId == $data['ownerTitleId']) {
                      $response = array(
                         'action' => $data['action'],
-                        'ownerName' => $data['ownerName']
+                        'ownerName' => $data['ownerName'],
+                        'idBox' => $data['ownerTitleId']
                      );
                      
                      echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner defined to " . $data["userId"] . PHP_EOL . $NC;
 
                      $client->send(json_encode($response));
-                  //}
+                  }
                }
                break;
             case "sendOrderMessage":
@@ -119,7 +120,7 @@ class DataManager implements MessageComponentInterface {
                   echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
                   return;
                }
-
+               var_dump($data);
                foreach($this->users as $user) {
                   if($user->userId == $from->userId) {
                         if($from->userInstance == $user->userInstance) continue;
@@ -132,7 +133,7 @@ class DataManager implements MessageComponentInterface {
                      $user->send(json_encode($data));
                   }
                }      
-               break;
+                  break;
          };
       };
    }

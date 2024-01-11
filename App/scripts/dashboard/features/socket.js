@@ -1,29 +1,27 @@
 var isActionSent = false;
 
 function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequest = null, randId = false) {    
-    var chatOrder = new WebSocket("ws://127.0.0.1:8080");
+    const currentServer = config.server.SOCKET_IP;
+    
+    var chatOrder = new WebSocket(`ws://10.99.18.40:8080`);
 
     chatOrder.onopen = function(e) {
         var registerUser = {}
+        console.dir(dataRequest)
+        if(dataRequest !== undefined && dataRequest !== null) {
+            if(dataRequest.action == 'registerUser' && dataRequest.type) {
+                return chatOrder.send(JSON.stringify(dataRequest));
+            } else if(dataRequest.action == 'registerUser') {
+                registerUser = {
+                    action: "registerUser",
+                    srcId: idToRegister
+                }
 
-        if(dataRequest.action == 'registerUser' && dataRequest.type == 'order') {
-            console.dir(dataRequest)
-            chatOrder.send(JSON.stringify(dataRequest));
-        } else {
-            registerUser = {
-                action: "registerUser",
-                srcId: idToRegister
+                return chatOrder.send(JSON.stringify(registerUser));
+            } else {
+                return chatOrder.send(JSON.stringify(dataRequest));
             }
-
-            chatOrder.send(JSON.stringify(registerUser));
         }
-        console.log(dataRequest.action)
-        /*if(action != null) {
-            console.dir(action)
-            chatOrder.send(JSON.stringify(action));
-            chatOrder.close();
-            return;
-        } */
         
         if(randId) {
             return;
@@ -32,8 +30,18 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequ
 
     chatOrder.onmessage = function(e) {
         const dataJSON = JSON.parse(e.data);
-        console.dir(e);
+        console.dir(dataJSON)
         if(isTI) {
+            switch(dataJSON["action"]) {
+                case "getOwnerOrder":
+                    const ownerName = dataJSON['ownerName'];
+                    const idBox = dataJSON['idBox'];
+
+                    $(`#ownerOrderTitle_${idBox}`).
+                        html(`<span>POSSE:</span> ${ownerName}`);
+                    break;
+
+            }
             if(receiverBox != null && receiverBox.data("currentChatOrder") == dataJSON.srcId) {
                 insertDataToChatBox(receiverBox, dataJSON.message, false);
             }

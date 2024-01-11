@@ -42,7 +42,6 @@ function handleKeydown
     } else if (!shiftPressed && key === ENTER_KEY) {
         isOnlyEnter = true;
         counterSpace = 1;
-        console.log("TRIGGER CHAT DATA: " + textarea.val());
 
         insertDataToChatBox(
             receiverBox, 

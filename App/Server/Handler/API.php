@@ -6,7 +6,7 @@ ini_set("display_errors", 1);
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use ZMQContext;
+//use ZMQContext;
 use ITERMA\Handler\REST;
 use ITERMA\Agent\User;
 use ITERMA\Agent\Order;
@@ -174,6 +174,11 @@ class API extends REST {
         $result = $chat->getAllMessages();
 
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
+    }
+
+    public function deleteOrder() {
+        $this->validateParam('deleteOrder', $this->param['deleteOrder'], STRING);
+        
     }
 
     public function getRequestStatusTI() {

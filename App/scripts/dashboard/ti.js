@@ -72,19 +72,19 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                 const dataJSON = JSON.parse(JSON.parse(response));
                 const idBox = $(conf.popups.OWNER_POPUP).data('boxid');
 
-                /*const requestSocket = {
+                const requestSocket = {
                     'action': 'getOwnerOrder',
                     'ownerName': ownerName,
                     'ownerTitleId': idBox,
                     'userId': $(conf.popups.OWNER_POPUP).data('orderid')
-                }*/
+                }
                 
-                //chatOrder = initChatSocket(idBox, null, true, requestSocket, true);
+                var orderId = initChatSocket(idBox, null, true, requestSocket, true);
 
                 if(dataJSON.response.message) {
                     console.dir(idBox)
-                    $(`#ownerOrderTitle_${idBox}`).
-                        html(`<span>POSSE:</span> ${ownerName}`);
+                //    $(`#ownerOrderTitle_${idBox}`).
+                  //      html(`<span>POSSE:</span> ${ownerName}`);
                     
                     $(conf.popups.OWNER_POPUP).css({display: 'none'});
                     $(conf.popups.OVERLAY).css({display: 'none'});
@@ -128,9 +128,15 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
                     chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend);
                 } else {
+                    const dataToSend = {
+                        action: "registerUser",
+                        type: "chat",
+                        srcId: config.server.idChat.ID_TI
+                    }
+
                     loadingChat.css({display: 'none'});
                     getChatMessages(idUserOrder, receiverBox);
-                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true)
+                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend)
                 }
             })
 
@@ -145,6 +151,10 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                     idOrder: order
                 }
             }
+
+            POST(config.server.ACTION_URL, finishOrder).then((response) => {
+                
+            });
         })
     })
 });
