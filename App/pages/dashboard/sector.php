@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../../Server/Define/constants.php");
 
 $_SESSION[COOKIE_TOKEN_USER] = $_COOKIE[COOKIE_TOKEN_USER];
 
-$hostname = $_SERVER['SERVER_ADDR'];
+$hostname = $_SERVER['REMOTE_ADDR'];
 
 $nonceNumber = base64_encode(random_bytes(16));
 
@@ -67,7 +67,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self' connect-src 'self' ws://10.99.18.40:8080 ws://127.0.0.1:8080/ wss://127.0.0.1:8080/; script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
+        content="default-src 'self' connect-src 'self' ws://<?php echo $hostname?>:8080; script-src 'nonce-<?php echo $nonceNumber?>' https://code.jquery.com;"
     />
     <title>Dashboard: Setor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 

@@ -1,7 +1,7 @@
 const config = {
     server: {
         ACTION_URL: "../../Server/Handler/Actions.php",
-        SOCKET_IP: "10.99.18.40",
+        SOCKET_IP: "127.0.0.1",
         idChat: {
             ID_TI: 2,
         }

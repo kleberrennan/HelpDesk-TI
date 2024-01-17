@@ -3,11 +3,11 @@ var isActionSent = false;
 function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequest = null, randId = false) {    
     const currentServer = config.server.SOCKET_IP;
     
-    var chatOrder = new WebSocket(`ws://10.99.18.40:8080`);
+    var chatOrder = new WebSocket(`ws://${currentServer}:8080`);
 
     chatOrder.onopen = function(e) {
         var registerUser = {}
-        console.dir(dataRequest)
+
         if(dataRequest !== undefined && dataRequest !== null) {
             if(dataRequest.action == 'registerUser' && dataRequest.type) {
                 return chatOrder.send(JSON.stringify(dataRequest));
@@ -40,9 +40,16 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequ
                     $(`#ownerOrderTitle_${idBox}`).
                         html(`<span>POSSE:</span> ${ownerName}`);
                     break;
+                case "broadcastDeleteOrder":
+                    receiverBox.removeChild($(`boxOrder_${dataJSON['idSector']}`));
+                case 'sendOrderMessage':
+                    const isCurrent = dataJSON['currentUser'] ? true : false;
+                    console.log(isCurrent);
+                    insertDataToChatBox(receiverBox, dataJSON.message, isCurrent);
+                    break;
 
             }
-            if(receiverBox != null && receiverBox.data("currentChatOrder") == dataJSON.srcId) {
+            if(receiverBox != null && receiverBox.data("currentChatOrder") == dataJSON.srcId && dataJSON["action"] !== "sendOrderMessage") {
                 insertDataToChatBox(receiverBox, dataJSON.message, false);
             }
         } else {
@@ -60,6 +67,7 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequ
                         break;
                     case 'sendOrderMessage':
                         const isCurrent = dataJSON['currentUser'] ? true : false;
+                        console.log(isCurrent);
                         insertDataToChatBox(receiverBox, dataJSON.message, isCurrent);
                         break;
                 }

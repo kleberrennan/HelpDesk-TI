@@ -7,6 +7,8 @@ require_once(dirname(__DIR__) . "/../Server/Define/constants.php");
 
 $_SESSION[COOKIE_TOKEN_USER] = $_COOKIE["tokenUser"];
 
+$hostname = $_SERVER['REMOTE_ADDR'];
+
 $nonceNumber = base64_encode(random_bytes(16));
 
 if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) {
@@ -44,7 +46,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
         $responseDecode = json_decode($response, true);
 
         if(isset($responseDecode['response']['status']) && $responseDecode['response']['status'] == USER_TYPE_IS_NOT_EQUAL) {
-            header("Location: http://127.0.0.1/App/index.php");
+            header("Location: http://$hostname/App/index.php");
         } else if($responseDecode !== null && isset($responseDecode['response']['message'])) {
             $userName = $responseDecode['response']['message']['userName'];
             $_SESSION["userName"] = $userName;
@@ -54,7 +56,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     curl_close($curl);
 } else {
     session_destroy();
-    header("Location: http://127.0.0.1/App/index.php");   
+    header("Location: http://$hostname/App/index.php");   
 }    
 ?>
 <!DOCTYPE html>
@@ -64,7 +66,7 @@ if(isset($_SESSION[COOKIE_TOKEN_USER]) && $_SESSION[COOKIE_TOKEN_USER] != null) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
         http-equiv="Content-Security-Policy"
-        content="default-src 'self'; connect-src 'self' ws://10.99.18.40:8080 ws://localhost:8080 ws://127.0.0.1:8080 wss://127.0.0.1:8080; script-src 'self' https://code.jquery.com 'nonce-<?php echo $nonceNumber?>';"
+        content="default-src 'self'; connect-src 'self' ws://<?php echo $hostname ?>:8080 wss://127.0.0.1:8080; script-src 'self' https://code.jquery.com 'nonce-<?php echo $nonceNumber?>';"
     />
     <title>CI: SETOR</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 

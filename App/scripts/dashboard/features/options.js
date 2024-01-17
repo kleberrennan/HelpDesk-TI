@@ -51,7 +51,14 @@ function isRequestedCall(btnId, idSector, isSector = false) {
                     checkClick = startChatFeature(config.pages.sector.chat.TICHAT, !checkClick);
                 });
 
-                webSocket = initChatSocket(userId, receiverBox, false);
+                const registerChat = {
+                    action: "registerUser",
+                    type: "chat",
+                    srcId: userId,
+                    targetId: config.pages.constants.ID_TI
+                }
+                console.dir(registerChat)
+                webSocket = initChatSocket(userId, $("#chatTIMessages"), false, registerChat);
             } else {
                 $(btnId).css({cursor: 'not-allowed', opacity: '0.3'});
                 webSocket = null;

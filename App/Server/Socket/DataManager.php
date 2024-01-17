@@ -36,32 +36,54 @@ class DataManager implements MessageComponentInterface {
          switch($data["action"]) {
             case "registerUser":
                if(!isset($data["srcId"])) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
+                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined at registerUser!" . PHP_EOL . $NC;
                   return;
                }
 
+               $userData = array();
+               $userDataArr = array();
+
                $userId = $data["srcId"];
                
-               $from->userId = $userId;
-               $from->userInstance = 0;
-               foreach($this->users as $storedClient) {
-                  if($storedClient->userId == $userId) {
-                     $userInstance = isset($storedClient->userInstance) ? $storedClient->userInstance + 1 : 1;
-                     $from->userInstance = $userInstance;
-                     break;
-                  }
+               $userData["userId"] = $userId;
+
+               if(isset($data["type"])) {
+                  switch($data["type"]) {
+                     case "order":
+                        if(!isset($data["ownerId"])) {
+                           echo $YELLOW . "[Socket Server]: " . $RED . "ownerId was not defined at register order!" . PHP_EOL . $NC;
+                           return;
+                        }
+                        $orderId = $data["ownerId"];
+                        $userData["orders"] = array();
+                        $userData["orders"]["orderId"] = $orderId;
+
+                        echo $YELLOW . "[TI]: " . $GREEN . $userData["orderId"] . " order was set to " . $data["srcId"] . " user" . PHP_EOL . $NC;
+                        break;
+                     case "chat":
+                        if(!isset($data["srcId"])) {
+                           echo $YELLOW . "[Socket Server]: " . $RED . "idUser was not defined at register chat!" . PHP_EOL . $NC;
+                           return;
+                        }
+                        $chatId = $data["targetId"];
+                        $userData["chat"] = array();
+                        $userData["chat"]["targetChat"] = $chatId;
+
+                        echo $YELLOW . "[TI]: " . $GREEN . $userData["chatId"] . " chat was set to " . $data["srcId"] . " user" . PHP_EOL . $NC;
+                        break;
+                     }
                }
 
-               if(isset($data["type"]) && $data["type"] == "order") {
-                  $orderId = $data["ownerId"];
-                  $from->orderId = $orderId;
-                  echo $YELLOW . "[TI]: " . $GREEN . $from->orderId . " order was set to " . $data["srcId"] . " user" . PHP_EOL . $NC;
-               }
+               $userObjId = "user_" . $from->resourceId;
+
+               $from->userDataArr = [$userObjId => $userData]; 
 
                $this->users->attach($from);
                
-               echo $YELLOW . "[Socket Server]: " . $GREEN . $from->userId . " with Instance: " . $from->userInstance . " Established a connection!" . PHP_EOL . $NC;
-            
+               echo $YELLOW . "[Socket Server]: " . $GREEN . $userData["userId"] . " with Instance: " . $userData["userInstance"] . " Established a connection!" . PHP_EOL . $NC;
+               
+               var_dump($from->userDataArr);
+
                break;
 
             case "callSector":
@@ -78,6 +100,11 @@ class DataManager implements MessageComponentInterface {
                   }
                }
                break;
+            case "broadcastDeleteOrder":
+               if(isset($data["idSector"])) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "idSector was not defined!" . PHP_EOL . $NC;
+               }
+               break;
             case "getOwnerOrder":
                if(!isset($data['ownerName'])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
@@ -88,8 +115,10 @@ class DataManager implements MessageComponentInterface {
                }
 
                foreach($this->users as $client) {
-                  if($client->userId == $from->userId) continue;
-                  if($client->orderId == $data['ownerTitleId']) {
+                  $userId = $data['userId'];
+                  $fromIdObj = "user_" . $from->resourceId;
+                  if($client->userDataArr[$fromIdObj]["userId"] == $from->userDataArr[$fromIdObj]["userId"]) continue;
+                  if($client->userDataArr[$fromIdObj]["orders"]['orderId'] == $data['ownerTitleId']) {
                      $response = array(
                         'action' => $data['action'],
                         'ownerName' => $data['ownerName'],
@@ -104,7 +133,7 @@ class DataManager implements MessageComponentInterface {
                break;
             case "sendOrderMessage":
                if(!isset($data["srcId"])) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined!" . PHP_EOL . $NC;
+                  echo $YELLOW . "[Socket Server]: " . $RED . "srcId was not defined to send a message!" . PHP_EOL . $NC;
                   return;
                }
 
@@ -120,19 +149,32 @@ class DataManager implements MessageComponentInterface {
                   echo $YELLOW . "[Socket Server]: " . $RED . "Database Insert Message Failed" . PHP_EOL . $NC;
                   return;
                }
-               var_dump($data);
-               foreach($this->users as $user) {
-                  if($user->userId == $from->userId) {
-                        if($from->userInstance == $user->userInstance) continue;
-                        $data['currentUser'] = true;
-                        $user->send(json_encode($data));
-                     }
 
-                  if($user->userId == $data['targetId']) {
+               foreach($this->users as $user) {
+                  $targetChat = $data['targetId'];
+                  $srcChat = $data["srcId"];
+                  $fromIdObj = "user_" . $user->resourceId;
+
+                  $userArr = $user->userDataArr[$fromIdObj];
+                  if(
+                     isset($userArr["chat"])
+                     && $userArr["chat"]["targetChat"] == $targetChat
+                     && $userArr["userId"] == $srcChat) {
+                     $data['currentUser'] = true;
+
+                     $user->send(json_encode($data));
+                  }
+                  
+                  if
+                  (
+                     isset($userArr["chat"])
+                     && $userArr["chat"]["targetChat"] == $srcChat
+                     && $userArr["userId"] == $targetChat
+                  ) {
                      $data['currentUser'] = false;
                      $user->send(json_encode($data));
                   }
-               }      
+               }
                   break;
          };
       };

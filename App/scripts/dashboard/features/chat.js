@@ -100,7 +100,7 @@ function insertDataToChatBox(idChat, message, currentUser) {
     if ($.trim(message) === "") {
         return;
     }
-
+    console.log("count")
     if(currentUser) {
         idChat.append(
             `<div class='message-recipient'>

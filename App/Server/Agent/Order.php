@@ -161,5 +161,24 @@ class Order {
             echo "Error: " . $e->getMessage();
         }
     }
+
+    public function deleteById() {
+        try {
+            $userId = $this->getIdUser();
+            $isDeleted = true;
+            $sql = "DELETE FROM orderSector WHERE authorcallid = :idUser";
+            $stmt = $this->dbConn->prepare($sql);
+            $stmt->bindParam(":idUser", $userId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            if($stmt->rowCount() > 0) {
+                $isDeleted = false;
+            }
+
+            return $isDeleted;
+        } catch(\PDOException $e) {
+            echo "Error:" . $e->getMessage();
+        }
+    }
 }
 ?>

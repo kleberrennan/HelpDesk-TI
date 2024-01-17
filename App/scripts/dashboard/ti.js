@@ -44,7 +44,7 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
             'srcId': config.server.idChat.ID_TI,
             'ownerId': ownerTitleId
         }
-
+        console.dir(requestSocket)
         chatOrder = initChatSocket(ownerTitleId, null, true, requestSocket, true);
     })
 
@@ -131,9 +131,10 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                     const dataToSend = {
                         action: "registerUser",
                         type: "chat",
-                        srcId: config.server.idChat.ID_TI
+                        srcId: config.server.idChat.ID_TI,
+                        targetId: idUserOrder
                     }
-
+                    console.dir(dataToSend)
                     loadingChat.css({display: 'none'});
                     getChatMessages(idUserOrder, receiverBox);
                     chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend)
@@ -143,17 +144,30 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
             currentIdOrder = $(`#orderChat_${order}`).data("userorder-id");
             chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
         })
-    
+
         $(`#finishCall_${order}`).click(function() {
+            const sectorId = $(`#orderChat_${order}`).data("userorder-id");
+            console.log(sectorId)
+
             const finishOrder = {
                 action: "deleteOrder",
                 data: {
-                    idOrder: order
+                    "sectorId": sectorId
                 }
             }
 
             POST(config.server.ACTION_URL, finishOrder).then((response) => {
-                
+                const formatJSON = response.replace(/^"|"$/g, '').replace(/\\/g, '');
+                const responseJSON = JSON.parse(formatJSON);
+    
+                if(!responseJSON.response.message) {
+                    const requestData = {
+                        action: "broadcastDeleteOrder",
+                        idSector: sectorId
+                    }
+
+                    const broadcastOrder = initChatSocket(null, $("#receiveCallsTI"), true, requestData, false);
+                }
             });
         })
     })

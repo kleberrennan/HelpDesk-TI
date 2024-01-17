@@ -87,7 +87,8 @@ if(isset($_POST["action"]) && !empty( $_POST["action"]))    {
             execAPI($action, ['userToken' => $token]);
             break;
         case 'deleteOrder':
-            execAPI($action, ['userToken' => $token]);
+            $targetSectorOrder = $_POST['data']['sectorId'];
+            execAPI($action, ['userToken' => $token, 'sectorId' => $targetSectorOrder]);
             break;
     }
 }

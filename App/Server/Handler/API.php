@@ -44,7 +44,7 @@ class API extends REST {
             $payload = [
                 'iat' => time(),
                 'iss' => $this->ISSUER,
-                'exp' => time() + (15*60),
+                'exp' => time() + (60*60),
                 'userId' => $user['userid']
             ];
 
@@ -177,8 +177,14 @@ class API extends REST {
     }
 
     public function deleteOrder() {
-        $this->validateParam('deleteOrder', $this->param['deleteOrder'], STRING);
+        $this->validateParam('sectorId', $this->param["sectorId"], STRING);
+
+        $order = new Order();
+        $order->setIdUser($this->param["sectorId"]);
         
+        $result = $order->deleteById();
+        
+        $this->returnResponse(SUCCESSFULL_RESPONSE, $result);
     }
 
     public function getRequestStatusTI() {

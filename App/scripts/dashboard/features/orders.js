@@ -15,8 +15,9 @@ function generateOrdersBoxes(idContainer, url) {
                     if(order.ownercall == null) {
                         order.ownercall = "SEM POSSE";
                     }
+                    console.dir(order)
                     insertHTML += `
-                                    <div class="call-ti-sector center-container-flex-row">
+                                    <div class="call-ti-sector center-container-flex-row" id=boxOrder_${order.authorcallid}>
                                         <div class="metadata-call">
                                             <p><span>SETOR: </span>${order.userName}</p>
                                             <p><span>RAZÃO: </span>${order.reasoncall}</p>
