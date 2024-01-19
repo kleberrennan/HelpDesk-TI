@@ -27,8 +27,6 @@ currentOptTypeCall = initOptions(optCallTypeArr, currentOptTypeCall, callTypeOpt
 
 let chatWithSectorClick = true;
 
-var chatOrder = "";
-
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
     const ownerOptions = ["Kleber", "Diorlan", "Italo"];
     
@@ -37,16 +35,7 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
         $(conf.popups.OVERLAY).css({display: 'none'});
     })
 
-    orders.forEach((ownerTitleId) => { 
-        const requestSocket = {
-            'action': 'registerUser',
-            'type': 'order',
-            'srcId': config.server.idChat.ID_TI,
-            'ownerId': ownerTitleId
-        }
-        console.dir(requestSocket)
-        chatOrder = initChatSocket(ownerTitleId, null, true, requestSocket, true);
-    })
+    receiverOrderBox();
 
     ownerOptions.forEach((owner, index) => {
         $(conf.popups.OWNER_POPUP)
@@ -82,10 +71,6 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                 var orderId = initChatSocket(idBox, null, true, requestSocket, true);
 
                 if(dataJSON.response.message) {
-                    console.dir(idBox)
-                //    $(`#ownerOrderTitle_${idBox}`).
-                  //      html(`<span>POSSE:</span> ${ownerName}`);
-                    
                     $(conf.popups.OWNER_POPUP).css({display: 'none'});
                     $(conf.popups.OVERLAY).css({display: 'none'});
                 }
@@ -134,7 +119,7 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
                         srcId: config.server.idChat.ID_TI,
                         targetId: idUserOrder
                     }
-                    console.dir(dataToSend)
+
                     loadingChat.css({display: 'none'});
                     getChatMessages(idUserOrder, receiverBox);
                     chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend)
@@ -147,7 +132,6 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
         $(`#finishCall_${order}`).click(function() {
             const sectorId = $(`#orderChat_${order}`).data("userorder-id");
-            console.log(sectorId)
 
             const finishOrder = {
                 action: "deleteOrder",

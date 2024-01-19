@@ -1,5 +1,25 @@
 var isActionSent = false;
 
+function receiverOrderBox() {
+    const requestSocket = {
+        'action': 'registerUser',
+        'type': 'order',
+        'srcId': config.server.idChat.ID_TI,
+    }
+
+    return initChatSocket(null, null, true, requestSocket, true);
+}
+
+function sendOrderToBox(idRequest) {
+    const requestSocket = {
+        'action': 'insertOrder',
+        'orderId': idRequest,
+        'targetBox': config.pages.constants.ID_TI
+    }
+
+    return initChatSocket(null, null, true, requestSocket, true);
+}
+
 function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequest = null, randId = false) {    
     const currentServer = config.server.SOCKET_IP;
     
@@ -33,6 +53,8 @@ function initChatSocket(idToRegister, receiverBox = null, isTI = false, dataRequ
         console.dir(dataJSON)
         if(isTI) {
             switch(dataJSON["action"]) {
+                case "insertOrder":
+                    break;
                 case "getOwnerOrder":
                     const ownerName = dataJSON['ownerName'];
                     const idBox = dataJSON['idBox'];

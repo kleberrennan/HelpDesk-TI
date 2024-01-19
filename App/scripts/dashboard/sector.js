@@ -97,7 +97,10 @@ $(document).ready(function() {
 
                     POST(config.server.ACTION_URL, { action: requestUser['name'], data: requestUser['param']})
                         .then(function(response) {
-                            console.log(response)
+                            const valueParsed = JSON.parse(JSON.parse(response));
+                            const orderInsertId = valueParsed.response.message.idCall; 
+                            
+                            sendOrderToBox(orderInsertId);
                         })
                         
                 } else {

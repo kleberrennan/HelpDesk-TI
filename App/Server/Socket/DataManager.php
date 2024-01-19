@@ -50,13 +50,12 @@ class DataManager implements MessageComponentInterface {
                if(isset($data["type"])) {
                   switch($data["type"]) {
                      case "order":
-                        if(!isset($data["ownerId"])) {
+                        /*if(!isset($data["ownerId"])) {
                            echo $YELLOW . "[Socket Server]: " . $RED . "ownerId was not defined at register order!" . PHP_EOL . $NC;
                            return;
-                        }
-                        $orderId = $data["ownerId"];
-                        $userData["orders"] = array();
-                        $userData["orders"]["orderId"] = $orderId;
+                        }*/
+                        $orderId = $data["srcId"];
+                        $userData["orderBoxId"] = $orderId;
 
                         echo $YELLOW . "[TI]: " . $GREEN . $userData["orderId"] . " order was set to " . $data["srcId"] . " user" . PHP_EOL . $NC;
                         break;
@@ -85,7 +84,40 @@ class DataManager implements MessageComponentInterface {
                var_dump($from->userDataArr);
 
                break;
+            case "insertOrder":
+               if(!isset($data["orderId"])) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "orderId was not defined at insertOrder!" . PHP_EOL . $NC;
+               }
 
+               $sql = "SELECT * FROM orderSector WHERE idcall = :orderId";
+               $stmt = $this->database->prepare($sql);
+               $stmt->bindParam(":orderId", $data["orderId"], \PDO::PARAM_INT);
+               $stmt->execute();
+
+               if($stmt->rowCount() > 0) {
+                  $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                  $response = array(
+                     "authorcallid" => $result["authorcallid"],
+                     "reasoncall" => $result["reasoncall"],
+                     "calltimestamp" => $result["calltimestamp"],
+                     "ownercall" => "SEM POSSE"
+                  );
+
+                  foreach($this->users as $user) {
+                     $fromIdObj = "user_" . $user->resourceId;
+
+                     if(
+                        isset($user->userDataArr[$fromIdObj]["orderBoxId"])
+                        && $user->userDataArr[$fromIdObj]["orderBoxId"] == $data["targetBox"]
+                        ) {
+                        echo $fromIdObj;
+                        $user->send(json_encode($response));
+                     }
+                  }
+               }
+
+               break;
             case "callSector":
                if(isset($data["targetSector"])) {
                   $stmt = $this->database->prepare("INSERT INTO requestStatus(sectorId, isRequested) VALUES(:sectorId, :isRequested)");

@@ -43,12 +43,6 @@ function handleKeydown
         isOnlyEnter = true;
         counterSpace = 1;
 
-        /*insertDataToChatBox(
-            receiverBox, 
-            textarea.val(),
-            true
-        );*/
-
         sendToSocketMessage(textarea, socketChat, srcId, targetId);
 
         textarea.val('');
