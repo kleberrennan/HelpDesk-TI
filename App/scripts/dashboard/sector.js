@@ -14,21 +14,34 @@ var isAnimateErr = false;
 
 let chatTIClick = true;
 
-var webSocket = null;
 var openConnection = {};
 
-$(document).ready(function() {
-    if(webSocket instanceof WebSocket) {
-        webSocket = null;
+function registerChat() {
+    const registerChat = {
+        action: "registerUser",
+        type: "chat",
+        srcId: userId,
+        targetId: config.pages.constants.ID_TI
     }
+
+    let webSocket = initChatSocket(userId, $("#chatTIMessages"), false, registerChat);
+    
+    return webSocket;
+}
+
+$(document).ready(function() {
+    var webSocket = registerChat();
+    let isRequested = isRequestedCall(conf.chat.CHAT_TI, userId, true);
     
     currentOpt = initOptions(conf.options.optSectorArr, currentOpt, config.pages.constants.dashboardOptions);
-    
-    webSocket = isRequestedCall(conf.chat.CHAT_TI, userId, true);
 
-    if(chatTIClick) {        
+    if(config.pages.sector.chat.IS_REQUEST) {
+        $(config.pages.sector.chat.CHAT_TI).click(function() {
+            chatTIClick = startChatFeature(conf.chat.TICHAT, chatTIClick, conf.chat.RECEIVER_BOX);
+        })
+
         $(conf.chat.CLOSE_CHAT_SECTOR).click(function() {
-            chatTIClick = startChatFeature(conf.chat.TICHAT, !chatTIClick, conf.chat.RECEIVER_BOX);
+            chatTIClick = startChatFeature(conf.chat.TICHAT, chatTIClick, conf.chat.RECEIVER_BOX);
             $("#chatTIMessages .message-recipient, #chatTIMessages .message-recipient-external").remove();
         })
     }

@@ -38,19 +38,24 @@ class Order {
     public function setOwnerById() {
         $ownerName = $this->getOwnerName();
         $orderId = $this->getIdUser();
-        $response = '';
-        $sql = "UPDATE orderSector 
-                SET ownercall = :ownerName 
-                WHERE authorcallid = :idUser";
+        try {
+            $sql = "UPDATE orderSector 
+                    SET ownercall = :ownerName 
+                    WHERE idcall = :idUser";
 
-        $stmt = $this->dbConn->prepare($sql);
-        $stmt->bindParam(":ownerName", $ownerName, \PDO::PARAM_STR);
-        $stmt->bindParam(":idUser", $orderId, \PDO::PARAM_INT);
+            $stmt = $this->dbConn->prepare($sql);
+            $stmt->bindParam(":ownerName", $ownerName, \PDO::PARAM_STR);
+            $stmt->bindParam(":idUser", $orderId, \PDO::PARAM_INT);
 
-        $stmt->execute();
+            $stmt->execute();
 
-        if($stmt->rowCount() > 0) {
-            $response = true;
+            if($stmt->rowCount() > 0) {
+                $response = true;
+            } else {
+                $response = false;
+            }
+        } catch(\Exception $e) {
+            error_log($e->getMessage());
         }
         return $response;
     }

@@ -28,7 +28,7 @@ currentOptTypeCall = initOptions(optCallTypeArr, currentOptTypeCall, callTypeOpt
 let chatWithSectorClick = true;
 
 generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
-    const ownerOptions = ["Kleber", "Diorlan", "Italo"];
+    const ownerOptions = config.pages.ti.owner.options;
     
     $(conf.buttons.CLOSE_BTN_OWNER).click(function() {
         $(conf.popups.OWNER_POPUP).css({display: 'none'});
@@ -48,32 +48,17 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
 
         $(`#ownerOpt_${index}`).click(function(e) {
             const ownerName = e.currentTarget.innerText;
-            const orderId = $(`#ownerPopUp`).data("orderid");
+            const idBox = $(conf.popups.OWNER_POPUP).data('boxid');
             const requestData = {
                 'action': 'setOwnerOrder',
                 'data': {
                     'ownerName': ownerName,
-                    'orderId': orderId
+                    'ownerTitleId': idBox
                 }
             }
 
             POST(ACTION_URL, requestData).then(function(response) {
-                const dataJSON = JSON.parse(JSON.parse(response));
-                const idBox = $(conf.popups.OWNER_POPUP).data('boxid');
-
-                const requestSocket = {
-                    'action': 'getOwnerOrder',
-                    'ownerName': ownerName,
-                    'ownerTitleId': idBox,
-                    'userId': $(conf.popups.OWNER_POPUP).data('orderid')
-                }
-                
-                var orderId = initChatSocket(idBox, null, true, requestSocket, true);
-
-                if(dataJSON.response.message) {
-                    $(conf.popups.OWNER_POPUP).css({display: 'none'});
-                    $(conf.popups.OVERLAY).css({display: 'none'});
-                }
+                getOwnerSocket(response, ownerName);
             });
         })
     })
@@ -89,70 +74,11 @@ generateOrdersBoxes("#receiveCallsTI", ACTION_URL).then(function(orders) {
         });
 
         $(`#orderChat_${order}`).click(function() {
-            const loadingChat = $("#loadingChat").css({display: 'flex'});
-            const receiverBox = $(conf.chat.RECEIVER_BOX);
-            const idUserOrder = $(`#orderChat_${order}`).data("userorder-id");
-            const userName = $(`#orderChat_${order}`).data('username');
-
-            $(receiverBox).data("currentChatOrder", idUserOrder);
-            $("#titleChat").html(`CHAT COM ${userName}`)
-            POST("../../Server/Handler/Actions.php", {
-                action: "getRequestStatusTI",
-                data: {
-                    targetSector: idUserOrder
-                }
-            }).then(function(response) {
-                const dataJSON = JSON.parse(JSON.parse(response));
-
-                if(dataJSON.response.message == false ) { 
-                    const dataToSend = {
-                        action: "callSector",
-                        targetSector: idUserOrder,
-                        isRequested: true
-                    }
-
-                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend);
-                } else {
-                    const dataToSend = {
-                        action: "registerUser",
-                        type: "chat",
-                        srcId: config.server.idChat.ID_TI,
-                        targetId: idUserOrder
-                    }
-
-                    loadingChat.css({display: 'none'});
-                    getChatMessages(idUserOrder, receiverBox);
-                    chatOrder = initChatSocket(config.server.idChat.ID_TI, receiverBox, true, dataToSend)
-                }
-            })
-
-            currentIdOrder = $(`#orderChat_${order}`).data("userorder-id");
-            chatWithSectorClick = startChatFeature(SECTORCHAT, chatWithSectorClick);
+            startOrderChat({boxId: order});
         })
 
         $(`#finishCall_${order}`).click(function() {
-            const sectorId = $(`#orderChat_${order}`).data("userorder-id");
-
-            const finishOrder = {
-                action: "deleteOrder",
-                data: {
-                    "sectorId": sectorId
-                }
-            }
-
-            POST(config.server.ACTION_URL, finishOrder).then((response) => {
-                const formatJSON = response.replace(/^"|"$/g, '').replace(/\\/g, '');
-                const responseJSON = JSON.parse(formatJSON);
-    
-                if(!responseJSON.response.message) {
-                    const requestData = {
-                        action: "broadcastDeleteOrder",
-                        idSector: sectorId
-                    }
-
-                    const broadcastOrder = initChatSocket(null, $("#receiveCallsTI"), true, requestData, false);
-                }
-            });
+            startFinishBtn({boxId: order});
         })
     })
 });

@@ -205,16 +205,16 @@ class API extends REST {
 
     public function setOwnerOrder() {
         $this->validateParam('ownerName', $this->param["ownerName"], STRING);
-        $this->validateParam('orderId', $this->param["orderId"], STRING);
+        $this->validateParam('ownerTitleId', $this->param["ownerTitleId"], STRING);
 
         $order = new Order();
         $order->setOwnerName($this->param["ownerName"]);
-        $order->setIdUser($this->param["orderId"]);
+        $order->setIdUser($this->param["ownerTitleId"]);
         $result = $order->setOwnerById();
         
         if(!is_bool($result)) {
             $this->returnResponse(ORDER_OWNER_RESULT_IS_NOT_BOOL,
-            "Order Owner Result is not a bool!");
+            "Order Owner Result is not a bool! Result: " . $this->param["ownerTitleId"]);
         }
 
         $this->returnResponse(SUCCESSFULL_RESPONSE, $result);

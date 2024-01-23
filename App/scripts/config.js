@@ -17,6 +17,9 @@ const config = {
         },
         
         ti: {
+            owner: {
+                options: ["Kleber", "Diorlan", "Italo"],
+            },
             chat: {
                 TICHAT: 1,
                 SECTORCHAT: 2,
@@ -47,6 +50,7 @@ const config = {
             chat: {
                 TICHAT: 1,
                 SECTORCHAT: 2,
+                IS_REQUEST: false,
                 CHAT_TI: "#openChatWithSupport",
                 RECEIVER_BOX: "#chatTIMessages",
                 INPUT_CHAT_TI: "#inputMessageTI",

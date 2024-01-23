@@ -72,8 +72,8 @@ if(isset($_POST["action"]) && !empty( $_POST["action"]))    {
             break;
         case 'setOwnerOrder':
             $ownerName = $_POST['data']['ownerName'];
-            $orderId = $_POST['data']['orderId'];
-            execAPI($action, ['userToken' => $token, 'ownerName' => $ownerName, 'orderId' => $orderId]);
+            $orderId = $_POST['data']['ownerTitleId'];
+            execAPI($action, ['userToken' => $token, 'ownerName' => $ownerName, 'ownerTitleId' => $orderId]);
             break;
         case 'getRequestStatusTI':
             $targetSector = $_POST['data']['targetSector'];

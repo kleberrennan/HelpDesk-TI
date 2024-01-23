@@ -41,7 +41,6 @@ class DataManager implements MessageComponentInterface {
                }
 
                $userData = array();
-               $userDataArr = array();
 
                $userId = $data["srcId"];
                
@@ -97,22 +96,33 @@ class DataManager implements MessageComponentInterface {
                if($stmt->rowCount() > 0) {
                   $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-                  $response = array(
-                     "authorcallid" => $result["authorcallid"],
-                     "reasoncall" => $result["reasoncall"],
-                     "calltimestamp" => $result["calltimestamp"],
-                     "ownercall" => "SEM POSSE"
-                  );
+                  $sqlOwner = "SELECT userName from users WHERE userid = :idcall";
+                  $stmtOwner = $this->database->prepare($sqlOwner);
+                  $stmtOwner->bindParam(":idcall", $result["authorcallid"], \PDO::PARAM_INT);
+                  $stmtOwner->execute();
+                  
+                  $resultOwner = $stmtOwner->fetch(\PDO::FETCH_ASSOC);
 
-                  foreach($this->users as $user) {
-                     $fromIdObj = "user_" . $user->resourceId;
+                  if($stmtOwner->rowCount() > 0) {
+                     $response = array(
+                        "action" => $data["action"],
+                        "userName" => $resultOwner["username"],
+                        "authorcallid" => $result["authorcallid"],
+                        "reasoncall" => $result["reasoncall"],
+                        "calltimestamp" => $result["calltimestamp"],
+                        "ownercall" => "SEM POSSE",
+                        "idcall" => $result["idcall"]
+                     );
 
-                     if(
-                        isset($user->userDataArr[$fromIdObj]["orderBoxId"])
-                        && $user->userDataArr[$fromIdObj]["orderBoxId"] == $data["targetBox"]
-                        ) {
-                        echo $fromIdObj;
-                        $user->send(json_encode($response));
+                     foreach($this->users as $user) {
+                        $fromIdObj = "user_" . $user->resourceId;
+
+                        if(
+                           isset($user->userDataArr[$fromIdObj]["orderBoxId"])
+                           && $user->userDataArr[$fromIdObj]["orderBoxId"] == $data["targetBox"]
+                           ) {
+                           $user->send(json_encode($response));
+                        }
                      }
                   }
                }
@@ -125,41 +135,85 @@ class DataManager implements MessageComponentInterface {
                   $stmt->bindParam(":isRequested", $data["isRequested"], \PDO::PARAM_BOOL);
                   $stmt->execute();
                }
-               
+               var_dump($data);
                foreach($this->users as $user) {
-                  if($user->userId == $data["targetSector"]) {
-                     $user->send(json_encode($data));
+                  $fromIdObj = "user_" . $user->resourceId;
+                  if(
+                     isset($user->userDataArr[$fromIdObj]["chat"]) 
+                     &&
+                     $user->userDataArr[$fromIdObj]["userId"] == $data["fromChat"]) {
+                        $response = array (
+                           "action" => $data["action"]
+                        );
+
+                        $user->send(json_encode($response));
                   }
                }
                break;
             case "broadcastDeleteOrder":
-               if(isset($data["idSector"])) {
+               if(!isset($data["idSector"])) {
                   echo $YELLOW . "[Socket Server]: " . $RED . "idSector was not defined!" . PHP_EOL . $NC;
                }
+
+               $stmt_chat = $this->database->prepare("DELETE FROM chat WHERE (fromuserid = :srcId AND touserid = :targetId) OR (fromuserid = :targetId AND touserid = :srcId)");
+               $stmt_chat->bindParam(":srcId", $data["idSector"], \PDO::PARAM_INT);
+               $stmt_chat->bindParam(":targetId", $data["targetId"], \PDO::PARAM_INT);
+               $stmt_chat->execute();
+
+               $stmt_request = $this->database->prepare("DELETE FROM requeststatus WHERE sectorid = :idSector");
+               $stmt_request->bindParam(":idSector", $data["idSector"], \PDO::PARAM_INT);
+               $stmt_request->execute();
+
+               foreach($this->users as $user) {
+                  $fromIdObj = "user_" . $user->resourceId;
+                  echo "idSector: " . $data["idSector"];
+                  if($user->userDataArr[$fromIdObj]["userId"] == $data["idSector"]) {
+                     $response = array(
+                        'action' => $data['action']
+                     );
+                     
+                     $user->send(json_encode($response));
+                  }
+
+                  if(
+                  isset($user->userDataArr[$fromIdObj]["orderBoxId"])
+                     && 
+                  $user->userDataArr[$fromIdObj]["orderBoxId"] == $data["targetId"]) {
+                     $response = array(
+                        'action' => $data['action'],
+                        'idSector' => $data['idSector']
+                     );
+                     
+                     echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner" . "(" . $data["ownerName"] .")" . " defined to " . $data["targetId"] . PHP_EOL . $NC;
+
+                     $user->send(json_encode($response));
+                  }
+               }
+               
                break;
             case "getOwnerOrder":
                if(!isset($data['ownerName'])) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined!" . PHP_EOL . $NC;
+                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerName was not defined at getOwnerOrder!" . PHP_EOL . $NC;
                   return;
-               } else if(!isset($data['userId'])) {
-                  echo $YELLOW . "[Socket Server]: " . $RED . "userId was not defined!" . PHP_EOL . $NC;
+               } else if(!isset($data['ownerTitleId'])) {
+                  echo $YELLOW . "[Socket Server]: " . $RED . "ownerTitleId was not defined! at getOwnerOrder" . PHP_EOL . $NC;
                   return;
                }
 
-               foreach($this->users as $client) {
-                  $userId = $data['userId'];
-                  $fromIdObj = "user_" . $from->resourceId;
-                  if($client->userDataArr[$fromIdObj]["userId"] == $from->userDataArr[$fromIdObj]["userId"]) continue;
-                  if($client->userDataArr[$fromIdObj]["orders"]['orderId'] == $data['ownerTitleId']) {
+               foreach($this->users as $user) {
+                  $fromIdObj = "user_" . $user->resourceId;
+                  if(
+                     isset($user->userDataArr[$fromIdObj]["orderBoxId"])
+                     && $user->userDataArr[$fromIdObj]["orderBoxId"] == $data["targetId"]) {
                      $response = array(
                         'action' => $data['action'],
                         'ownerName' => $data['ownerName'],
                         'idBox' => $data['ownerTitleId']
                      );
                      
-                     echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner defined to " . $data["userId"] . PHP_EOL . $NC;
+                     echo $YELLOW . "[Socket Server]: " . $GREEN . "new Owner" . "(" . $data["ownerName"] .")" . " defined to " . $data["targetId"] . PHP_EOL . $NC;
 
-                     $client->send(json_encode($response));
+                     $user->send(json_encode($response));
                   }
                }
                break;

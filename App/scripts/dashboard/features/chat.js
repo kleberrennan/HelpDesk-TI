@@ -48,10 +48,9 @@ function getChatMessages(targetId, receiverBox) {
 function startChatFeature(targetChat, checkClick) {
     const NO_CHAT_CONTAINER = 0;
     const CHAT_CONTAINER = 1;
-
     let toggleContainerIDs = [];
     
-    switch (targetChat) {
+    switch(targetChat) {
         case conf.chat.TICHAT:
             toggleContainerIDs = ['#supportCallTI', '#chatWithTI', '#chatTIMessages'];
             break;
@@ -64,6 +63,8 @@ function startChatFeature(targetChat, checkClick) {
     if (checkClick) {
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'flex' });
+        console.log("STARTCHAT")
+
         if($("body").data("page") == "sector") {
             getChatMessages(config.pages.constants.ID_TI, $(toggleContainerIDs[conf.chat.RECEIVER_BOX]));
             $('#panelRightTI').css({display: 'none'});
@@ -71,6 +72,8 @@ function startChatFeature(targetChat, checkClick) {
     } else {
         $(toggleContainerIDs[CHAT_CONTAINER]).css({ display: 'none' });
         $(toggleContainerIDs[NO_CHAT_CONTAINER]).css({ display: 'flex', 'flex-direction': 'column' });
+        console.log("STARTCHATDOWN")
+
         if($("body").data("page") == "sector") {
             $('#panelRightTI').css({display: 'flex'});
         }
@@ -100,7 +103,7 @@ function insertDataToChatBox(idChat, message, currentUser) {
     if ($.trim(message) === "") {
         return;
     }
-    console.log("count")
+
     if(currentUser) {
         idChat.append(
             `<div class='message-recipient'>
